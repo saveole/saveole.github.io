@@ -1,0 +1,71 @@
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="content-type" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+<link href="https://unpkg.com/@primer/css@^21.0.7/dist/primer.css" rel="stylesheet" />
+
+</head>
+<style>
+.markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 900px;
+    margin: 10px auto;
+    padding: 45px;
+    font-family: sans-serif;
+}
+@media (max-width: 560px) {
+    .markdown-body { padding: 8px;} 
+}
+
+.avatar {transition: 0.8s;}
+.avatar:hover {transform: scale(1.15) rotate(360deg);}
+
+h1 {display:flex;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right button{margin-left:8px;padding:16px;}
+.SideNav{min-width: 360px;}
+.SideNav-icon{margin-right: 16px}
+#postBody{border-bottom: 1px solid var(--color-border-default);}
+#comments{margin-top:64px;}
+.footer {margin: 40px auto; text-align: center;font-size: small;}
+#cmButton{height:48px;margin-top:48px;}
+</style>
+<script>var blogBase={"postTitle": "\u600e\u4e48\u53c8\u89e3\u6790\u4e0d\u51fa\u6765\u4e86\u5462", "postBody": "<p>\u600e\u4e48\u56de\u4e8b\u554a</p>\n", "title": "\u6551\u6551\u7d22\u5c14", "homeUrl": "https://blog.0study.fun", "postSourceUrl": "https://github.com/saveole/saveole.github.io/issues/3", "faviconUrl": "http://meekdai.com/favicon.ico", "filingNum": "\u7696ICP\u59072023020147\u53f7", "startSite": "10/23/2023", "i18n": "CN", "commentNum": 0, "repoName": "saveole/saveole.github.io", "GMEEK_VERSION": "v1.2"}</script>
+<body>
+<div class="markdown-body">
+    <h1>
+        <div id="postTitle"></div>
+        <div class="title-right">
+        <button id="buttonHome" class="btn btn-invisible circle" onclick="window.location.href='/'"><svg class="octicon octicon-sun" width="16" height="16"><path id="pathHome" fill-rule="evenodd"></path></svg></button>
+        
+        <button class="btn btn-invisible circle" onclick="gotoSource()" title="Issue"><svg class="octicon octicon-sun" width="16" height="16"><path id="pathIssue" fill-rule="evenodd"></path></svg></button>
+        
+        <button id="changeTheme" class="btn btn-invisible circle" onclick="modeSwitch()"><svg class="octicon octicon-sun" width="16" height="16"><path id="themeSwitch" fill-rule="evenodd"></path></svg></button>
+        </div>
+    </h1>
+    <div id="postBody"></div>
+
+    <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton"> </button>
+    <div class="comments" id="comments"></div>
+
+    <div class="footer">Copyright © <span id="year"></span> <a id="footerblogTitle" href=""></a> <p><span id="filingNum"></span><span id="runday"></span>Powered by <a href="https://github.com/Meekdai/Gmeek" target="_blank">Gmeek</a></p></div>
+</div>
+</body>
+
+<script>
+function addScript(url){
+    var script = document.createElement('script');
+    script.setAttribute('type','text/javascript');
+    script.setAttribute('src',url);
+    document.body.appendChild(script);
+}
+window.onload=function(){
+    addScript("https://cdn.jsdelivr.net/gh/Meekdai/Gmeek@"+blogBase["GMEEK_VERSION"]+"/icon.js" );
+    addScript("https://cdn.jsdelivr.net/gh/Meekdai/Gmeek@"+blogBase["GMEEK_VERSION"]+"/Gmeek.js" );
+}
+</script>
+
+</html>
