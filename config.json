@@ -1,0 +1,16 @@
+{
+  "title": "救救索尔",
+  "displayTitle": "saveole",
+  "subTitle": "Choose life,choose coding",
+  "homeUrl": "https://saveole.github.io",
+  "avatarUrl": "https://avatars.githubusercontent.com/u/140253011?v=4",
+  "faviconUrl": "http://meekdai.com/favicon.ico",
+  "email": "xgz.cz@foxmail.com",
+  "startSite": "10/23/2023",
+  "filingNum": "皖ICP备2023020147号",
+  "singlePage": ["link", "about"],
+  "commentLabelColor": "#006b75",
+  "yearColorList": ["#bc4c00", "#0969da", "#1f883d", "#A333D0"],
+  "i18n": "CN",
+  "GMEEK_VERSION": "v1.2"
+}
