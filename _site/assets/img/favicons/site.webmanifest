@@ -1,9 +1,9 @@
 
 
 {
-  "name": "Chirpy",
-  "short_name": "Chirpy",
-  "description": "A minimal, responsive and feature-rich Jekyll theme for technical writing.",
+  "name": "saveole",
+  "short_name": "saveole",
+  "description": "saveole's blog",
   "icons": [
     {
       "src": "/assets/img/favicons/android-chrome-192x192.png",

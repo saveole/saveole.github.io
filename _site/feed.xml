@@ -2,18 +2,18 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://localhost:4000/</id>
-  <title>Chirpy</title>
-  <subtitle>A minimal, responsive and feature-rich Jekyll theme for technical writing.</subtitle>
-  <updated>2024-05-31T10:24:37+08:00</updated>
+  <title>saveole</title>
+  <subtitle>saveole's blog</subtitle>
+  <updated>2024-05-31T17:28:20+08:00</updated>
   <author>
-    <name>your_full_name</name>
+    <name>saveole</name>
     <uri>http://localhost:4000/</uri>
   </author>
   <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
   <link rel="alternate" type="text/html" hreflang="en"
     href="http://localhost:4000/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator>
-  <rights> © 2024 your_full_name </rights>
+  <rights> © 2024 saveole </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
@@ -29,7 +29,7 @@
     <id>http://localhost:4000/posts/Spring-Native-first-cup/</id>
     <content src="http://localhost:4000/posts/Spring-Native-first-cup/" />
     <author>
-      <name>your_full_name</name>
+      <name>saveole</name>
     </author>
 
   
@@ -55,7 +55,7 @@
     <id>http://localhost:4000/posts/Win10-Docker-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85%E5%8F%8A%E8%AE%BE%E7%BD%AE/</id>
     <content src="http://localhost:4000/posts/Win10-Docker-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85%E5%8F%8A%E8%AE%BE%E7%BD%AE/" />
     <author>
-      <name>your_full_name</name>
+      <name>saveole</name>
     </author>
 
   
@@ -81,7 +81,7 @@
     <id>http://localhost:4000/posts/Spring-Boot-MVC-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8/</id>
     <content src="http://localhost:4000/posts/Spring-Boot-MVC-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8/" />
     <author>
-      <name>your_full_name</name>
+      <name>saveole</name>
     </author>
 
   
