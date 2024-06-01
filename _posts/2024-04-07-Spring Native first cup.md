@@ -2,13 +2,11 @@
 title: Spring Native 初体验
 date: 2024-04-07 13:30:30 +0800
 categories: [技术, Java]
-tags: [docker,jvm,java,maven,cloud-native,graalvm]     # TAG names should always be lowercase
+tags: [Docker,JVM,Java,GraalVM]     # TAG names should always be lowercase
 description: Spring Native 结合实际项目的体验
 ---
 
 
-
-Tags: Docker, JVM, Java, Maven, Native
 
 - 项目背景
     - mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作

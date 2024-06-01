@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2024-05-31T17:28:20+08:00</updated>
+  <updated>2024-06-01T15:27:25+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,32 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>GraalVM Native + Base64 编解码命令行小工具开发</title>
+    <link href="http://localhost:4000/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/" rel="alternate" type="text/html" title="GraalVM Native + Base64 编解码命令行小工具开发" />
+    <published>2024-04-29T13:38:00+08:00</published>
+  
+    <updated>2024-04-29T13:38:00+08:00</updated>
+  
+    <id>http://localhost:4000/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/</id>
+    <content src="http://localhost:4000/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="技术" />
+    
+    <category term="Java" />
+    
+  
+
+  <summary>使用 GraalVM Native 构建一个 Base64 加解密的命令行小程序</summary>
+
+  </entry>
 
   
   <entry>
