@@ -10,13 +10,17 @@ description: 使用 Spring Boot MVC 自定义参数解析器解析负责业务�
 
 ## 背景
 
-> `遗留系统`：
->
-> 		遗留接口系统为 Golang + Gin + MongoDB 实现, MongoDB collection 的 field 字段为中文名而且不固定(可以通过 excel 文件自定义表头的形式添加), 查询参数是直接传的中文形式, 而且传参不固定(query参数的 key 和 value 都不固定)，如：**/api/v1/customers?姓名=张三&录入时间=2022-09-01 00:00:00&录入时间=2022-09-02 23:59:59**
->
-> `问题`：
->
-> 		go 工程师离职, 后端只有 java 工程师的情况下，将此接口改用 java 重写一遍，但传参方式不变(query key 还是为中文)
+- `遗留系统`：
+
+```shell
+遗留接口系统为 Golang + Gin + MongoDB 实现, MongoDB collection 的 field 字段为中文名而且不固定(可以通过 excel 文件自定义表头的形式添加), 查询参数是直接传的中文形式, 而且传参不固定(query参数的 key 和 value 都不固定)，如：/api/v1/customers?姓名=张三&录入时间=2022-09-01 00:00:00&录入时间=2022-09-02 23:59:59
+```
+
+- `问题`：
+
+```shell
+go 工程师离职, 后端只有 java 工程师的情况下，将此接口改用 java 重写一遍，但传参方式不变(query key 还是为中文)
+```
 
 ## 实现
 

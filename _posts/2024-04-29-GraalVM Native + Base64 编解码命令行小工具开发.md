@@ -8,7 +8,7 @@ description: 使用 GraalVM Native 构建一个 Base64 加解密的命令行小�
 
 
 - 初衷：
-    - 浏览  [**V 站](https://www.v2ex.com/)** 帖子有很多 Base64 加密的信息，希望能够快速解密。
+    - 浏览  [V 站](https://www.v2ex.com/) 帖子有很多 Base64 加密的信息，希望能够快速解密。
 - 实现：
     - v1：直接使用 [JShell](https://docs.oracle.com/en/java/javase/21/jshell/introduction-jshell.html) 命令行运行 Java 代码解密
       
@@ -45,23 +45,23 @@ description: 使用 GraalVM Native 构建一个 Base64 加解密的命令行小�
                         System.exit(1);
                     }
                     var arg = args[0];
-            				switch(arg) {
-            				  case "-help":
-            				      System.out.println(helpMsg);
-            				      break;
-            				  case "-e":
-            				      var toEncode = getAndCheckArg(args);
-            				      System.out.println(new String(Base64.getEncoder().encode(toEncode.getBytes())));
-            				      break;
-            				  case "-d":
-            				      var toDecode = getAndCheckArg(args);
-            				      System.out.println(new String(Base64.getDecoder().decode(toDecode.getBytes())));
-            				      break;
-            				  default:
-            				      System.err.println("Unknown command, use -help to see how to use this tool.");
-            				      break;
-            				}
-            				System.exit(1);
+                    switch(arg) {
+                      case "-help":
+                          System.out.println(helpMsg);
+                          break;
+                      case "-e":
+                          var toEncode = getAndCheckArg(args);
+                          System.out.println(new String(Base64.getEncoder().encode(toEncode.getBytes())));
+                          break;
+                      case "-d":
+                          var toDecode = getAndCheckArg(args);
+                          System.out.println(new String(Base64.getDecoder().decode(toDecode.getBytes())));
+                          break;
+                      default:
+                          System.err.println("Unknown command, use -help to see how to use this tool.");
+                          break;
+                    }
+                    System.exit(1);
                 }
             
                 static String getAndCheckArg(String[] args) {
@@ -70,10 +70,10 @@ description: 使用 GraalVM Native 构建一个 Base64 加解密的命令行小�
                         System.exit(0);
                     }
                     return args[1];
-                }	
+                }
             }
             ```
-            
+
         - 使用 native-image 编译构建可执行程序
           
             ```bash

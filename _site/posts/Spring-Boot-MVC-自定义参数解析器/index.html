@@ -746,23 +746,25 @@
   <div class="content">
     <h2 id="背景"><span class="me-2">背景</span><a href="#背景" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<blockquote>
-  <p><code class="language-plaintext highlighter-rouge">遗留系统</code>：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">遗留系统</code>：</li>
+</ul>
 
-  <div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-shell highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>	遗留接口系统为 Golang + Gin + MongoDB 实现, MongoDB collection 的 field 字段为中文名而且不固定(可以通过 excel 文件自定义表头的形式添加), 查询参数是直接传的中文形式, 而且传参不固定(query参数的 key 和 value 都不固定)，如：**/api/v1/customers?姓名=张三&amp;录入时间=2022-09-01 00:00:00&amp;录入时间=2022-09-02 23:59:59**
-</pre></td></tr></tbody></table></code></div>  </div>
+</pre></td><td class="rouge-code"><pre>遗留接口系统为 Golang + Gin + MongoDB 实现, MongoDB collection 的 field 字段为中文名而且不固定<span class="o">(</span>可以通过 excel 文件自定义表头的形式添加<span class="o">)</span>, 查询参数是直接传的中文形式, 而且传参不固定<span class="o">(</span>query参数的 key 和 value 都不固定<span class="o">)</span>，如：/api/v1/customers?姓名<span class="o">=</span>张三&amp;录入时间<span class="o">=</span>2022-09-01 00:00:00&amp;录入时间<span class="o">=</span>2022-09-02 23:59:59
+</pre></td></tr></tbody></table></code></div></div>
 
-  <p><code class="language-plaintext highlighter-rouge">问题</code>：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">问题</code>：</li>
+</ul>
 
-  <div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-shell highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>	go 工程师离职, 后端只有 java 工程师的情况下，将此接口改用 java 重写一遍，但传参方式不变(query key 还是为中文)
-</pre></td></tr></tbody></table></code></div>  </div>
-</blockquote>
+</pre></td><td class="rouge-code"><pre>go 工程师离职, 后端只有 java 工程师的情况下，将此接口改用 java 重写一遍，但传参方式不变<span class="o">(</span>query key 还是为中文<span class="o">)</span>
+</pre></td></tr></tbody></table></code></div></div>
 
 <h2 id="实现"><span class="me-2">实现</span><a href="#实现" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
@@ -1840,14 +1842,14 @@
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">GraalVM Native + Base64 编解码命令行小工具开发</a>
+          <a href="/posts/Spring-Native-first-cup/">Spring Native 初体验</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/Spring-Native-first-cup/">Spring Native 初体验</a>
+          <a href="/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">GraalVM Native + Base64 编解码命令行小工具开发</a>
         </li>
       
         

@@ -615,7 +615,7 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="766 words"
+  title="765 words"
 >
   <em>4 min</em> read</span>
 
@@ -628,7 +628,7 @@
     <ul>
   <li>初衷：
     <ul>
-      <li>浏览  [<strong>V 站](https://www.v2ex.com/)</strong> 帖子有很多 Base64 加密的信息，希望能够快速解密。</li>
+      <li>浏览  <a href="https://www.v2ex.com/">V 站</a> 帖子有很多 Base64 加密的信息，希望能够快速解密。</li>
     </ul>
   </li>
   <li>实现：
@@ -727,23 +727,23 @@
               <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
           <span class="o">}</span>
           <span class="kt">var</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
-  				<span class="k">switch</span><span class="o">(</span><span class="n">arg</span><span class="o">)</span> <span class="o">{</span>
-  				  <span class="k">case</span> <span class="s">"-help"</span><span class="o">:</span>
-  				      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">helpMsg</span><span class="o">);</span>
-  				      <span class="k">break</span><span class="o">;</span>
-  				  <span class="k">case</span> <span class="s">"-e"</span><span class="o">:</span>
-  				      <span class="kt">var</span> <span class="n">toEncode</span> <span class="o">=</span> <span class="n">getAndCheckArg</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
-  				      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nc">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encode</span><span class="o">(</span><span class="n">toEncode</span><span class="o">.</span><span class="na">getBytes</span><span class="o">())));</span>
-  				      <span class="k">break</span><span class="o">;</span>
-  				  <span class="k">case</span> <span class="s">"-d"</span><span class="o">:</span>
-  				      <span class="kt">var</span> <span class="n">toDecode</span> <span class="o">=</span> <span class="n">getAndCheckArg</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
-  				      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nc">Base64</span><span class="o">.</span><span class="na">getDecoder</span><span class="o">().</span><span class="na">decode</span><span class="o">(</span><span class="n">toDecode</span><span class="o">.</span><span class="na">getBytes</span><span class="o">())));</span>
-  				      <span class="k">break</span><span class="o">;</span>
-  				  <span class="k">default</span><span class="o">:</span>
-  				      <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Unknown command, use -help to see how to use this tool."</span><span class="o">);</span>
-  				      <span class="k">break</span><span class="o">;</span>
-  				<span class="o">}</span>
-  				<span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+          <span class="k">switch</span><span class="o">(</span><span class="n">arg</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="s">"-help"</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">helpMsg</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"-e"</span><span class="o">:</span>
+                <span class="kt">var</span> <span class="n">toEncode</span> <span class="o">=</span> <span class="n">getAndCheckArg</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nc">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encode</span><span class="o">(</span><span class="n">toEncode</span><span class="o">.</span><span class="na">getBytes</span><span class="o">())));</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"-d"</span><span class="o">:</span>
+                <span class="kt">var</span> <span class="n">toDecode</span> <span class="o">=</span> <span class="n">getAndCheckArg</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nc">Base64</span><span class="o">.</span><span class="na">getDecoder</span><span class="o">().</span><span class="na">decode</span><span class="o">(</span><span class="n">toDecode</span><span class="o">.</span><span class="na">getBytes</span><span class="o">())));</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Unknown command, use -help to see how to use this tool."</span><span class="o">);</span>
+                <span class="k">break</span><span class="o">;</span>
+          <span class="o">}</span>
+          <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
       <span class="o">}</span>
             
       <span class="kd">static</span> <span class="nc">String</span> <span class="nf">getAndCheckArg</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
@@ -752,7 +752,7 @@
               <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
           <span class="o">}</span>
           <span class="k">return</span> <span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">];</span>
-      <span class="o">}</span>	
+      <span class="o">}</span>
   <span class="o">}</span>
 </pre></td></tr></tbody></table></code></div>            </div>
           </li>
@@ -1037,14 +1037,14 @@
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">GraalVM Native + Base64 编解码命令行小工具开发</a>
+          <a href="/posts/Spring-Native-first-cup/">Spring Native 初体验</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/Spring-Native-first-cup/">Spring Native 初体验</a>
+          <a href="/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">GraalVM Native + Base64 编解码命令行小工具开发</a>
         </li>
       
         
