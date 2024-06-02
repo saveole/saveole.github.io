@@ -2,7 +2,7 @@
   
   {
     "title": "GraalVM Native + Base64 编解码命令行小工具开发",
-    "url": "/posts/GraalVM-Native-+-Base64-%E7%BC%96%E8%A7%A3%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B0%8F%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/",
+    "url": "/posts/graalvm-native-java-base64-command-line-tool/",
     "categories": "技术, Java",
     "tags": "GraalVM, Java, JShell",
     "date": "2024-04-29 13:38:00 +0800",
@@ -19,7 +19,7 @@
   
   {
     "title": "Spring Native 初体验",
-    "url": "/posts/Spring-Native-first-cup/",
+    "url": "/posts/spring-native-first-cup/",
     "categories": "技术, Java",
     "tags": "Docker, JVM, Java, GraalVM",
     "date": "2024-04-07 13:30:30 +0800",
@@ -36,7 +36,7 @@
   
   {
     "title": "Win10 Docker 环境安装及设置",
-    "url": "/posts/Win10-Docker-%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85%E5%8F%8A%E8%AE%BE%E7%BD%AE/",
+    "url": "/posts/win10-docker-desktop-install-and-setting/",
     "categories": "技术, Docker",
     "tags": "Docker",
     "date": "2023-05-19 13:30:30 +0800",
@@ -53,7 +53,7 @@
   
   {
     "title": "Spring Boot MVC 自定义参数解析器",
-    "url": "/posts/Spring-Boot-MVC-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%99%A8/",
+    "url": "/posts/spring-mvc-customized-method-argument-resolver/",
     "categories": "技术, Java",
     "tags": "Spring, Java, Spring Web MVC",
     "date": "2023-05-09 13:30:30 +0800",
