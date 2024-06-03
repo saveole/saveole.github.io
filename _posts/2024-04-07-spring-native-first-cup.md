@@ -23,7 +23,7 @@ description: Spring Native 结合实际项目的体验
     - 内存: 32G 2666Hz
 - 改造内容
     - JDK 17 → 21
-    - Spring Boot 2.7.0 → 3.1.5
+    - Spring Boot 2.7.0 → 3.3.0
     - Spring AOT
     - Dockerfile
 - 存在问题

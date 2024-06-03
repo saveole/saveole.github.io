@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2024-06-02T11:15:09+08:00</updated>
+  <updated>2024-06-03T17:18:41+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,30 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>博客方案：Jekyll + Chirpy</title>
+    <link href="http://localhost:4000/posts/jekyll-chirpy/" rel="alternate" type="text/html" title="博客方案：Jekyll + Chirpy" />
+    <published>2024-05-31T13:38:00+08:00</published>
+  
+    <updated>2024-05-31T13:38:00+08:00</updated>
+  
+    <id>http://localhost:4000/posts/jekyll-chirpy/</id>
+    <content src="http://localhost:4000/posts/jekyll-chirpy/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="博客" />
+    
+  
+
+  <summary>将自己的建站方案从 Gmeek 迁移到 Jekyll + Chirpy 的过程和一些体验</summary>
+
+  </entry>
 
   
   <entry>

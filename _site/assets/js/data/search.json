@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "博客方案：Jekyll + Chirpy",
+    "url": "/posts/jekyll-chirpy/",
+    "categories": "博客",
+    "tags": "Jekyll",
+    "date": "2024-05-31 13:38:00 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "  安装 Jekyll          先装 Ruby 和相关依赖项: sudo apt-get install ruby-full build-essential zlib1g-dev              设置当前用户有 gem 的执行权限          echo '# Install Ruby Gems to ~/gems' &gt;&gt; ~/.bashrc  echo ...",
+    "content": "  安装 Jekyll          先装 Ruby 和相关依赖项: sudo apt-get install ruby-full build-essential zlib1g-dev              设置当前用户有 gem 的执行权限          echo '# Install Ruby Gems to ~/gems' &gt;&gt; ~/.bashrc  echo 'export GEM_HOME=\"$HOME/gems\"' &gt;&gt; ~/.bashrc  echo 'export PATH=\"$HOME/gems/bin:$PATH\"' &gt;&gt; ~/.bashrc  source ~/.bashrc                    安装 Jekyll: gem install jekyll bundler        使用 Chirpy 主题          Clone 或下载 https://github.com/cotes2020/chirpy-starter 仓库      安装依赖： bundle      启动项目： bundle exec jekyll s      访问：http://localhost:4000        基本配置及写 post          https://chirpy.cotes.page/posts/getting-started/      https://chirpy.cotes.page/posts/write-a-new-post/        初次感受          清新简洁，大方美观，响应迅速      定制项挺多，支持视频/音频等媒体格式      从自己平时写的 Markdown 文件转换过来要改造的内容也挺多的， 可以考虑写个程序做这个事情      其他更细致的体验待自己深入使用再评价            Changelog          准备使用这个作为自己的博客框架，先把博客写起来再谈其他              头像/联系方式等设置        favicon 替换        接入 giscus 评论系统 - martin‘s blog        接入 Google Analytics        国内网络环境加速 - 是否有必要？              和 Gmeek 的简单对比          之前的博客框架主要根据 GitHub Issue as a Blog 和 Gmeek 快速上手 构建的。      Gmeek 是基于 GitHub Issues 的，最大的特点就是简洁, 然后是都基于 GitHub 平台，不用在本地安装各种环境，遇到的最大问题是之前 Gmeek 提供的 Github Action 脚本不兼容，导致后续的构建失败。      Chirpy 对于 Gmeek 的话，我个人感觉页面布局要好一点，可配置的地方也要丰富一点。      "
+  },
+  
+  {
     "title": "GraalVM Native + Base64 编解码命令行小工具开发",
     "url": "/posts/graalvm-native-java-base64-command-line-tool/",
     "categories": "技术, Java",
@@ -31,7 +48,7 @@
 
     
     "snippet": "  项目背景          mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作      项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端      当前存在的问题：                  过度依赖...",
-    "content": "  项目背景          mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作      项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端      当前存在的问题：                  过度依赖：依赖了 Spring Web 等本不需要的依赖(这里的 Spring 主要作为 bean 容器)          弹性不足：当消费能力不足需要添加实例的时候，应用启动速度不够快 + 镜像体积较大(451M)          基于spring boot fat jar 的应用内存占用较高                      环境          OS: Ubuntu 22.04      JDK: openjdk 21 GraalVM CE 21+35.1      IDE: IDEA Ultimate 2023.2.5      CPU: i5-12400      内存: 32G 2666Hz        改造内容          JDK 17 → 21      Spring Boot 2.7.0 → 3.1.5      Spring AOT      Dockerfile        存在问题          build 阶段问题                  commons-logging 与 spring jcl 的冲突  → 去除对应的 commons-logging 包                    runtime 阶段问题                  profiles 问题          Java 21 ResourceBundle  → Caused by: java.util.MissingResourceException: Can't find bundle for base name oss, locale en_US                          由 ali-sdk-oss 引入，发现项目中没用到，移除依赖                                运行时 hutool ReflectUtil 使用报错 → 改由改写依赖的开源三方库实现，避免使用reflection          mqtt-client 周期性断连/重连                          待分析解决                                whether JVM Runtime shutdown hook is executed when spring native app exited                    CI/CD                  目前阿里云默认流水线集群不支持          将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建                      总结体验          其他更详细的信息见：chat      "
+    "content": "  项目背景          mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作      项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端      当前存在的问题：                  过度依赖：依赖了 Spring Web 等本不需要的依赖(这里的 Spring 主要作为 bean 容器)          弹性不足：当消费能力不足需要添加实例的时候，应用启动速度不够快 + 镜像体积较大(451M)          基于spring boot fat jar 的应用内存占用较高                      环境          OS: Ubuntu 22.04      JDK: openjdk 21 GraalVM CE 21+35.1      IDE: IDEA Ultimate 2023.2.5      CPU: i5-12400      内存: 32G 2666Hz        改造内容          JDK 17 → 21      Spring Boot 2.7.0 → 3.3.0      Spring AOT      Dockerfile        存在问题          build 阶段问题                  commons-logging 与 spring jcl 的冲突  → 去除对应的 commons-logging 包                    runtime 阶段问题                  profiles 问题          Java 21 ResourceBundle  → Caused by: java.util.MissingResourceException: Can't find bundle for base name oss, locale en_US                          由 ali-sdk-oss 引入，发现项目中没用到，移除依赖                                运行时 hutool ReflectUtil 使用报错 → 改由改写依赖的开源三方库实现，避免使用reflection          mqtt-client 周期性断连/重连                          待分析解决                                whether JVM Runtime shutdown hook is executed when spring native app exited                    CI/CD                  目前阿里云默认流水线集群不支持          将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建                      总结体验          其他更详细的信息见：chat      "
   },
   
   {
