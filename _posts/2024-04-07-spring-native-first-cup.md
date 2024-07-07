@@ -33,12 +33,14 @@ description: Spring Native 结合实际项目的体验
         - [profiles 问题](https://stackoverflow.com/questions/71660363/spring-native-set-active-profile)
         - `Java 21 ResourceBundle`  → `Caused by: java.util.MissingResourceException: Can't find bundle for base name oss, locale en_US`
             - 由 ali-sdk-oss 引入，发现项目中没用到，移除依赖
-        - `运行时 hutool ReflectUtil 使用报错` → 改由改写依赖的开源三方库实现，避免使用reflection
+        - `运行时 hutool ReflectUtil 使用报错` 
+            -  ~~改由改写依赖的开源三方库实现，避免使用reflection~~
+            - mqtt-spring-boot-starter 升级版本后未出现
         - `mqtt-client 周期性断连/重连`
             - 待分析解决
-        - `whether JVM Runtime shutdown hook is executed when spring native app exited`
+        - ~~whether JVM Runtime shutdown hook is executed when spring native app exited~~
     - CI/CD
-        - 目前阿里云默认流水线集群不支持
-        - 将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建
+        - 目前阿里云流水线配置默认不支持，流水线集群默认使用的配置是 1C1G 机器。
+        - 将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建，可见 aot 构建的过程是很耗资源的。
 - 总结体验
     - 其他更详细的信息见：[chat](https://codeup.aliyun.com/608626eaa7600a4c353f87ce/chat)

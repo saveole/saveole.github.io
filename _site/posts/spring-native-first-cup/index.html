@@ -43,7 +43,7 @@
 <meta property="twitter:title" content="Spring Native 初体验" />
 <meta name="twitter:site" content="@saveole" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-04-07T13:30:30+08:00","datePublished":"2024-04-07T13:30:30+08:00","description":"Spring Native 结合实际项目的体验","headline":"Spring Native 初体验","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/spring-native-first-cup/"},"url":"http://localhost:4000/posts/spring-native-first-cup/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-06-03T17:19:58+08:00","datePublished":"2024-04-07T13:30:30+08:00","description":"Spring Native 结合实际项目的体验","headline":"Spring Native 初体验","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/spring-native-first-cup/"},"url":"http://localhost:4000/posts/spring-native-first-cup/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -573,6 +573,29 @@
 
       <!-- lastmod date -->
       
+        <span>
+          Updated
+          <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1717406398"
+  data-df="ll"
+  
+    data-bs-toggle="tooltip" data-bs-placement="bottom"
+  
+>
+  Jun  3, 2024
+</time>
+
+        </span>
+      
 
       
 
@@ -615,7 +638,7 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="393 words"
+  title="435 words"
 >
   <em>2 min</em> read</span>
 
@@ -671,19 +694,24 @@
               <li>由 ali-sdk-oss 引入，发现项目中没用到，移除依赖</li>
             </ul>
           </li>
-          <li><code class="language-plaintext highlighter-rouge">运行时 hutool ReflectUtil 使用报错</code> → 改由改写依赖的开源三方库实现，避免使用reflection</li>
+          <li><code class="language-plaintext highlighter-rouge">运行时 hutool ReflectUtil 使用报错</code>
+            <ul>
+              <li><del>改由改写依赖的开源三方库实现，避免使用reflection</del></li>
+              <li>mqtt-spring-boot-starter 升级版本后未出现</li>
+            </ul>
+          </li>
           <li><code class="language-plaintext highlighter-rouge">mqtt-client 周期性断连/重连</code>
             <ul>
               <li>待分析解决</li>
             </ul>
           </li>
-          <li><code class="language-plaintext highlighter-rouge">whether JVM Runtime shutdown hook is executed when spring native app exited</code></li>
+          <li><del>whether JVM Runtime shutdown hook is executed when spring native app exited</del></li>
         </ul>
       </li>
       <li>CI/CD
         <ul>
-          <li>目前阿里云默认流水线集群不支持</li>
-          <li>将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建</li>
+          <li>目前阿里云流水线配置默认不支持，流水线集群默认使用的配置是 1C1G 机器。</li>
+          <li>将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建，可见 aot 构建的过程是很耗资源的。</li>
         </ul>
       </li>
     </ul>
@@ -836,6 +864,13 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/spring-native-first-cup/">Spring Native 初体验</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/jekyll-chirpy/">博客方案：Jekyll + Chirpy</a>
         </li>
       
@@ -844,13 +879,6 @@
         
         <li class="text-truncate lh-lg">
           <a href="/posts/graalvm-native-java-base64-command-line-tool/">GraalVM Native + Base64 编解码命令行小工具开发</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/spring-native-first-cup/">Spring Native 初体验</a>
         </li>
       
         

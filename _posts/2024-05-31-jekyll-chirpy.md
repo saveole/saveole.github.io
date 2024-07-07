@@ -8,7 +8,7 @@ description: 将自己的建站方案从 Gmeek 迁移到 Jekyll + Chirpy 的过�
 
 
 
-- 安装 Jekyll
+- 安装 Jekyll (Ubuntu 24.04)
     - 先装 Ruby 和相关依赖项: `sudo apt-get install ruby-full build-essential zlib1g-dev`
     - 设置当前用户有 `gem` 的执行权限
       
