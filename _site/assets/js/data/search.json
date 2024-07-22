@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Java 应用构建 Docker 镜像的几种方式",
+    "url": "/posts/java-app-docker-image/",
+    "categories": "博客",
+    "tags": "Java, Docker, APM, ppt",
+    "date": "2024-07-22 18:10:00 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "  Java 应用构建 docker 镜像的几种方式",
+    "content": "  Java 应用构建 docker 镜像的几种方式"
+  },
+  
+  {
     "title": "博客方案：Jekyll + Chirpy",
     "url": "/posts/jekyll-chirpy/",
     "categories": "博客",
