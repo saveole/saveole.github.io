@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2024-07-23T18:49:26+08:00</updated>
+  <updated>2024-07-24T17:56:43+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -20,11 +20,35 @@
 
   
   <entry>
-    <title>Java 应用构建 Docker 镜像的几种方式</title>
-    <link href="http://localhost:4000/posts/java-app-docker-image/" rel="alternate" type="text/html" title="Java 应用构建 Docker 镜像的几种方式" />
+    <title>用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</title>
+    <link href="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" rel="alternate" type="text/html" title="用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上" />
+    <published>2024-07-24T17:55:00+08:00</published>
+  
+    <updated>2024-07-24T17:55:00+08:00</updated>
+  
+    <id>http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/</id>
+    <content src="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="博客" />
+    
+  
+
+  <summary>用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客子路径上</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Java 应用如何构建 Docker 镜像</title>
+    <link href="http://localhost:4000/posts/java-app-docker-image/" rel="alternate" type="text/html" title="Java 应用如何构建 Docker 镜像" />
     <published>2024-07-22T18:10:00+08:00</published>
   
-    <updated>2024-07-22T18:10:00+08:00</updated>
+    <updated>2024-07-23T18:50:07+08:00</updated>
   
     <id>http://localhost:4000/posts/java-app-docker-image/</id>
     <content src="http://localhost:4000/posts/java-app-docker-image/" />
@@ -115,32 +139,6 @@
   
 
   <summary>Spring Native 结合实际项目的体验</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Win10 Docker 环境安装及设置</title>
-    <link href="http://localhost:4000/posts/win10-docker-desktop-install-and-setting/" rel="alternate" type="text/html" title="Win10 Docker 环境安装及设置" />
-    <published>2023-05-19T13:30:30+08:00</published>
-  
-    <updated>2023-05-19T13:30:30+08:00</updated>
-  
-    <id>http://localhost:4000/posts/win10-docker-desktop-install-and-setting/</id>
-    <content src="http://localhost:4000/posts/win10-docker-desktop-install-and-setting/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="技术" />
-    
-    <category term="Docker" />
-    
-  
-
-  <summary>Win10 下的 Docker 的一些实践</summary>
 
   </entry>
 
