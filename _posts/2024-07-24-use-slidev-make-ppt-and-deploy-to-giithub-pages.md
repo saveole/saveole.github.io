@@ -78,11 +78,11 @@ description: 用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客�
         
 - Finish
 
-    - 写好 ppt 后，push 到仓库自动构建部署到自己的个人博客中，效果：[Java 应用如何构建 Docker 镜像](https://saveole.github.io/java_app_build_docker_image/1)
+    - 写好 ppt 后，push 到仓库自动构建部署到自己的个人博客中，效果：[Java 应用如何构建 Docker 镜像](https://saveole.github.io/java_app_build_docker_image)
 
 - Notes:
 
-    - `slidev build --base /java_app_build_docker_image/` 需要指定特定子路由的时候，最好将子路由名词和仓库名词保持一致
+    - `slidev build --base /java_app_build_docker_image/` 需要指定特定子路由的时候，最好将子路由名称和仓库名称保持一致
     - ~~我构建部署好的 ppt 地址在 Edge 浏览器下没有默认重定向到 /1 即 ppt 首页，但 FireFox 就可以，很奇怪，待我看看.~~
     - 使用的 Slidev 主题：[academic](https://github.com/alexanderdavide/slidev-theme-academic)
     - 参考的 [PPT](https://zyf722.github.io/exploring-social-engineering-slides/1)： [exploring-social-engineering-slides](https://github.com/zyf722/exploring-social-engineering-slides)
