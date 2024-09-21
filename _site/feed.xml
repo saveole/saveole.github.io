@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2024-09-21T13:56:02+08:00</updated>
+  <updated>2024-09-21T13:59:46+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -24,7 +24,7 @@
     <link href="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" rel="alternate" type="text/html" title="用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上" />
     <published>2024-07-24T17:55:00+08:00</published>
   
-    <updated>2024-07-24T17:55:00+08:00</updated>
+    <updated>2024-09-21T13:56:55+08:00</updated>
   
     <id>http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/</id>
     <content src="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" />

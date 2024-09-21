@@ -45,7 +45,7 @@ description: 将自己的建站方案从 Gmeek 迁移到 Jekyll + Chirpy 的过�
     > - [x]  [favicon 替换](https://chirpy.cotes.page/posts/customize-the-favicon/)
     > - [x]  接入 [giscus](https://giscus.app/zh-CN) 评论系统 - [martin‘s blog](https://blog.martinp7r.com/posts/adding-giscus-comments-to-my-blog/)
     > - [x]  [接入 Google Analytics](https://nokids.fun/posts/chirpy-add-google-analytics/)
-    > - [ ]  国内网络环境加速 - 是否有必要？
+    > - [x]  ~~国内网络环境加速 - 是否有必要？~~ 还是先输出内容为主，不做过早优化。
 
 - 和 [Gmeek](https://github.com/Meekdai/Gmeek) 的简单对比
   - 之前的博客框架主要根据 [GitHub Issue as a Blog](https://dylanninin.com/blog/2023/05/08/github-issue-as-a-blog.html) 和 [Gmeek 快速上手](https://blog.meekdai.com/post/Gmeek-kuai-su-shang-shou.html) 构建的。
