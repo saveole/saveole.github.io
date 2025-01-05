@@ -489,7 +489,7 @@ public R<PageResult<LinkedHashMap>> searchPage(@ZhBindConvertor CustomerSearchRe
 
 - 父类方法反射获取子类字段的取值(子类实例调用时)
   - 解决：忘记了 **f.setAccessible(true)**;
-  - 没有 f.setAccessible(true) 的时候也可以使用调用反射方法 getter + field name 的方式获取值，但很不 clean 也会有更大性能开销？[benchmark](https://github.com/Xuguozong/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectFieldGetVSGetterMethodInvoke.java)
+  - 没有 f.setAccessible(true) 的时候也可以使用调用反射方法 getter + field name 的方式获取值，但很不 clean 也会有更大性能开销？[benchmark](https://github.com/saveole/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectFieldGetVSGetterMethodInvoke.java)
 
 - spring doc openapi 参数转换器问题
   - 通过 WebMvcConfigurer#addArgumentResolvers 解决
@@ -500,7 +500,7 @@ public R<PageResult<LinkedHashMap>> searchPage(@ZhBindConvertor CustomerSearchRe
 - 公用查询参数类只支持一层继承体系类的处理，可以根据业务实际需要做支持处理或做规范
 - 公用查询参数类获取 query 条件的方法与数据库类型以及业务强绑定，可以在这一层根据实际需求再做一层抽象
 - 由于业务逻辑简单，没有做单元测试，只做了集成测试
-- 反射获取字段信息时没有做缓存，可以 [benchmark](https://github.com/Xuguozong/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectGetFieldsUsingCacheOrNot.java) 下看看对于应用的性能提升
+- 反射获取字段信息时没有做缓存，可以 [benchmark](https://github.com/saveole/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectGetFieldsUsingCacheOrNot.java) 下看看对于应用的性能提升
 
 
 
@@ -510,7 +510,7 @@ public R<PageResult<LinkedHashMap>> searchPage(@ZhBindConvertor CustomerSearchRe
 
 代码：
 
-[custom_mvc_method_argument_resolver](https://github.com/Xuguozong/custom_mvc_method_argument_resolver)
+[custom_mvc_method_argument_resolver](https://github.com/saveole/custom_mvc_method_argument_resolver)
 
 参考：
 

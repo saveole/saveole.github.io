@@ -1671,7 +1671,7 @@
   <li>父类方法反射获取子类字段的取值(子类实例调用时)
     <ul>
       <li>解决：忘记了 <strong>f.setAccessible(true)</strong>;</li>
-      <li>没有 f.setAccessible(true) 的时候也可以使用调用反射方法 getter + field name 的方式获取值，但很不 clean 也会有更大性能开销？<a href="https://github.com/Xuguozong/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectFieldGetVSGetterMethodInvoke.java">benchmark</a></li>
+      <li>没有 f.setAccessible(true) 的时候也可以使用调用反射方法 getter + field name 的方式获取值，但很不 clean 也会有更大性能开销？<a href="https://github.com/saveole/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectFieldGetVSGetterMethodInvoke.java">benchmark</a></li>
     </ul>
   </li>
   <li>spring doc openapi 参数转换器问题
@@ -1687,14 +1687,14 @@
   <li>公用查询参数类只支持一层继承体系类的处理，可以根据业务实际需要做支持处理或做规范</li>
   <li>公用查询参数类获取 query 条件的方法与数据库类型以及业务强绑定，可以在这一层根据实际需求再做一层抽象</li>
   <li>由于业务逻辑简单，没有做单元测试，只做了集成测试</li>
-  <li>反射获取字段信息时没有做缓存，可以 <a href="https://github.com/Xuguozong/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectGetFieldsUsingCacheOrNot.java">benchmark</a> 下看看对于应用的性能提升</li>
+  <li>反射获取字段信息时没有做缓存，可以 <a href="https://github.com/saveole/custom_mvc_method_argument_resolver/blob/main/src/test/java/com/example/benchmark/ReflectGetFieldsUsingCacheOrNot.java">benchmark</a> 下看看对于应用的性能提升</li>
 </ul>
 
 <h2 id="参考及示例代码"><span class="me-2">参考及示例代码</span><a href="#参考及示例代码" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
 <p>代码：</p>
 
-<p><a href="https://github.com/Xuguozong/custom_mvc_method_argument_resolver">custom_mvc_method_argument_resolver</a></p>
+<p><a href="https://github.com/saveole/custom_mvc_method_argument_resolver">custom_mvc_method_argument_resolver</a></p>
 
 <p>参考：</p>
 
@@ -1842,6 +1842,13 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/java-app-docker-image/">Java 应用如何构建 Docker 镜像</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/saveole-tech-weekly-0/">Saveole's Weekly Tech Review, Issue 0</a>
         </li>
       
@@ -1857,13 +1864,6 @@
         
         <li class="text-truncate lh-lg">
           <a href="/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/">用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/java-app-docker-image/">Java 应用如何构建 Docker 镜像</a>
         </li>
       
         
@@ -2603,7 +2603,7 @@
   "
 >
   <p>©
-    <time>2024</time>
+    <time>2025</time>
 
     
       <a href="https://twitter.com/saveole">saveole</a>.
