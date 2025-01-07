@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-01-05T14:46:14+08:00</updated>
+  <updated>2025-01-07T15:18:54+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -38,7 +38,7 @@
     
   
 
-  <summary>看看我这周都干了啥</summary>
+  <summary>JDK23|SpringBoot CDS|ZGC|Go SSE|Raft</summary>
 
   </entry>
 
@@ -62,7 +62,31 @@
     
   
 
-  <summary>用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客子路径上</summary>
+  <summary>Prerequisites
+
+    
+      基于 Github Pages 构建的静态个人博客网站
+    
+  
+  
+    Steps
+
+    
+      
+        使用 Slidev 创建自己的 ppt 项目并上传到 Github 上的单独 Repository
+      
+      
+        配置开启仓库的 Github Pages
+  
+      
+      
+        配置 Github Action
+        
+          我的 .github/workflows/deploy.yml 如下：
+        
+
+          # Simple workflow for deploying static content to GitHub Pages
+  name: Deploy static conten...</summary>
 
   </entry>
 
@@ -86,7 +110,7 @@
     
   
 
-  <summary>如何构建高效安全的 Java 应用镜像[记一次部门内的技术分享]</summary>
+  <summary>slide</summary>
 
   </entry>
 
@@ -110,7 +134,19 @@
     
   
 
-  <summary>将自己的建站方案从 Gmeek 迁移到 Jekyll + Chirpy 的过程和一些体验</summary>
+  <summary>安装 Jekyll (Ubuntu 24.04)
+    
+      先装 Ruby 和相关依赖项: sudo apt-get install ruby-full build-essential zlib1g-dev
+      
+        设置当前用户有 gem 的执行权限
+
+          echo &amp;#39;# Install Ruby Gems to ~/gems&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
+  echo &amp;#39;export GEM_HOME=&amp;quot;$HOME/gems&amp;quot;&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
+  echo &amp;#39;export PATH=&amp;quot;$HOME/gems/bin:$PATH&amp;quot;&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
+  source ~/.bashrc
+        
+      
+      安装 Jekyll: gem install jek...</summary>
 
   </entry>
 
@@ -136,7 +172,25 @@
     
   
 
-  <summary>使用 GraalVM Native 构建一个 Base64 加解密的命令行小程序</summary>
+  <summary>初衷：
+    
+      浏览  V 站 帖子有很多 Base64 加密的信息，希望能够快速解密。
+    
+  
+  实现：
+    
+      
+        v1：直接使用 JShell 命令行运行 Java 代码解密
+
+          ant@ant:~$ jshell 
+  |  Welcome to JShell -- Version 17.0.9
+  |  For an introduction type: /help intro
+        
+  jshell&amp;amp;gt; var enc = &amp;quot;c2F2ZW9sZQ==&amp;quot;
+  enc ==&amp;amp;gt; &amp;quot;c2F2ZW9sZQ==&amp;quot;
+        
+  jshell&amp;amp;gt; var decodedBytes = Base64.getDecoder().decode(enc.getBytes())
+  decod...</summary>
 
   </entry>
 

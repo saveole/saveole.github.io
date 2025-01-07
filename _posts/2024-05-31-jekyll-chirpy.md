@@ -3,7 +3,6 @@ title: 博客方案：Jekyll + Chirpy
 date: 2024-05-31 13:38:00 +0800
 categories: [博客]
 tags: [Jekyll]     # TAG names should always be lowercase
-description: 将自己的建站方案从 Gmeek 迁移到 Jekyll + Chirpy 的过程和一些体验
 ---
 
 

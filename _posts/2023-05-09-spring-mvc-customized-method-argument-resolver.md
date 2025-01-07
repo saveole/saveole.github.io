@@ -3,7 +3,6 @@ title: Spring Boot MVC 自定义参数解析器
 date: 2023-05-09 13:30:30 +0800
 categories: [技术, Java]
 tags: [Spring,Java,Spring Web MVC]     # TAG names should always be lowercase
-description: 使用 Spring Boot MVC 自定义参数解析器解析负责业务自定义参数
 ---
 
 

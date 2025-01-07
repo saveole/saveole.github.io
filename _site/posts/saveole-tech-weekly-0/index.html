@@ -32,8 +32,8 @@
 <meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Saveole’s Weekly Tech Review, Issue 0" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="看看我这周都干了啥" />
-<meta property="og:description" content="看看我这周都干了啥" />
+<meta name="description" content="JDK23 SpringBoot CDS ZGC Go SSE Raft" />
+<meta property="og:description" content="JDK23 SpringBoot CDS ZGC Go SSE Raft" />
 <link rel="canonical" href="http://localhost:4000/posts/saveole-tech-weekly-0/" />
 <meta property="og:url" content="http://localhost:4000/posts/saveole-tech-weekly-0/" />
 <meta property="og:site_name" content="saveole" />
@@ -43,7 +43,7 @@
 <meta property="twitter:title" content="Saveole’s Weekly Tech Review, Issue 0" />
 <meta name="twitter:site" content="@saveole" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-09-21T16:50:30+08:00","datePublished":"2024-09-21T16:50:30+08:00","description":"看看我这周都干了啥","headline":"Saveole’s Weekly Tech Review, Issue 0","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/saveole-tech-weekly-0/"},"url":"http://localhost:4000/posts/saveole-tech-weekly-0/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-09-21T16:50:30+08:00","datePublished":"2024-09-21T16:50:30+08:00","description":"JDK23 SpringBoot CDS ZGC Go SSE Raft","headline":"Saveole’s Weekly Tech Review, Issue 0","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/saveole-tech-weekly-0/"},"url":"http://localhost:4000/posts/saveole-tech-weekly-0/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -597,7 +597,7 @@
   <header>
     <h1 data-toc-skip>Saveole's Weekly Tech Review, Issue 0</h1>
     
-      <p class="post-desc fw-light mb-4">看看我这周都干了啥</p>
+      <p class="post-desc fw-light mb-4">JDK23|SpringBoot CDS|ZGC|Go SSE|Raft</p>
     
 
     <div class="post-meta text-muted">
@@ -984,6 +984,13 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/spring-mvc-customized-method-argument-resolver/">Spring Boot MVC 自定义参数解析器</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/java-app-docker-image/">Java 应用如何构建 Docker 镜像</a>
         </li>
       
@@ -1006,13 +1013,6 @@
         
         <li class="text-truncate lh-lg">
           <a href="/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/">用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/spring-native-first-cup/">Spring Native 初体验</a>
         </li>
       
     </ul>
@@ -1558,7 +1558,7 @@
 
               <h4 class="pt-0 my-2">Java 应用如何构建 Docker 镜像</h4>
               <div class="text-muted">
-                <p>如何构建高效安全的 Java 应用镜像[记一次部门内的技术分享]</p>
+                <p>slide</p>
               </div>
             </div>
           </a>
@@ -1586,7 +1586,19 @@
 
               <h4 class="pt-0 my-2">GraalVM Native + Base64 编解码命令行小工具开发</h4>
               <div class="text-muted">
-                <p>使用 GraalVM Native 构建一个 Base64 加解密的命令行小程序</p>
+                <p>初衷：
+    
+      浏览  V 站 帖子有很多 Base64 加密的信息，希望能够快速解密。
+    
+  
+  实现：
+    
+      
+        v1：直接使用 JShell 命令行运行 Java 代码解密
+
+          ant@ant:~$ jshell 
+  |  Welcome to JShell -- Version 17.0.9
+  |  For ...</p>
               </div>
             </div>
           </a>
@@ -1614,7 +1626,13 @@
 
               <h4 class="pt-0 my-2">Spring Native 初体验</h4>
               <div class="text-muted">
-                <p>Spring Native 结合实际项目的体验</p>
+                <p>项目背景
+    
+      mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作
+      项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端
+      当前存在的问题：
+        
+          ...</p>
               </div>
             </div>
           </a>

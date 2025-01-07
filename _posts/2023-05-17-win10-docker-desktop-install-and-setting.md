@@ -3,7 +3,6 @@ title: Win10 Docker 环境安装及设置
 date: 2023-05-19 13:30:30 +0800
 categories: [技术, Docker]
 tags: [Docker]     # TAG names should always be lowercase
-description: Win10 下的 Docker 的一些实践
 ---
 
 

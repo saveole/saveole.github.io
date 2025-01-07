@@ -3,7 +3,6 @@ title: 用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上
 date: 2024-07-24 17:55:00 +0800
 categories: [博客]
 tags: [Blog, PPT] # TAG names should always be lowercase
-description: 用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客子路径上
 ---
 
 - Prerequisites
