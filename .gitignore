@@ -1,0 +1,38 @@
+# Jekyll-generated files
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Bundler files
+vendor/
+.bundle/
+
+# Ruby files
+*.gem
+*.rbc
+*.so
+*.o
+*.a
+*.sln
+*.suo
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Backup files
+*.bak
+*.orig
+
+# Environment files
+.env
+
+# Editor and IDE files
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+*.vscode/
+*.idea/
