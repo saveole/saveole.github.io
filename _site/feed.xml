@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-03-21T08:55:30+08:00</updated>
+  <updated>2025-03-21T15:55:15+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -48,7 +48,7 @@
     <link href="http://localhost:4000/posts/saveole-tech-review-0/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 0" />
     <published>2024-09-21T16:50:30+08:00</published>
   
-    <updated>2024-09-21T16:50:30+08:00</updated>
+    <updated>2025-03-21T08:58:48+08:00</updated>
   
     <id>http://localhost:4000/posts/saveole-tech-review-0/</id>
     <content src="http://localhost:4000/posts/saveole-tech-review-0/" />
