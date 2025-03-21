@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-03-21T15:55:15+08:00</updated>
+  <updated>2025-03-21T21:51:45+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,30 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Saveole's Tech Review, Issue 1</title>
+    <link href="http://localhost:4000/posts/saveole-tech-review-1/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 1" />
+    <published>2025-03-21T21:50:30+08:00</published>
+  
+    <updated>2025-03-21T21:50:30+08:00</updated>
+  
+    <id>http://localhost:4000/posts/saveole-tech-review-1/</id>
+    <content src="http://localhost:4000/posts/saveole-tech-review-1/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="Randomly" />
+    
+  
+
+  <summary>JDK24|Spring7|Java + eBPF</summary>
+
+  </entry>
 
   
   <entry>
@@ -48,7 +72,7 @@
     <link href="http://localhost:4000/posts/saveole-tech-review-0/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 0" />
     <published>2024-09-21T16:50:30+08:00</published>
   
-    <updated>2025-03-21T08:58:48+08:00</updated>
+    <updated>2025-03-21T15:56:23+08:00</updated>
   
     <id>http://localhost:4000/posts/saveole-tech-review-0/</id>
     <content src="http://localhost:4000/posts/saveole-tech-review-0/" />
@@ -135,42 +159,6 @@
   
 
   <summary>slide</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>博客方案：Jekyll + Chirpy</title>
-    <link href="http://localhost:4000/posts/jekyll-chirpy/" rel="alternate" type="text/html" title="博客方案：Jekyll + Chirpy" />
-    <published>2024-05-31T13:38:00+08:00</published>
-  
-    <updated>2025-01-07T15:20:09+08:00</updated>
-  
-    <id>http://localhost:4000/posts/jekyll-chirpy/</id>
-    <content src="http://localhost:4000/posts/jekyll-chirpy/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="博客" />
-    
-  
-
-  <summary>安装 Jekyll (Ubuntu 24.04)
-    
-      先装 Ruby 和相关依赖项: sudo apt-get install ruby-full build-essential zlib1g-dev
-      
-        设置当前用户有 gem 的执行权限
-
-          echo &amp;#39;# Install Ruby Gems to ~/gems&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
-  echo &amp;#39;export GEM_HOME=&amp;quot;$HOME/gems&amp;quot;&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
-  echo &amp;#39;export PATH=&amp;quot;$HOME/gems/bin:$PATH&amp;quot;&amp;#39; &amp;amp;gt;&amp;amp;gt; ~/.bashrc
-  source ~/.bashrc
-        
-      
-      安装 Jekyll: gem install jek...</summary>
 
   </entry>
 
