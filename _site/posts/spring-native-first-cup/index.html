@@ -43,7 +43,7 @@
 <meta property="twitter:title" content="Spring Native 初体验" />
 <meta name="twitter:site" content="@saveole" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-07-07T14:43:18+08:00","datePublished":"2024-04-07T13:30:30+08:00","description":"项目背景 mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作 项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端 当前存在的问题： 过度依赖：依赖了 Spring Web 等本不需要的依赖(这里的 Spring 主要作为 bean 容器) 弹性不足：当消费能力不足需要添加实例的时候，应用启动速度不够快 + 镜像体积较大(451M) 基于spring boot fat jar 的应用内存占用较高 环境 OS: Ubuntu 22.04 JDK: openjdk 21 GraalVM CE 21+35.1 IDE: IDEA Ultimate 2023.2.5 CPU: i5-12400 内存: 32G 2666Hz 改造内容 JDK 17 → 21 Spring Boot 2.7.0 → 3.3.0 Spring AOT Dockerfile 存在问题 build 阶段问题 commons-logging 与 spring jcl 的冲突 → 去除对应的 commons-logging 包 runtime 阶段问题 profiles 问题 Java 21 ResourceBundle → Caused by: java.util.MissingResourceException: Can&#39;t find bundle for base name oss, locale en_US 由 ali-sdk-oss 引入，发现项目中没用到，移除依赖 运行时 hutool ReflectUtil 使用报错 改由改写依赖的开源三方库实现，避免使用reflection mqtt-spring-boot-starter 升级版本后未出现 mqtt-client 周期性断连/重连 whether JVM Runtime shutdown hook is executed when spring native app exited CI/CD 目前阿里云流水线配置默认不支持，流水线集群默认使用的配置是 1C1G 机器。 将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建，可见 aot 构建的过程是很耗资源的。 总结体验 资源占用对比 对比项 jar native 内存占用 212672 7312 文件大小 28.7M 91.7M 镜像大小 320M 126M 启动时间 1.034s 0.077s","headline":"Spring Native 初体验","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/spring-native-first-cup/"},"url":"http://localhost:4000/posts/spring-native-first-cup/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-01-07T15:20:09+08:00","datePublished":"2024-04-07T13:30:30+08:00","description":"项目背景 mqtt 的消费端应用，应用逻辑较简单，主要是消费 mqtt 消息，然后做对应的持久化(写多读少)操作 项目架构主要使用到了 Spring Boot 作为 IoC 容器，MongoDB 作为存储，然后开源的 mqtt-spring-boot-starter 作为 mqtt 客户端 当前存在的问题： 过度依赖：依赖了 Spring Web 等本不需要的依赖(这里的 Spring 主要作为 bean 容器) 弹性不足：当消费能力不足需要添加实例的时候，应用启动速度不够快 + 镜像体积较大(451M) 基于spring boot fat jar 的应用内存占用较高 环境 OS: Ubuntu 22.04 JDK: openjdk 21 GraalVM CE 21+35.1 IDE: IDEA Ultimate 2023.2.5 CPU: i5-12400 内存: 32G 2666Hz 改造内容 JDK 17 → 21 Spring Boot 2.7.0 → 3.3.0 Spring AOT Dockerfile 存在问题 build 阶段问题 commons-logging 与 spring jcl 的冲突 → 去除对应的 commons-logging 包 runtime 阶段问题 profiles 问题 Java 21 ResourceBundle → Caused by: java.util.MissingResourceException: Can&#39;t find bundle for base name oss, locale en_US 由 ali-sdk-oss 引入，发现项目中没用到，移除依赖 运行时 hutool ReflectUtil 使用报错 改由改写依赖的开源三方库实现，避免使用reflection mqtt-spring-boot-starter 升级版本后未出现 mqtt-client 周期性断连/重连 whether JVM Runtime shutdown hook is executed when spring native app exited CI/CD 目前阿里云流水线配置默认不支持，流水线集群默认使用的配置是 1C1G 机器。 将自己的 ecs 主机作为构建机器，发现 2g 的内存不足以进行应用构建，可见 aot 构建的过程是很耗资源的。 总结体验 资源占用对比 对比项 jar native 内存占用 212672 7312 文件大小 28.7M 91.7M 镜像大小 320M 126M 启动时间 1.034s 0.077s","headline":"Spring Native 初体验","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/spring-native-first-cup/"},"url":"http://localhost:4000/posts/spring-native-first-cup/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -583,13 +583,13 @@
 
 <time
   
-  data-ts="1720334598"
+  data-ts="1736234409"
   data-df="ll"
   
     data-bs-toggle="tooltip" data-bs-placement="bottom"
   
 >
-  Jul  7, 2024
+  Jan  7, 2025
 </time>
 
         </span>
@@ -894,6 +894,13 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/unit-test-with-Mockito/">Unit Test with Mockito</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/spring-mvc-customized-method-argument-resolver/">Spring Boot MVC 自定义参数解析器</a>
         </li>
       
@@ -901,28 +908,21 @@
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/java-app-docker-image/">Java 应用如何构建 Docker 镜像</a>
+          <a href="/posts/win10-docker-desktop-install-and-setting/">Win10 Docker 环境安装及设置</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/saveole-tech-weekly-0/">Saveole's Weekly Tech Review, Issue 0</a>
+          <a href="/posts/spring-native-first-cup/">Spring Native 初体验</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/jekyll-chirpy/">博客方案：Jekyll + Chirpy</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/">用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</a>
+          <a href="/posts/graalvm-native-java-base64-command-line-tool/">GraalVM Native + Base64 编解码命令行小工具开发</a>
         </li>
       
     </ul>
@@ -1080,6 +1080,84 @@
     
     
     
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -1217,65 +1295,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -1312,6 +1331,9 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/ppt/">PPT</a>
       
         
+        <a class="post-tag btn btn-outline-primary" href="/tags/spring/">Spring</a>
+      
+        
         <a class="post-tag btn btn-outline-primary" href="/tags/apm/">APM</a>
       
         
@@ -1325,9 +1347,6 @@
       
         
         <a class="post-tag btn btn-outline-primary" href="/tags/jshell/">JShell</a>
-      
-        
-        <a class="post-tag btn btn-outline-primary" href="/tags/jvm/">JVM</a>
       
     </div>
   </section>
@@ -1374,6 +1393,18 @@
 
 
 
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
@@ -1867,6 +1898,84 @@
     
     
     
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -2004,65 +2113,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -2099,6 +2149,9 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/ppt/">PPT</a>
       
         
+        <a class="post-tag btn btn-outline-primary" href="/tags/spring/">Spring</a>
+      
+        
         <a class="post-tag btn btn-outline-primary" href="/tags/apm/">APM</a>
       
         
@@ -2112,9 +2165,6 @@
       
         
         <a class="post-tag btn btn-outline-primary" href="/tags/jshell/">JShell</a>
-      
-        
-        <a class="post-tag btn btn-outline-primary" href="/tags/jvm/">JVM</a>
       
     </div>
   </section>

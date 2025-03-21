@@ -1,7 +1,7 @@
 ---
-title: Saveole's Weekly Tech Review, Issue 0
+title: Saveole's Tech Review, Issue 0
 date: 2024-09-21 16:50:30 +0800
-categories: [Weekly]
+categories: [Randomly]
 tags: [Java, SSE, ZGC, Go， Raft]
 description: JDK23|SpringBoot CDS|ZGC|Go SSE|Raft
 ---

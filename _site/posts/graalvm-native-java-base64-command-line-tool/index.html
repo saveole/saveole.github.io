@@ -43,7 +43,7 @@
 <meta property="twitter:title" content="GraalVM Native + Base64 编解码命令行小工具开发" />
 <meta name="twitter:site" content="@saveole" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-04-29T13:38:00+08:00","datePublished":"2024-04-29T13:38:00+08:00","description":"初衷： 浏览 V 站 帖子有很多 Base64 加密的信息，希望能够快速解密。 实现： v1：直接使用 JShell 命令行运行 Java 代码解密 1 2 3 4 5 6 7 8 9 10 11 12 ant@ant:~$ jshell | Welcome to JShell -- Version 17.0.9 | For an introduction type: /help intro jshell&gt; var enc = &quot;c2F2ZW9sZQ==&quot; enc ==&gt; &quot;c2F2ZW9sZQ==&quot; jshell&gt; var decodedBytes = Base64.getDecoder().decode(enc.getBytes()) decodedBytes ==&gt; byte[8] { 115, 97, 118, 101, 95, 111, 108, 101 } jshell&gt; new String(decodedBytes) $3 ==&gt; &quot;saveole&quot; v2：GraalVM Native 的方式将 Java 程序编译打包成可执行文件小工具 原 Java 程序： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 import java.util.Base64; public class Base64Tool { static String helpMsg = &quot;&quot;&quot; -e Encode input string -d Decode input string &quot;&quot;&quot;;; public static void main(String[] args) { if (args == null || args.length == 0) { System.err.println(helpMsg); System.exit(1); } var arg = args[0]; switch(arg) { case &quot;-help&quot;: System.out.println(helpMsg); break; case &quot;-e&quot;: var toEncode = getAndCheckArg(args); System.out.println(new String(Base64.getEncoder().encode(toEncode.getBytes()))); break; case &quot;-d&quot;: var toDecode = getAndCheckArg(args); System.out.println(new String(Base64.getDecoder().decode(toDecode.getBytes()))); break; default: System.err.println(&quot;Unknown command, use -help to see how to use this tool.&quot;); break; } System.exit(1); } static String getAndCheckArg(String[] args) { if (args == null || args.length &lt; 2) { System.err.println(&quot;Please input valid string&quot;); System.exit(0); } return args[1]; } }","headline":"GraalVM Native + Base64 编解码命令行小工具开发","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/"},"url":"http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-01-07T15:20:09+08:00","datePublished":"2024-04-29T13:38:00+08:00","description":"初衷： 浏览 V 站 帖子有很多 Base64 加密的信息，希望能够快速解密。 实现： v1：直接使用 JShell 命令行运行 Java 代码解密 1 2 3 4 5 6 7 8 9 10 11 12 ant@ant:~$ jshell | Welcome to JShell -- Version 17.0.9 | For an introduction type: /help intro jshell&gt; var enc = &quot;c2F2ZW9sZQ==&quot; enc ==&gt; &quot;c2F2ZW9sZQ==&quot; jshell&gt; var decodedBytes = Base64.getDecoder().decode(enc.getBytes()) decodedBytes ==&gt; byte[8] { 115, 97, 118, 101, 95, 111, 108, 101 } jshell&gt; new String(decodedBytes) $3 ==&gt; &quot;saveole&quot; v2：GraalVM Native 的方式将 Java 程序编译打包成可执行文件小工具 原 Java 程序： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 import java.util.Base64; public class Base64Tool { static String helpMsg = &quot;&quot;&quot; -e Encode input string -d Decode input string &quot;&quot;&quot;;; public static void main(String[] args) { if (args == null || args.length == 0) { System.err.println(helpMsg); System.exit(1); } var arg = args[0]; switch(arg) { case &quot;-help&quot;: System.out.println(helpMsg); break; case &quot;-e&quot;: var toEncode = getAndCheckArg(args); System.out.println(new String(Base64.getEncoder().encode(toEncode.getBytes()))); break; case &quot;-d&quot;: var toDecode = getAndCheckArg(args); System.out.println(new String(Base64.getDecoder().decode(toDecode.getBytes()))); break; default: System.err.println(&quot;Unknown command, use -help to see how to use this tool.&quot;); break; } System.exit(1); } static String getAndCheckArg(String[] args) { if (args == null || args.length &lt; 2) { System.err.println(&quot;Please input valid string&quot;); System.exit(0); } return args[1]; } }","headline":"GraalVM Native + Base64 编解码命令行小工具开发","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/"},"url":"http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -571,6 +571,29 @@
 
       <!-- lastmod date -->
       
+        <span>
+          Updated
+          <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1736234409"
+  data-df="ll"
+  
+    data-bs-toggle="tooltip" data-bs-placement="bottom"
+  
+>
+  Jan  7, 2025
+</time>
+
+        </span>
+      
 
       
 
@@ -1035,6 +1058,13 @@
         
         
         <li class="text-truncate lh-lg">
+          <a href="/posts/unit-test-with-Mockito/">Unit Test with Mockito</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
           <a href="/posts/spring-mvc-customized-method-argument-resolver/">Spring Boot MVC 自定义参数解析器</a>
         </li>
       
@@ -1042,28 +1072,21 @@
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/java-app-docker-image/">Java 应用如何构建 Docker 镜像</a>
+          <a href="/posts/win10-docker-desktop-install-and-setting/">Win10 Docker 环境安装及设置</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/saveole-tech-weekly-0/">Saveole's Weekly Tech Review, Issue 0</a>
+          <a href="/posts/spring-native-first-cup/">Spring Native 初体验</a>
         </li>
       
         
         
         
         <li class="text-truncate lh-lg">
-          <a href="/posts/jekyll-chirpy/">博客方案：Jekyll + Chirpy</a>
-        </li>
-      
-        
-        
-        
-        <li class="text-truncate lh-lg">
-          <a href="/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/">用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</a>
+          <a href="/posts/graalvm-native-java-base64-command-line-tool/">GraalVM Native + Base64 编解码命令行小工具开发</a>
         </li>
       
     </ul>
@@ -1221,6 +1244,84 @@
     
     
     
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -1358,65 +1459,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -1453,6 +1495,9 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/ppt/">PPT</a>
       
         
+        <a class="post-tag btn btn-outline-primary" href="/tags/spring/">Spring</a>
+      
+        
         <a class="post-tag btn btn-outline-primary" href="/tags/apm/">APM</a>
       
         
@@ -1466,9 +1511,6 @@
       
         
         <a class="post-tag btn btn-outline-primary" href="/tags/jshell/">JShell</a>
-      
-        
-        <a class="post-tag btn btn-outline-primary" href="/tags/jvm/">JVM</a>
       
     </div>
   </section>
@@ -1515,6 +1557,18 @@
 
 
 
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
@@ -1663,7 +1717,7 @@
         </article>
       
         <article class="col">
-          <a href="/posts/saveole-tech-weekly-0/" class="post-preview card h-100">
+          <a href="/posts/unit-test-with-Mockito/" class="post-preview card h-100">
             <div class="card-body">
               <!--
   Date format snippet
@@ -1675,16 +1729,16 @@
 
 <time
   
-  data-ts="1726908630"
+  data-ts="1740820231"
   data-df="ll"
   
 >
-  Sep 21, 2024
+  Mar  1, 2025
 </time>
 
-              <h4 class="pt-0 my-2">Saveole's Weekly Tech Review, Issue 0</h4>
+              <h4 class="pt-0 my-2">Unit Test with Mockito</h4>
               <div class="text-muted">
-                <p>JDK23|SpringBoot CDS|ZGC|Go SSE|Raft</p>
+                <p>自己平时写单元测试时使用到的一些 Mockito 案例</p>
               </div>
             </div>
           </a>
@@ -1991,6 +2045,84 @@
     
     
     
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -2128,65 +2260,6 @@
     
     
     
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -2223,6 +2296,9 @@
         <a class="post-tag btn btn-outline-primary" href="/tags/ppt/">PPT</a>
       
         
+        <a class="post-tag btn btn-outline-primary" href="/tags/spring/">Spring</a>
+      
+        
         <a class="post-tag btn btn-outline-primary" href="/tags/apm/">APM</a>
       
         
@@ -2236,9 +2312,6 @@
       
         
         <a class="post-tag btn btn-outline-primary" href="/tags/jshell/">JShell</a>
-      
-        
-        <a class="post-tag btn btn-outline-primary" href="/tags/jvm/">JVM</a>
       
     </div>
   </section>

@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-01-07T15:18:54+08:00</updated>
+  <updated>2025-03-21T08:55:30+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -20,21 +20,45 @@
 
   
   <entry>
-    <title>Saveole's Weekly Tech Review, Issue 0</title>
-    <link href="http://localhost:4000/posts/saveole-tech-weekly-0/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Weekly Tech Review, Issue 0" />
-    <published>2024-09-21T16:50:30+08:00</published>
+    <title>Unit Test with Mockito</title>
+    <link href="http://localhost:4000/posts/unit-test-with-Mockito/" rel="alternate" type="text/html" title="Unit Test with Mockito" />
+    <published>2025-03-01T17:10:31+08:00</published>
   
-    <updated>2024-09-21T16:50:30+08:00</updated>
+    <updated>2025-03-01T17:10:31+08:00</updated>
   
-    <id>http://localhost:4000/posts/saveole-tech-weekly-0/</id>
-    <content src="http://localhost:4000/posts/saveole-tech-weekly-0/" />
+    <id>http://localhost:4000/posts/unit-test-with-Mockito/</id>
+    <content src="http://localhost:4000/posts/unit-test-with-Mockito/" />
     <author>
       <name>saveole</name>
     </author>
 
   
     
-    <category term="Weekly" />
+    <category term="Test" />
+    
+  
+
+  <summary>自己平时写单元测试时使用到的一些 Mockito 案例</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Saveole's Tech Review, Issue 0</title>
+    <link href="http://localhost:4000/posts/saveole-tech-review-0/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 0" />
+    <published>2024-09-21T16:50:30+08:00</published>
+  
+    <updated>2024-09-21T16:50:30+08:00</updated>
+  
+    <id>http://localhost:4000/posts/saveole-tech-review-0/</id>
+    <content src="http://localhost:4000/posts/saveole-tech-review-0/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="Randomly" />
     
   
 
@@ -48,7 +72,7 @@
     <link href="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" rel="alternate" type="text/html" title="用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上" />
     <published>2024-07-24T17:55:00+08:00</published>
   
-    <updated>2024-09-21T13:56:55+08:00</updated>
+    <updated>2025-01-07T15:20:09+08:00</updated>
   
     <id>http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/</id>
     <content src="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" />
@@ -96,7 +120,7 @@
     <link href="http://localhost:4000/posts/java-app-docker-image/" rel="alternate" type="text/html" title="Java 应用如何构建 Docker 镜像" />
     <published>2024-07-22T18:10:00+08:00</published>
   
-    <updated>2024-09-21T16:57:32+08:00</updated>
+    <updated>2025-01-07T15:20:09+08:00</updated>
   
     <id>http://localhost:4000/posts/java-app-docker-image/</id>
     <content src="http://localhost:4000/posts/java-app-docker-image/" />
@@ -120,7 +144,7 @@
     <link href="http://localhost:4000/posts/jekyll-chirpy/" rel="alternate" type="text/html" title="博客方案：Jekyll + Chirpy" />
     <published>2024-05-31T13:38:00+08:00</published>
   
-    <updated>2024-09-21T14:00:20+08:00</updated>
+    <updated>2025-01-07T15:20:09+08:00</updated>
   
     <id>http://localhost:4000/posts/jekyll-chirpy/</id>
     <content src="http://localhost:4000/posts/jekyll-chirpy/" />
@@ -147,50 +171,6 @@
         
       
       安装 Jekyll: gem install jek...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>GraalVM Native + Base64 编解码命令行小工具开发</title>
-    <link href="http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/" rel="alternate" type="text/html" title="GraalVM Native + Base64 编解码命令行小工具开发" />
-    <published>2024-04-29T13:38:00+08:00</published>
-  
-    <updated>2024-04-29T13:38:00+08:00</updated>
-  
-    <id>http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/</id>
-    <content src="http://localhost:4000/posts/graalvm-native-java-base64-command-line-tool/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="技术" />
-    
-    <category term="Java" />
-    
-  
-
-  <summary>初衷：
-    
-      浏览  V 站 帖子有很多 Base64 加密的信息，希望能够快速解密。
-    
-  
-  实现：
-    
-      
-        v1：直接使用 JShell 命令行运行 Java 代码解密
-
-          ant@ant:~$ jshell 
-  |  Welcome to JShell -- Version 17.0.9
-  |  For an introduction type: /help intro
-        
-  jshell&amp;amp;gt; var enc = &amp;quot;c2F2ZW9sZQ==&amp;quot;
-  enc ==&amp;amp;gt; &amp;quot;c2F2ZW9sZQ==&amp;quot;
-        
-  jshell&amp;amp;gt; var decodedBytes = Base64.getDecoder().decode(enc.getBytes())
-  decod...</summary>
 
   </entry>
 
