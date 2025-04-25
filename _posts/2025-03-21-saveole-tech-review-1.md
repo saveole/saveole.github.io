@@ -35,87 +35,87 @@ description: JDK24发布了，改动还挺多|Spring7预览版先来预览预览
         > 之前版本的 Virtual Thread + synchronized 在执行方法出现阻塞(例如 IO 场景)([pinning](https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html#GUID-04C03FFC-066D-4857-85B9-E5A27A875AF9))的情况下，VT 不能 unmount 其依赖的底层 OS 线程，可能导致线程饥饿甚至死锁等问题(可以通过 `jdk.VirtualThreadPinned` JFR 事件监控)，[Netflix](https://netflixtechblog.com/java-21-virtual-threads-dude-wheres-my-lock-3052540e231d) 团队之前也遇到过，JEP491 解决了这个问题。下面是一个由此导致的[死锁代码](https://gist.github.com/DanielThomas/0b099c5f208d7deed8a83bf5fc03179e)案例：
         
         
-        ```java
-        import java.time.Duration;
-        import java.util.List;
-        import java.util.concurrent.locks.ReentrantLock;
-        import java.util.stream.IntStream;
-        import java.util.stream.Stream;
+    ```java
+    import java.time.Duration;
+    import java.util.List;
+    import java.util.concurrent.locks.ReentrantLock;
+    import java.util.stream.IntStream;
+    import java.util.stream.Stream;
 
-        /**
-         * Demonstrate potential for deadlock on a {@link ReentrantLock} when there is both a synchronized and
-         * non-synchronized path to that lock, which can allow a virtual thread to hold the lock, but
-         * other pinned waiters to consume all the available workers. 
-        */
-        public class VirtualThreadReentrantLockDeadlock {
+    /**
+     * Demonstrate potential for deadlock on a {@link ReentrantLock} when there is both a synchronized and
+        * non-synchronized path to that lock, which can allow a virtual thread to hold the lock, but
+        * other pinned waiters to consume all the available workers. 
+    */
+    public class VirtualThreadReentrantLockDeadlock {
 
-            public static void main(String[] args) {
-                final boolean shouldPin = args.length == 0 ||Boolean.parseBoolean(args[0]);
-                final ReentrantLock lock = new ReentrantLock(true); // With faireness to ensure that the unpinned thread is next in line
+        public static void main(String[] args) {
+            final boolean shouldPin = args.length == 0 ||Boolean.parseBoolean(args[0]);
+            final ReentrantLock lock = new ReentrantLock(true); // With faireness to ensure that the unpinned thread is next in line
 
-                lock.lock();
-        
-                Runnable takeLock = () -> {
-                    try {
-                        System.out.println(Thread.currentThread() + " waiting for lock");
-                        lock.lock();
-                        System.out.println(Thread.currentThread() + " took lock");
-                    } finally {
-                        lock.unlock();
-                        System.out.println(Thread.currentThread() + " released lock");
-                    }
-                };
+            lock.lock();
+    
+            Runnable takeLock = () -> {
+                try {
+                    System.out.println(Thread.currentThread() + " waiting for lock");
+                    lock.lock();
+                    System.out.println(Thread.currentThread() + " took lock");
+                } finally {
+                    lock.unlock();
+                    System.out.println(Thread.currentThread() + " released lock");
+                }
+            };
 
-                Thread unpinnedThread = Thread.ofVirtual().name("unpinned").start(takeLock);
+            Thread unpinnedThread = Thread.ofVirtual().name("unpinned").start(takeLock);
 
-                List<Thread> pinnedThreads = IntStream.range(0, Runtime.getRuntime().availableProcessors())
-            .mapToObj(i -> Thread.ofVirtual().name("pinning-" + i).start(() -> {
-                        if (shouldPin) {
-                            synchronized (new Object()) {
-                                takeLock.run();
-                            }
-                        } else {
+            List<Thread> pinnedThreads = IntStream.range(0, Runtime.getRuntime().availableProcessors())
+        .mapToObj(i -> Thread.ofVirtual().name("pinning-" + i).start(() -> {
+                    if (shouldPin) {
+                        synchronized (new Object()) {
                             takeLock.run();
                         }
-                    })).toList();
-        
-                lock.unlock();
-        
-                Stream.concat(Stream.of(unpinnedThread), pinnedThreads.stream()).forEach(thread -> {
-                    try {
-                        if (!thread.join(Duration.ofSeconds(3))) {
-                            throw new RuntimeException("Deadlock detected");                    
-                        }
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    } else {
+                        takeLock.run();
                     }
-                });
-            }
-
+                })).toList();
+    
+            lock.unlock();
+    
+            Stream.concat(Stream.of(unpinnedThread), pinnedThreads.stream()).forEach(thread -> {
+                try {
+                    if (!thread.join(Duration.ofSeconds(3))) {
+                        throw new RuntimeException("Deadlock detected");                    
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
-        ```
-        
-        ```
-        (base) saveole@saveoledeMacBook-Pro src % java VirtualThreadReentrantLockDeadlock.java
-        VirtualThread[#25,unpinned]/runnable@ForkJoinPool-1-worker-1 waiting for lock
-        VirtualThread[#28,pinning-0]/runnable@ForkJoinPool-1-worker-1 waiting for lock
-        VirtualThread[#30,pinning-2]/runnable@ForkJoinPool-1-worker-3 waiting for lock
-        VirtualThread[#29,pinning-1]/runnable@ForkJoinPool-1-worker-2 waiting for lock
-        VirtualThread[#33,pinning-5]/runnable@ForkJoinPool-1-worker-6 waiting for lock
-        VirtualThread[#31,pinning-3]/runnable@ForkJoinPool-1-worker-4 waiting for lock
-        VirtualThread[#35,pinning-7]/runnable@ForkJoinPool-1-worker-9 waiting for lock
-        VirtualThread[#32,pinning-4]/runnable@ForkJoinPool-1-worker-5 waiting for lock
-        VirtualThread[#34,pinning-6]/runnable@ForkJoinPool-1-worker-7 waiting for lock
-        VirtualThread[#36,pinning-8]/runnable@ForkJoinPool-1-worker-8 waiting for lock
-        VirtualThread[#38,pinning-9]/runnable@ForkJoinPool-1-worker-10 waiting for lock
-        Exception in thread "main" java.lang.RuntimeException: Deadlock detected
-        at VirtualThreadReentrantLockDeadlock.lambda$main$3(VirtualThreadReentrantLockDeadlock.java:49)
-        at java.base/java.util.stream.Streams$StreamBuilderImpl.forEachRemaining(Streams.java:411)
-        at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
-        at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
-        at VirtualThreadReentrantLockDeadlock.main(VirtualThreadReentrantLockDeadlock.java:46)
 
-        ```
+    }
+    ```
+        
+    ```
+    (base) saveole@saveoledeMacBook-Pro src % java VirtualThreadReentrantLockDeadlock.java
+    VirtualThread[#25,unpinned]/runnable@ForkJoinPool-1-worker-1 waiting for lock
+    VirtualThread[#28,pinning-0]/runnable@ForkJoinPool-1-worker-1 waiting for lock
+    VirtualThread[#30,pinning-2]/runnable@ForkJoinPool-1-worker-3 waiting for lock
+    VirtualThread[#29,pinning-1]/runnable@ForkJoinPool-1-worker-2 waiting for lock
+    VirtualThread[#33,pinning-5]/runnable@ForkJoinPool-1-worker-6 waiting for lock
+    VirtualThread[#31,pinning-3]/runnable@ForkJoinPool-1-worker-4 waiting for lock
+    VirtualThread[#35,pinning-7]/runnable@ForkJoinPool-1-worker-9 waiting for lock
+    VirtualThread[#32,pinning-4]/runnable@ForkJoinPool-1-worker-5 waiting for lock
+    VirtualThread[#34,pinning-6]/runnable@ForkJoinPool-1-worker-7 waiting for lock
+    VirtualThread[#36,pinning-8]/runnable@ForkJoinPool-1-worker-8 waiting for lock
+    VirtualThread[#38,pinning-9]/runnable@ForkJoinPool-1-worker-10 waiting for lock
+    Exception in thread "main" java.lang.RuntimeException: Deadlock detected
+    at VirtualThreadReentrantLockDeadlock.lambda$main$3(VirtualThreadReentrantLockDeadlock.java:49)
+    at java.base/java.util.stream.Streams$StreamBuilderImpl.forEachRemaining(Streams.java:411)
+    at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+    at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+    at VirtualThreadReentrantLockDeadlock.main(VirtualThreadReentrantLockDeadlock.java:46)
+
+    ```
         
 
   - [Reproducing a Java 21 virtual threads deadlock scenario with TLA+](https://surfingcomplexity.blog/2024/08/01/reproducing-a-java-21-virtual-threads-deadlock-scenario-with-tla/)

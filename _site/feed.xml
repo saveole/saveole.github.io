@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-03-22T10:28:37+08:00</updated>
+  <updated>2025-04-25T15:58:32+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -20,11 +20,35 @@
 
   
   <entry>
+    <title>使用 BiFunction 简化重复代码</title>
+    <link href="http://localhost:4000/posts/using-BiFunction-to-simplify-code/" rel="alternate" type="text/html" title="使用 BiFunction 简化重复代码" />
+    <published>2025-04-25T13:30:30+08:00</published>
+  
+    <updated>2025-04-25T13:30:30+08:00</updated>
+  
+    <id>http://localhost:4000/posts/using-BiFunction-to-simplify-code/</id>
+    <content src="http://localhost:4000/posts/using-BiFunction-to-simplify-code/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="Java" />
+    
+  
+
+  <summary>第一次在代码里使用 BiFunction 来做重构简化代码，做个记录</summary>
+
+  </entry>
+
+  
+  <entry>
     <title>Saveole's Tech Review, Issue 1</title>
     <link href="http://localhost:4000/posts/saveole-tech-review-1/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 1" />
     <published>2025-03-21T21:50:30+08:00</published>
   
-    <updated>2025-03-21T21:50:30+08:00</updated>
+    <updated>2025-03-22T10:30:00+08:00</updated>
   
     <id>http://localhost:4000/posts/saveole-tech-review-1/</id>
     <content src="http://localhost:4000/posts/saveole-tech-review-1/" />
@@ -135,30 +159,6 @@
 
           # Simple workflow for deploying static content to GitHub Pages
   name: Deploy static conten...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Java 应用如何构建 Docker 镜像</title>
-    <link href="http://localhost:4000/posts/java-app-docker-image/" rel="alternate" type="text/html" title="Java 应用如何构建 Docker 镜像" />
-    <published>2024-07-22T18:10:00+08:00</published>
-  
-    <updated>2025-01-07T15:20:09+08:00</updated>
-  
-    <id>http://localhost:4000/posts/java-app-docker-image/</id>
-    <content src="http://localhost:4000/posts/java-app-docker-image/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="博客" />
-    
-  
-
-  <summary>slide</summary>
 
   </entry>
 
