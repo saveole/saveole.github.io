@@ -6,10 +6,10 @@ tags: [阿里云, Java, Claude Code, MCP]
 description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子干掉了 25 RMB,还是得用订阅模式。
 ---
 
-## 摘要
-​    试用阿里云效 devops 平台[推荐](https://help.aliyun.com/zh/lingma/use-cases/mcp-usage-practice-1)的 [mcp 工具](https://www.modelscope.cn/mcp/servers/@aliyun/alibabacloud-devops-mcp-server)进行 ai coding 的实践,刚弄一个不算太大的需求试水，结果阿里云百炼大模型 + yuxiao mcp 一下子花费了 25 RMB, 记录下这次坑爹的经历。如有条件，还是得远离国内云服务！
+## 简述
+​    试用阿里云效 devops 平台[推荐](https://help.aliyun.com/zh/lingma/use-cases/mcp-usage-practice-1)的 [mcp 工具](https://www.modelscope.cn/mcp/servers/@aliyun/alibabacloud-devops-mcp-server)进行 ai coding 的实践,刚弄一个不算太大的需求试水，结果阿里云百炼大模型 + yuxiao mcp 一下子花费了 25 RMB, 记录下这次坑爹的经历。
 
-## 过程
+## 试用过程
 
 - 探索如何在公司的项目(devops 试用的阿里云效)中落地 ai coding，看到 [通义灵码+云效 DevOps MCP：通过云效工作项自动生成代码并提交请求](https://help.aliyun.com/zh/lingma/use-cases/mcp-usage-practice-1) 的推荐再加上最近 cc + mcp 的实践，想着只要将我的变更需求写小写细，应该能够通过上述的流程实现日常需求的 ai coding，自己只需要做好 review 就好。
 
@@ -103,7 +103,8 @@ description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子�
 - 首先使用了智谱的 api key，发现任务执行会**中断**，然后换的阿里百炼的 api key(用的 cc switch 做的切换)
 
   ```
-  > 调用 yunxiao mcp 中的工具，获取 兴智技术项目管理项目中8.3.0迭代中Id 为NFQX-10950的任务详情,读取任务详情中上下文相关的代码，生成详细的代码执行计划(不需要执行)，写入到 NFQX-10950.md 文件中供我review 
+  > 调用 yunxiao mcp 中的工具，获取 兴智技术项目管理项目中8.3.0迭代中Id 为NFQX-10950的任务详情,读取任务
+  详情中上下文相关的代码，生成详细的代码执行计划(不需要执行)，写入到 NFQX-10950.md 文件中供我review
   
   ● 我需要获取云效项目中具体任务的详情。让我先找到您的组织和项目信息，然后获取指定任务的详情。
     ⎿  {                                                                                                                                                                                                                         
@@ -114,6 +115,12 @@ description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子�
          "id": "xxxxxxx",
          "name": "xxxx",
        … +4 lines (ctrl+o to expand)
+  ● yunxiao - search_projects (MCP)(raw_arguments:
+                                 "{\"organizationId\":\"627b12d911fc0f0c9e29a52c
+                                 \",\"name\":\"兴智技术项目管理\"}")
+  ⎿  Error: MCP error -32603: Invalid input: 
+     [{"code":"invalid_type","expected":"string","received":"undefined","path":["
+     organizationId"],"message":"Required"}]
   
     Todos
     ☒ 获取当前用户和组织信息
@@ -125,7 +132,31 @@ description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子�
     ☐ 写入NFQX-10950.md文件
   ```
 
-  - 可以看到调用一次 mcp 的 tool 就中断了，这块需要看看原因。
+  - 可以看到调用一次 mcp 的 tool 就中断了，因为后续几次**工具参数传的不正确**，其他模型没有训练过阿里云平台本身的数据，导致对 yunxiao mcp 工具的调用失败了。阿里的模型能够正常连续工作，但是工作过程中，console 连续提示了 token 消耗巨大的警告(这是在本身 yunxiao mcp 工具调用获取云效任务信息的过程中，没涉及后面的需求理解和代码生成，可惜没有记录下来)。
+  - **后续**: 用了更精确的提示词解决了智谱模型 + yunxiao mcp 表现不佳的问题：
+
+  ```
+  任务要求
+
+  使用 Yunxiao MCP 工具获取任务 NFQX-10950
+  的详细信息，分析相关代码，生成详细的代码执行计划并写入 NFQX-10950.md
+  文件。
+
+  执行过程
+
+  1. 获取组织信息 - 通过 mcp__yunxiao__get_current_organization_info
+  获取当前用户和组织ID
+  2. 搜索任务 - 使用 mcp__yunxiao__search_workitems
+  在"xx技术项目管理"项目中找到 NFQX-10950
+  3. 获取任务详情 - 通过 mcp__yunxiao__get_work_item
+  获取完整的需求描述和上下文
+  4. 代码分析 - 分析了表单组件相关的核心文件：
+    - FormComponent.java (实体类)
+    - FormComponentApi.java (API控制器)
+    - FormComponentByWebDTO.java (DTO类，包含核心业务逻辑)
+    - FormComponentServiceImpl.java (服务实现)
+
+  ```
 
 - **执行历史(倒序查看)**
 
@@ -187,7 +218,7 @@ description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子�
   - 代码行数变更: +395行, -1行
   
   📁 修改的文件
-    1.scrm/src/main/java/com/ds/scrm/model/promo/dto/FormComponentByWebDTO.java
+    1. scrm/src/main/java/com/ds/scrm/model/promo/dto/FormComponentByWebDTO.java
     2. scrm/src/main/java/com/ds/scrm/model/promo/entity/BaseComponent.java
     3. scrm/src/test/java/com/ds/scrm/model/promo/BaseComponentTest.java
     4. scrm/src/test/java/com/ds/scrm/model/promo/FormComponentByWebDTOTest.java
@@ -212,5 +243,9 @@ description: 一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子�
   ```
 
 - Token 和费用消耗
+![token cost](https://raw.githubusercontent.com/saveole/img/main/ali_llm_token_cost.jpg)
+![rmb cost](https://raw.githubusercontent.com/saveole/img/main/ali_llm_rmb_cost.jpg)
 
-  
+## 总结经验
+- 还是得购买订阅制的 AI 服务，token 消耗不起
+- 提示词得尽可能精确，提供更准确利于大模型理解的上下文

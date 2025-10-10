@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-04-25T15:58:32+08:00</updated>
+  <updated>2025-10-10T12:32:38+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,30 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>阿里云百炼大模型配合自家云效 DevOps MCP token 消耗巨大</title>
+    <link href="http://localhost:4000/posts/aliyun-is-shit/" rel="alternate" type="text/html" title="阿里云百炼大模型配合自家云效 DevOps MCP token 消耗巨大" />
+    <published>2025-10-09T19:50:30+08:00</published>
+  
+    <updated>2025-10-09T19:50:30+08:00</updated>
+  
+    <id>http://localhost:4000/posts/aliyun-is-shit/</id>
+    <content src="http://localhost:4000/posts/aliyun-is-shit/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="AI Coding" />
+    
+  
+
+  <summary>一个小需求用了阿里云百炼大模型+yuxiao mcp 一下子干掉了 25 RMB,还是得用订阅模式。</summary>
+
+  </entry>
 
   
   <entry>
@@ -48,7 +72,7 @@
     <link href="http://localhost:4000/posts/saveole-tech-review-1/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 1" />
     <published>2025-03-21T21:50:30+08:00</published>
   
-    <updated>2025-03-22T10:30:00+08:00</updated>
+    <updated>2025-04-25T15:59:19+08:00</updated>
   
     <id>http://localhost:4000/posts/saveole-tech-review-1/</id>
     <content src="http://localhost:4000/posts/saveole-tech-review-1/" />
@@ -111,54 +135,6 @@
   
 
   <summary>JDK23|SpringBoot CDS|ZGC|Go SSE|Raft</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上</title>
-    <link href="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" rel="alternate" type="text/html" title="用 Slidev 写 PPT 并使用 Github Pages 部署到自己的博客上" />
-    <published>2024-07-24T17:55:00+08:00</published>
-  
-    <updated>2025-01-07T15:20:09+08:00</updated>
-  
-    <id>http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/</id>
-    <content src="http://localhost:4000/posts/use-slidev-make-ppt-and-deploy-to-giithub-pages/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="博客" />
-    
-  
-
-  <summary>Prerequisites
-
-    
-      基于 Github Pages 构建的静态个人博客网站
-    
-  
-  
-    Steps
-
-    
-      
-        使用 Slidev 创建自己的 ppt 项目并上传到 Github 上的单独 Repository
-      
-      
-        配置开启仓库的 Github Pages
-  
-      
-      
-        配置 Github Action
-        
-          我的 .github/workflows/deploy.yml 如下：
-        
-
-          # Simple workflow for deploying static content to GitHub Pages
-  name: Deploy static conten...</summary>
 
   </entry>
 
