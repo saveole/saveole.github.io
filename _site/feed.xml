@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>saveole</title>
   <subtitle>saveole's blog</subtitle>
-  <updated>2025-10-10T12:32:38+08:00</updated>
+  <updated>2025-12-31T09:09:55+08:00</updated>
   <author>
     <name>saveole</name>
     <uri>http://localhost:4000/</uri>
@@ -20,11 +20,35 @@
 
   
   <entry>
+    <title>2025E</title>
+    <link href="http://localhost:4000/posts/end-of-2025/" rel="alternate" type="text/html" title="2025E" />
+    <published>2025-12-31T08:59:59+08:00</published>
+  
+    <updated>2025-12-31T08:59:59+08:00</updated>
+  
+    <id>http://localhost:4000/posts/end-of-2025/</id>
+    <content src="http://localhost:4000/posts/end-of-2025/" />
+    <author>
+      <name>saveole</name>
+    </author>
+
+  
+    
+    <category term="总结" />
+    
+  
+
+  <summary>年终回顾</summary>
+
+  </entry>
+
+  
+  <entry>
     <title>阿里云百炼大模型配合自家云效 DevOps MCP token 消耗巨大</title>
     <link href="http://localhost:4000/posts/aliyun-is-shit/" rel="alternate" type="text/html" title="阿里云百炼大模型配合自家云效 DevOps MCP token 消耗巨大" />
     <published>2025-10-09T19:50:30+08:00</published>
   
-    <updated>2025-10-09T19:50:30+08:00</updated>
+    <updated>2025-10-10T12:33:41+08:00</updated>
   
     <id>http://localhost:4000/posts/aliyun-is-shit/</id>
     <content src="http://localhost:4000/posts/aliyun-is-shit/" />
@@ -111,30 +135,6 @@
   
 
   <summary>自己平时写单元测试时使用到的一些 Mockito 案例</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Saveole's Tech Review, Issue 0</title>
-    <link href="http://localhost:4000/posts/saveole-tech-review-0/" rel="alternate" type="text/html" title="Saveole&amp;apos;s Tech Review, Issue 0" />
-    <published>2024-09-21T16:50:30+08:00</published>
-  
-    <updated>2025-03-21T21:53:03+08:00</updated>
-  
-    <id>http://localhost:4000/posts/saveole-tech-review-0/</id>
-    <content src="http://localhost:4000/posts/saveole-tech-review-0/" />
-    <author>
-      <name>saveole</name>
-    </author>
-
-  
-    
-    <category term="Randomly" />
-    
-  
-
-  <summary>JDK23|SpringBoot CDS|ZGC|Go SSE|Raft</summary>
 
   </entry>
 
