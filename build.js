@@ -31,8 +31,13 @@ const THEME_DIR = path.join(__dirname, 'theme');
 if (fs.existsSync(DIST_DIR)) fs.rmSync(DIST_DIR, { recursive: true });
 fs.mkdirSync(DIST_DIR);
 
-// 2. 拷贝 CSS 静态资源
+// 2. 拷贝 CSS 和静态资源
 fs.copyFileSync(path.join(THEME_DIR, 'style.css'), path.join(DIST_DIR, 'style.css'));
+
+// 拷贝 assets 目录到 dist
+if (fs.existsSync(path.join(__dirname, 'assets'))) {
+    fs.copySync(path.join(__dirname, 'assets'), path.join(DIST_DIR, 'assets'));
+}
 
 // 3. 读取所有文章
 const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
@@ -43,7 +48,9 @@ const postList = [];
 files.forEach(file => {
     const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
     const { data, content } = matter(rawContent);
-    const htmlContent = md.render(content);
+    // 修正图片路径：将 ../assets/ 替换为 ./assets/
+    const fixedContent = content.replace(/\.\.\/assets\//g, './assets/');
+    const htmlContent = md.render(fixedContent);
 
     // 日期处理逻辑
     const postDate = data.date ? new Date(data.date) : new Date(0);
