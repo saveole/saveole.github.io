@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | 我的技术博客</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Blog.</a>
+            <ul class="nav-links">
+                <li><a href="index.html">返回首页</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <article class="post">
+            <header class="post-header">
+                <time><%= date %></time>
+                <h1><%= title %></h1>
+                <% if (subtitle) { %>
+                    <p class="subtitle"><%= subtitle %></p>
+                <% } %>
+            </header>
+
+            <section class="post-content">
+                <%- content %>
+            </section>
+        </article>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 saveole.</p>
+    </footer>
+</body>
+</html>

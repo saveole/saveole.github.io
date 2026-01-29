@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>saveole | saveole's land</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Blog.</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="home-header" style="margin: 4rem 0;">
+            <p style="color: var(--text-muted); font-size: 1.2rem;">AI 时代留给自己的一片自留地</p>
+        </header>
+
+        <section class="post-list">
+            <% posts.forEach(post => { %>
+                <div class="post-item" >
+                    <time>
+                        <%= post.date %>
+                    </time>
+                    <h2>
+                        <a href="<%= post.url %>" style="text-decoration: none; color: var(--text-main);"><%= post.title %></a>
+                    </h2>
+                    <% if (post.subtitle) { %>
+                        <p></p>
+                    <% } %>
+                </div>
+            <% }) %>
+        </section>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 saveole.</p>
+    </footer>
+</body>
+</html>

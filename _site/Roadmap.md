@@ -1,1 +1,0 @@
-- [x] 创建 randomly 分类，随机写自己的 tech review，内容集中在技术测。
