@@ -59,7 +59,7 @@ files.forEach(file => {
     const postData = {
         title: data.title || '无题',
         subtitle: data.subtitle || '',
-        date: isValidDate ? postDate.toLocaleDateString('zh-CN') : '未知日期',
+        date: isValidDate ? postDate.toISOString().split('T')[0] : '未知日期',
         rawDate: postDate,
         url: file.replace('.md', '.html'),
         content: htmlContent
