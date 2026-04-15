@@ -84,3 +84,10 @@ const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
 console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个首页。`);
+
+// 复制独立页面（如 token-usage）
+const PAGES_DIR = path.join(__dirname, 'pages');
+if (fs.existsSync(PAGES_DIR)) {
+    fs.copySync(PAGES_DIR, DIST_DIR);
+    console.log('已复制 pages/ 目录到 dist/。');
+}
