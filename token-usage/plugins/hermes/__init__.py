@@ -48,7 +48,7 @@ def _log(msg: str) -> None:
 
 
 def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
-    """Read session token stats from Hermes state.db."""
+    """Read session token stats + project from Hermes state.db in one query."""
     if not STATE_DB.exists():
         _log("SKIP: state.db not found")
         return None
@@ -60,7 +60,7 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
             """
             SELECT id, model, started_at, ended_at, end_reason,
                    message_count, input_tokens, output_tokens,
-                   cache_read_tokens, cache_write_tokens
+                   cache_read_tokens, cache_write_tokens, title
             FROM sessions WHERE id = ?
             """,
             (session_id,),
@@ -86,6 +86,18 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
     if d["started_at"] and d["ended_at"]:
         duration = int(d["ended_at"] - d["started_at"])
 
+    # Determine project: title > cwd basename > unknown
+    project = d.get("title") or ""
+    if not project:
+        try:
+            cwd = os.getcwd()
+            if cwd and cwd != "/":
+                project = os.path.basename(cwd)
+        except Exception:
+            pass
+    if not project:
+        project = "unknown"
+
     return {
         "session_id": d["id"],
         "model": d["model"] or "unknown",
@@ -95,29 +107,8 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
         "tokens_output": d["output_tokens"] or 0,
         "tokens_cache_read": d["cache_read_tokens"] or 0,
         "tokens_cache_creation": d["cache_write_tokens"] or 0,
+        "project": project,
     }
-
-
-def _get_project(session_id: str) -> str:
-    """Try to determine project name from session title or cwd."""
-    # 1. Try session title
-    try:
-        conn = sqlite3.connect(str(STATE_DB))
-        cur = conn.execute("SELECT title FROM sessions WHERE id = ?", (session_id,))
-        row = cur.fetchone()
-        conn.close()
-        if row and row[0]:
-            return row[0]
-    except Exception:
-        pass
-    # 2. Use current working directory basename (works at session finalize time)
-    try:
-        cwd = os.getcwd()
-        if cwd and cwd != "/":
-            return os.path.basename(cwd)
-    except Exception:
-        pass
-    return "unknown"
 
 
 def _get_git_branch() -> str:
@@ -125,7 +116,7 @@ def _get_git_branch() -> str:
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True, timeout=3,
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -135,7 +126,7 @@ def _get_git_branch() -> str:
 
 
 def _acquire_lock() -> bool:
-    """Non-blocking file lock via mkdir (same as Claude script)."""
+    """Non-blocking file lock via mkdir."""
     lock_dir = Path("/tmp/hermes-token-usage.lockdir")
     try:
         lock_dir.mkdir(exist_ok=False)
@@ -152,41 +143,56 @@ def _release_lock() -> None:
         pass
 
 
+def _git(data_file: Path, *args: str, timeout: int = 30) -> subprocess.CompletedProcess:
+    """Run a git command in REPO_DIR."""
+    return subprocess.run(
+        ["git", "-C", str(REPO_DIR)] + list(args),
+        capture_output=True, text=True, timeout=timeout,
+    )
+
+
 def _git_sync(data_file: Path) -> None:
-    """git add, commit, pull --rebase, push."""
+    """git add + commit (fast, local), then async push in background."""
     if not (REPO_DIR / ".git").exists():
         _log("SKIP: REPO_DIR is not a git repo")
         return
 
     rel_path = data_file.relative_to(REPO_DIR)
 
-    def _git(*args: str) -> bool:
-        try:
-            result = subprocess.run(
-                ["git", "-C", str(REPO_DIR)] + list(args),
-                capture_output=True, text=True, timeout=60,
-            )
-            if result.returncode != 0:
-                _log(f"GIT {' '.join(args)} FAILED: {result.stderr.strip()[:200]}")
-                return False
-            return True
-        except Exception as exc:
-            _log(f"GIT {' '.join(args)} ERROR: {exc}")
-            return False
+    # 1. Stage the data file
+    r = _git(data_file, "add", str(rel_path))
+    if r.returncode != 0:
+        _log(f"GIT add FAILED: {r.stderr.strip()[:200]}")
+        return
 
-    _git("add", str(rel_path))
-    # Check if there are staged changes
-    result = subprocess.run(
-        ["git", "-C", str(REPO_DIR), "diff", "--cached", "--quiet"],
-        capture_output=True, text=True, timeout=10,
-    )
-    if result.returncode != 0:
-        _git("pull", "--rebase", "origin", "main")
-        _git("commit", "-m", f"track: hermes token usage {data_file.stem}")
-        _git("push", "origin", "main")
-        _log("GIT: sync OK")
-    else:
+    # 2. Check if there are staged changes
+    r = _git(data_file, "diff", "--cached", "--quiet")
+    if r.returncode == 0:
         _log("GIT: no changes to commit")
+        return
+
+    # 3. Commit (local, fast)
+    r = _git(data_file, "commit", "-m", f"track: hermes token usage {data_file.stem}")
+    if r.returncode != 0:
+        _log(f"GIT commit FAILED: {r.stderr.strip()[:200]}")
+        return
+
+    _log("GIT: committed OK")
+
+    # 4. Push in background — don't block session exit
+    #    Uses --rebase --autostash so local changes won't block rebase
+    try:
+        subprocess.Popen(
+            [
+                "git", "-C", str(REPO_DIR),
+                "push", "--rebase", "--autostash", "origin", "main",
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        _log("GIT: push started in background")
+    except Exception as exc:
+        _log(f"GIT background push error: {exc}")
 
 
 def _record_usage(session_id: str, platform: str) -> None:
@@ -201,7 +207,7 @@ def _record_usage(session_id: str, platform: str) -> None:
         _log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
-    # Get session data from state.db
+    # Get session data from state.db (single query, includes project)
     data = _get_session_data(session_id)
     if not data:
         return
@@ -213,13 +219,12 @@ def _record_usage(session_id: str, platform: str) -> None:
 
     # Build record
     now = datetime.now(timezone.utc)
-    project = _get_project(session_id)
     git_branch = _get_git_branch()
 
     tsv_row = "\t".join([
         data["session_id"],
         now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        project,
+        data["project"],
         data["model"],
         str(data["duration_seconds"]),
         str(data["message_count"]),
@@ -255,7 +260,7 @@ def _record_usage(session_id: str, platform: str) -> None:
 
         _log(f"WROTE: {data_file.name}")
 
-        # Git sync
+        # Git sync (commit is sync, push is async)
         _git_sync(data_file)
 
     except Exception as exc:
