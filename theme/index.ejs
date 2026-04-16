@@ -38,6 +38,16 @@
                 <span class="legend-cell" data-level="3"></span>
                 <span class="legend-cell" data-level="4"></span>
                 <span class="legend-label">More</span>
+                <span class="legend-info-btn" tabindex="0">&#9432;</span>
+                <div class="legend-info-panel">
+                    <p><strong>统计方式</strong>：每个 AI 会话（Claude Code / Hermes）结束时，按 <code>session_id</code> 记录该会话的总 token 消耗，归入<strong>会话结束当日</strong>（UTC）。</p>
+                    <p><strong>可能的误差</strong>：</p>
+                    <ul>
+                        <li>跨天会话的所有 token 均计入结束日，开始日数据会偏低</li>
+                        <li>使用 <code>--resume</code> 恢复会话后，transcript 为全量，可能导致旧 token 被重复计入新日期</li>
+                    </ul>
+                    <p class="legend-info-note">以上场景实际发生频率较低，不影响整体趋势参考。</p>
+                </div>
             </div>
         </header>
 
