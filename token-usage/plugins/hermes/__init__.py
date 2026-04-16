@@ -13,7 +13,7 @@ import os
 import sqlite3
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -40,7 +40,7 @@ def _log(msg: str) -> None:
     """Append to tracker log."""
     try:
         LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-        ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
         with open(LOG_FILE, "a") as f:
             f.write(f"[{ts}] {msg}\n")
     except Exception:
@@ -218,12 +218,12 @@ def _record_usage(session_id: str, platform: str) -> None:
     )
 
     # Build record
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone(timedelta(hours=8)))
     git_branch = _get_git_branch()
 
     tsv_row = "\t".join([
         data["session_id"],
-        now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        now.strftime("%Y-%m-%dT%H:%M:%S+08:00"),
         data["project"],
         data["model"],
         str(data["duration_seconds"]),

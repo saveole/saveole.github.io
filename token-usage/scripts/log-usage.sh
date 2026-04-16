@@ -4,7 +4,7 @@
 # │                                                             │
 # │  将此脚本复制到 ~/.claude/hooks/log-usage.sh                │
 # │  然后在 ~/.claude/settings.json 中注册 Stop hook            │
-# │  详见 saveole.github.io/token-usage/README.md               │
+# │  详见 saveole.github.io/token-usage/README.md                                 │
 # └─────────────────────────────────────────────────────────────┘
 set -u
 
@@ -89,8 +89,8 @@ fi
 GIT_BRANCH=$(jq -r 'select(.type == "assistant") | .gitBranch // "unknown"' "$TRANSCRIPT_PATH" 2>/dev/null | head -1 || true)
 [[ -n "$GIT_BRANCH" ]] || GIT_BRANCH="unknown"
 
-NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-DATE=$(date -u +"%Y-%m-%d")
+NOW=$(date +"%Y-%m-%dT%H:%M:%S+08:00")
+DATE=$(date +"%Y-%m-%d")
 
 # ── Extract token fields ──
 INPUT_TOKENS=$(echo "$TOKEN_JSON" | jq -r '.input // 0')
