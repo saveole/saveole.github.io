@@ -77,9 +77,17 @@ files.forEach(file => {
 // 按时间倒序
 postList.sort((a, b) => b.rawDate - a.rawDate);
 
-// 使用 index.ejs 渲染，传入 posts 列表
+// 读取 token 用量数据
+let tokenUsageData = { days: [] };
+const tokenUsagePath = path.join(__dirname, 'pages', 'token-usage', 'daily-summary.json');
+if (fs.existsSync(tokenUsagePath)) {
+    tokenUsageData = JSON.parse(fs.readFileSync(tokenUsagePath, 'utf-8'));
+}
+
+// 使用 index.ejs 渲染，传入 posts 列表和 token 数据
 const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 'utf-8'), {
-    posts: postList
+    posts: postList,
+    tokenData: JSON.stringify(tokenUsageData)
 });
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 

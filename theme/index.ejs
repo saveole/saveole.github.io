@@ -15,13 +15,30 @@
     <nav class="navbar">
         <div class="container navbar-inner">
             <a href="index.html" class="logo">Blog.</a>
-            <a href="token-usage/index.html" class="nav-link">Token 用量</a>
         </div>
     </nav>
 
     <main class="container">
-        <header class="home-header" style="margin: 4rem 0;">
-            <p style="color: var(--text-muted); font-size: 1.2rem;">AI 时代的一片自留地</p>
+        <header class="home-header">
+            <p class="contrib-title">Token 用量</p>
+            <div class="contrib-wrapper">
+                <div class="contrib-months" id="contrib-months"></div>
+                <div class="contrib-body">
+                    <div class="contrib-days">
+                        <span>Mon</span><span>Wed</span><span>Fri</span>
+                    </div>
+                    <div class="contrib-grid" id="contrib-grid"></div>
+                </div>
+            </div>
+            <div class="contrib-legend">
+                <span class="legend-label">Less</span>
+                <span class="legend-cell" data-level="0"></span>
+                <span class="legend-cell" data-level="1"></span>
+                <span class="legend-cell" data-level="2"></span>
+                <span class="legend-cell" data-level="3"></span>
+                <span class="legend-cell" data-level="4"></span>
+                <span class="legend-label">More</span>
+            </div>
         </header>
 
         <section class="post-list">
@@ -44,5 +61,137 @@
     <footer class="container">
         <p>&copy; 2026 saveole.</p>
     </footer>
+
+    <script>
+    (function() {
+        const data = <%- tokenData %>;
+        if (!data || !data.days || data.days.length === 0) return;
+
+        // 构建日期 -> token 总量映射
+        const tokenMap = {};
+        data.days.forEach(function(d) {
+            var t = d.total_tokens;
+            tokenMap[d.date] = t.input + t.output + t.cache_read + t.cache_creation;
+        });
+
+        // 计算日期范围：最近一年，从一年前的周一开始到今天
+        var today = new Date();
+        var todayStr = today.getFullYear() + '-' +
+            String(today.getMonth() + 1).padStart(2, '0') + '-' +
+            String(today.getDate()).padStart(2, '0');
+
+        // 一年前的同一天
+        var oneYearAgo = new Date(today);
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        // 回退到该周的周一
+        var dayOfWeek = oneYearAgo.getDay();
+        var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        var startDate = new Date(oneYearAgo);
+        startDate.setDate(startDate.getDate() + mondayOffset);
+
+        // 生成所有周的列
+        var weeks = [];
+        var current = new Date(startDate);
+        var monthLabels = [];
+        var lastMonth = -1;
+
+        function toDateStr(d) {
+            return d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getDate()).padStart(2, '0');
+        }
+
+        while (toDateStr(current) <= todayStr) {
+            var week = [];
+            for (var i = 0; i < 7; i++) {
+                var dateStr = toDateStr(current);
+                var month = current.getMonth();
+                if (i === 0 && month !== lastMonth) {
+                    monthLabels.push({
+                        month: current.toLocaleString('zh-CN', { month: 'short' }),
+                        weekIndex: weeks.length
+                    });
+                    lastMonth = month;
+                }
+                week.push({
+                    date: dateStr,
+                    tokens: tokenMap[dateStr] || 0,
+                    future: dateStr > todayStr
+                });
+                current.setDate(current.getDate() + 1);
+            }
+            weeks.push(week);
+        }
+
+        // 计算颜色分级阈值（用四分位数）
+        var values = data.days.map(function(d) {
+            var t = d.total_tokens;
+            return t.input + t.output + t.cache_read + t.cache_creation;
+        }).filter(function(v) { return v > 0; }).sort(function(a, b) { return a - b; });
+
+        function getQuantile(arr, q) {
+            var pos = (arr.length - 1) * q;
+            var base = Math.floor(pos);
+            var rest = pos - base;
+            if (arr[base + 1] !== undefined) {
+                return arr[base] + rest * (arr[base + 1] - arr[base]);
+            }
+            return arr[base];
+        }
+
+        var q1 = values.length > 0 ? getQuantile(values, 0.25) : 0;
+        var q2 = values.length > 0 ? getQuantile(values, 0.5) : 0;
+        var q3 = values.length > 0 ? getQuantile(values, 0.75) : 0;
+
+        function getLevel(v) {
+            if (v === 0) return 0;
+            if (v <= q1) return 1;
+            if (v <= q2) return 2;
+            if (v <= q3) return 3;
+            return 4;
+        }
+
+        function formatTokens(n) {
+            if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+            return n.toString();
+        }
+
+        // 渲染月份标签
+        var monthsEl = document.getElementById('contrib-months');
+        var monthHtml = '';
+        var prevWeekIdx = -10;
+        monthLabels.forEach(function(m) {
+            var offset = m.weekIndex * 12;
+            if (m.weekIndex > prevWeekIdx + 3) {
+                monthHtml += '<span style="position:absolute;left:' + offset + 'px">' + m.month + '</span>';
+                prevWeekIdx = m.weekIndex;
+            }
+        });
+        monthsEl.innerHTML = monthHtml;
+
+        // 渲染格子
+        var totalWeeks = weeks.length;
+        var edgeCount = 8; // tooltip约180px / 12px列宽 ≈ 8列
+        var gridEl = document.getElementById('contrib-grid');
+        var gridHtml = '';
+        weeks.forEach(function(week, wi) {
+            week.forEach(function(day, di) {
+                var level = day.future ? -1 : getLevel(day.tokens);
+                var cls = day.future ? '' : 'contrib-cell level-' + level;
+                if (wi < edgeCount) cls += ' edge-left';
+                if (wi >= totalWeeks - edgeCount) cls += ' edge-right';
+                var tooltip = day.future ? '' : day.date + ': ' + formatTokens(day.tokens) + ' tokens';
+                gridHtml += '<span class=\"' + cls + '\" data-date=\"' + day.date + '\" data-tooltip=\"' + tooltip + '\" style=\"grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '\"></span>';
+            });
+        });
+        gridEl.innerHTML = gridHtml;
+
+        // Tooltip 处理（用 CSS :hover + ::after）
+        var style = document.createElement('style');
+        style.textContent = '.contrib-cell:hover::after { content: attr(data-tooltip); }';
+        document.head.appendChild(style);
+    })();
+    </script>
 </body>
 </html>

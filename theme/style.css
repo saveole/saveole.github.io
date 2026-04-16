@@ -235,3 +235,154 @@ pre {
     height: 1.1rem;
     cursor: default;
 }
+
+/* ============ Token Contribution Graph ============ */
+.home-header {
+    margin: 4rem 0 2rem;
+}
+
+.contrib-title {
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.75rem;
+}
+
+.contrib-wrapper {
+    overflow: visible;
+    padding-bottom: 2rem;
+}
+
+.contrib-months {
+    position: relative;
+    height: 1.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: 30px;
+    white-space: nowrap;
+}
+
+.contrib-body {
+    display: flex;
+    gap: 4px;
+}
+
+.contrib-days {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    height: calc(10px * 7 + 2px * 6);
+    justify-content: space-between;
+    flex-shrink: 0;
+    width: 26px;
+}
+
+.contrib-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 10px);
+    grid-auto-columns: 10px;
+    grid-auto-flow: column;
+    gap: 2px;
+}
+
+.contrib-cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.contrib-cell:hover {
+    outline: 2px solid var(--text-main);
+    outline-offset: -1px;
+}
+
+/* Tooltip - 浅色主题，向下弹出避免被遮挡 */
+.contrib-cell:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 左侧边缘：tooltip 左对齐，不超出左边 */
+.contrib-cell.edge-left:hover::after {
+    left: 0;
+    transform: translateX(0);
+}
+
+/* 右侧边缘：tooltip 右对齐，不超出右边 */
+.contrib-cell.edge-right:hover::after {
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+}
+
+/* Color levels - blue theme matching primary-color */
+.contrib-cell.level--1 {
+    background: transparent;
+}
+.contrib-cell.level-0 {
+    background: #ebedf0;
+}
+.contrib-cell.level-1 {
+    background: #c6e0ff;
+}
+.contrib-cell.level-2 {
+    background: #7db8ff;
+}
+.contrib-cell.level-3 {
+    background: #3b8aff;
+}
+.contrib-cell.level-4 {
+    background: #2563EB;
+}
+
+/* Legend */
+.contrib-legend {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 0.6rem;
+    justify-content: flex-end;
+    margin-left: 30px;
+}
+
+.legend-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-right: 2px;
+}
+
+.legend-cell {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+.legend-cell[data-level="0"] { background: #ebedf0; }
+.legend-cell[data-level="1"] { background: #c6e0ff; }
+.legend-cell[data-level="2"] { background: #7db8ff; }
+.legend-cell[data-level="3"] { background: #3b8aff; }
+.legend-cell[data-level="4"] { background: #2563EB; }
