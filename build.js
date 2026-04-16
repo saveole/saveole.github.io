@@ -77,11 +77,32 @@ files.forEach(file => {
 // 按时间倒序
 postList.sort((a, b) => b.rawDate - a.rawDate);
 
-// 读取 token 用量数据
+// 读取 token 用量数据（直接从 .data TSV 文件聚合）
 let tokenUsageData = { days: [] };
-const tokenUsagePath = path.join(__dirname, 'pages', 'token-usage', 'daily-summary.json');
-if (fs.existsSync(tokenUsagePath)) {
-    tokenUsageData = JSON.parse(fs.readFileSync(tokenUsagePath, 'utf-8'));
+const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
+if (fs.existsSync(TOKEN_USAGE_DIR)) {
+    const dayMap = {};
+    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}\.data$/.test(f)).sort();
+    for (const df of dataFiles) {
+        const date = df.replace('.data', '');
+        const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
+        if (lines.length < 2) continue; // header only
+        const header = lines[0].split('\t');
+        const tokens = { input: 0, output: 0, cache_read: 0, cache_creation: 0 };
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split('\t');
+            const get = (name) => parseInt(cols[header.indexOf(name)] || '0', 10) || 0;
+            tokens.input += get('tokens_input');
+            tokens.output += get('tokens_output');
+            tokens.cache_read += get('tokens_cache_read');
+            tokens.cache_creation += get('tokens_cache_creation');
+        }
+        dayMap[date] = tokens;
+    }
+    tokenUsageData.days = Object.keys(dayMap).sort().map(date => ({
+        date,
+        total_tokens: dayMap[date]
+    }));
 }
 
 // 使用 index.ejs 渲染，传入 posts 列表和 token 数据

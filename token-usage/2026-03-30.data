@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+1f0f5724-c387-4722-8f15-249252db8013	2026-03-30T11:39:20.837Z	projects	glm-4.7	85535	37	113296	2435	968448	0	login
