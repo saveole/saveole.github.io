@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 9395ab2f-c69c-49b8-8d04-5bcc2c5c7cf4	2026-04-17T09:42:27+08:00	test-codegen	glm-5.1	1295	31	45949	4532	1294464	0	master
 20260417_094042_ca45af	2026-04-17T10:13:21+08:00	inherit	glm-5.1	1934	45	46409	4377	412736	0	fix/9.1/NFQX-11784
+20260417_094601_344627	2026-04-17T10:43:34+08:00	skills	glm-5.1	3328	109	86321	13246	1913024	0	main
