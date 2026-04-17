@@ -13,7 +13,7 @@ set -u
 # ═══════════════════════════════════════════════════════════════
 
 # saveole.github.io 仓库在本机的绝对路径
-REPO_DIR="$HOME/blog/saveole.github.io"
+REPO_DIR="${TOKEN_USAGE_REPO_DIR:-$HOME/blog/saveole.github.io}"
 
 # ═══════════════════════════════════════════════════════════════
 
