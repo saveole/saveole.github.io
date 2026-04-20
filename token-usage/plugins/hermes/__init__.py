@@ -11,7 +11,6 @@ from __future__ import annotations
 import logging
 import os
 import sqlite3
-import shlex
 import subprocess
 import time
 from datetime import datetime, timezone, timedelta
@@ -160,19 +159,26 @@ def _git_sync(data_file: Path) -> None:
 
     rel_path = data_file.relative_to(REPO_DIR)
 
-    # 1. Stage the data file
+    # 1. Pull latest to avoid diverged branches
+    r = _git(data_file, "pull", "--rebase", "origin", "main")
+    if r.returncode != 0:
+        _log(f"GIT pull FAILED: {r.stderr.strip()[:200]}")
+    else:
+        _log("GIT: pull OK")
+
+    # 2. Stage the data file
     r = _git(data_file, "add", str(rel_path))
     if r.returncode != 0:
         _log(f"GIT add FAILED: {r.stderr.strip()[:200]}")
         return
 
-    # 2. Check if there are staged changes
+    # 3. Check if there are staged changes
     r = _git(data_file, "diff", "--cached", "--quiet")
     if r.returncode == 0:
         _log("GIT: no changes to commit")
         return
 
-    # 3. Commit (local, fast)
+    # 4. Commit (local, fast)
     r = _git(data_file, "commit", "-m", f"track: hermes token usage {data_file.stem}")
     if r.returncode != 0:
         _log(f"GIT commit FAILED: {r.stderr.strip()[:200]}")
@@ -180,24 +186,14 @@ def _git_sync(data_file: Path) -> None:
 
     _log("GIT: committed OK")
 
-    # 4. Push in background — don't block session exit
-    #    Strategy: fetch first, then rebase onto remote, then push.
-    #    This handles diverged branches correctly (e.g. multiple machines).
-    #    Redirect output to a log file so we can diagnose silent failures.
+    # 5. Push in background — don't block session exit
     try:
-        push_log = open(LOG_FILE.parent / "git-push.log", "a")
         subprocess.Popen(
-            [
-                "bash", "-c",
-                f"cd {shlex.quote(str(REPO_DIR))} && "
-                f"git fetch origin main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1 && "
-                f"git rebase --autostash origin/main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1 && "
-                f"git push origin main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1",
-            ],
-            stdout=push_log,
-            stderr=push_log,
+            ["git", "-C", str(REPO_DIR), "push", "origin", "main"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         )
-        _log("GIT: fetch+rebase+push started in background")
+        _log("GIT: push started in background")
     except Exception as exc:
         _log(f"GIT background push error: {exc}")
 
