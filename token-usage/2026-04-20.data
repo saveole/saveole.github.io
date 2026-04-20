@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 14351c5f-e0ac-40ed-99f2-e79b95f3d03a	2026-04-20T09:18:14+08:00	weworkScrmNew2	glm-5.1	475	7	41148	2260	152448	0	master
 22349959-47d7-4361-b6b9-d7f5858207b5	2026-04-20T09:18:25+08:00	scrm_wechat	glm-5.1	517	9	56890	2545	141632	0	master
+20260420_102308_98f37b	2026-04-20T10:34:19+08:00	inherit	glm-5.1	386	34	42970	1234	252608	0	fix/9.1/NFQX-11784	ant	Linux
