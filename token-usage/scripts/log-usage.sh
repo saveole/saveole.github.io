@@ -125,27 +125,36 @@ printf '%s\n' "$TSV_RECORD" >> "$DATA_FILE"
 cd "$REPO_DIR"
 
 # Pull BEFORE staging — rebase fails when index has staged changes
+_PULL_START=$(date +%s)
 log "GIT: pulling origin main..."
 if git pull --rebase origin main 2>>"$ERROR_LOG"; then
-    log "GIT: pull OK"
+    _PULL_ELAPSED=$(( $(date +%s) - _PULL_START ))
+    log "GIT: pull OK (${_PULL_ELAPSED}s)"
 else
-    log "GIT: pull FAILED (see $ERROR_LOG)"
+    _PULL_ELAPSED=$(( $(date +%s) - _PULL_START ))
+    log "GIT: pull FAILED (${_PULL_ELAPSED}s, see $ERROR_LOG)"
 fi
 
 git add "token-usage/${DATE}.data" 2>/dev/null || true
 if ! git diff --cached --quiet 2>/dev/null; then
+    _COMMIT_START=$(date +%s)
     log "GIT: committing session ${SESSION_ID:0:8}..."
     if git commit -m "track: token usage ${DATE} session ${SESSION_ID:0:8}" 2>>"$ERROR_LOG"; then
-        log "GIT: commit OK"
+        _COMMIT_ELAPSED=$(( $(date +%s) - _COMMIT_START ))
+        log "GIT: commit OK (${_COMMIT_ELAPSED}s)"
     else
-        log "GIT: commit FAILED (see $ERROR_LOG)"
+        _COMMIT_ELAPSED=$(( $(date +%s) - _COMMIT_START ))
+        log "GIT: commit FAILED (${_COMMIT_ELAPSED}s, see $ERROR_LOG)"
     fi
 
+    _PUSH_START=$(date +%s)
     log "GIT: pushing origin main..."
     if git push origin main 2>>"$ERROR_LOG"; then
-        log "GIT: push OK"
+        _PUSH_ELAPSED=$(( $(date +%s) - _PUSH_START ))
+        log "GIT: push OK (${_PUSH_ELAPSED}s)"
     else
-        log "GIT: push FAILED (see $ERROR_LOG)"
+        _PUSH_ELAPSED=$(( $(date +%s) - _PUSH_START ))
+        log "GIT: push FAILED (${_PUSH_ELAPSED}s, see $ERROR_LOG)"
     fi
 else
     log "GIT: no changes to commit"

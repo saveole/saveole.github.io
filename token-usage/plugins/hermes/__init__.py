@@ -160,11 +160,14 @@ def _git_sync(data_file: Path) -> None:
     rel_path = data_file.relative_to(REPO_DIR)
 
     # 1. Pull latest to avoid diverged branches
+    t0 = time.monotonic()
+    _log("GIT: pulling origin main...")
     r = _git(data_file, "pull", "--rebase", "origin", "main")
+    elapsed = time.monotonic() - t0
     if r.returncode != 0:
-        _log(f"GIT pull FAILED: {r.stderr.strip()[:200]}")
+        _log(f"GIT pull FAILED ({elapsed:.1f}s): {r.stderr.strip()[:200]}")
     else:
-        _log("GIT: pull OK")
+        _log(f"GIT: pull OK ({elapsed:.1f}s)")
 
     # 2. Stage the data file
     r = _git(data_file, "add", str(rel_path))
@@ -179,23 +182,29 @@ def _git_sync(data_file: Path) -> None:
         return
 
     # 4. Commit (local, fast)
+    t0 = time.monotonic()
+    _log("GIT: committing...")
     r = _git(data_file, "commit", "-m", f"track: hermes token usage {data_file.stem}")
+    elapsed = time.monotonic() - t0
     if r.returncode != 0:
-        _log(f"GIT commit FAILED: {r.stderr.strip()[:200]}")
+        _log(f"GIT commit FAILED ({elapsed:.1f}s): {r.stderr.strip()[:200]}")
         return
 
-    _log("GIT: committed OK")
+    _log(f"GIT: committed OK ({elapsed:.1f}s)")
 
     # 5. Push in background — don't block session exit
+    t0 = time.monotonic()
+    _log("GIT: pushing origin main...")
     try:
-        subprocess.Popen(
-            ["git", "-C", str(REPO_DIR), "push", "origin", "main"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        _log("GIT: push started in background")
+        r = _git(data_file, "push", "origin", "main", timeout=60)
+        elapsed = time.monotonic() - t0
+        if r.returncode == 0:
+            _log(f"GIT: push OK ({elapsed:.1f}s)")
+        else:
+            _log(f"GIT push FAILED ({elapsed:.1f}s): {r.stderr.strip()[:200]}")
     except Exception as exc:
-        _log(f"GIT background push error: {exc}")
+        elapsed = time.monotonic() - t0
+        _log(f"GIT push error ({elapsed:.1f}s): {exc}")
 
 
 def _record_usage(session_id: str, platform: str) -> None:
