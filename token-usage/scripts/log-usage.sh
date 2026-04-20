@@ -123,15 +123,17 @@ fi
 printf '%s\n' "$TSV_RECORD" >> "$DATA_FILE"
 
 cd "$REPO_DIR"
+
+# Pull BEFORE staging — rebase fails when index has staged changes
+log "GIT: pulling origin main..."
+if git pull --rebase origin main 2>>"$ERROR_LOG"; then
+    log "GIT: pull OK"
+else
+    log "GIT: pull FAILED (see $ERROR_LOG)"
+fi
+
 git add "token-usage/${DATE}.data" 2>/dev/null || true
 if ! git diff --cached --quiet 2>/dev/null; then
-    log "GIT: pulling origin main..."
-    if git pull --rebase origin main 2>>"$ERROR_LOG"; then
-        log "GIT: pull OK"
-    else
-        log "GIT: pull FAILED (see $ERROR_LOG)"
-    fi
-
     log "GIT: committing session ${SESSION_ID:0:8}..."
     if git commit -m "track: token usage ${DATE} session ${SESSION_ID:0:8}" 2>>"$ERROR_LOG"; then
         log "GIT: commit OK"
