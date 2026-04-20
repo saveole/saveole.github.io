@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import os
 import sqlite3
+import shlex
 import subprocess
 import time
 from datetime import datetime, timezone, timedelta
@@ -180,17 +181,23 @@ def _git_sync(data_file: Path) -> None:
     _log("GIT: committed OK")
 
     # 4. Push in background — don't block session exit
-    #    Uses --rebase --autostash so local changes won't block rebase
+    #    Strategy: fetch first, then rebase onto remote, then push.
+    #    This handles diverged branches correctly (e.g. multiple machines).
+    #    Redirect output to a log file so we can diagnose silent failures.
     try:
+        push_log = open(LOG_FILE.parent / "git-push.log", "a")
         subprocess.Popen(
             [
-                "git", "-C", str(REPO_DIR),
-                "push", "--rebase", "--autostash", "origin", "main",
+                "bash", "-c",
+                f"cd {shlex.quote(str(REPO_DIR))} && "
+                f"git fetch origin main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1 && "
+                f"git rebase --autostash origin/main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1 && "
+                f"git push origin main >>{shlex.quote(str(LOG_FILE.parent / 'git-push.log'))} 2>&1",
             ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=push_log,
+            stderr=push_log,
         )
-        _log("GIT: push started in background")
+        _log("GIT: fetch+rebase+push started in background")
     except Exception as exc:
         _log(f"GIT background push error: {exc}")
 
