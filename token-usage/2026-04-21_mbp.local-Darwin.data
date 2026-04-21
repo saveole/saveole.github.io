@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+58a06038-5d6a-4181-a7c0-3eee8c1497b1	2026-04-21T15:14:11+08:00	saveole.github.io	glm-5.1	0	15	28273	1893	431488	0	main
