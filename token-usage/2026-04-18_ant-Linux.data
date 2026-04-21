@@ -1,0 +1,6 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+20260418_000126_098567	2026-04-18T00:01:26+08:00	unknown	glm-5.1	0	34	15214	3318	89408	0	unknown
+20260418_080849_169eda	2026-04-18T08:08:49+08:00	unknown	glm-5.1	0	2	717	72	0	0	unknown
+20260418_080858_0bca62	2026-04-18T08:08:58+08:00	unknown	glm-5.1	0	2	539	2585	192	0	unknown
+20260418_115909_4cbd8a73	2026-04-18T11:59:09+08:00	unknown	glm-5.1	3270	99	99781	5416	2415744	0	unknown
+20260418_125340_5b019e	2026-04-18T12:53:40+08:00	unknown	glm-5.1	184927	162	100657	7936	2174144	0	unknown

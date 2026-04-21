@@ -1,3 +1,6 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 0ed59fff-1dad-4d56-b98d-356b54dede09	2026-04-16T01:01:47.706Z	skills	glm-5.1	30	10	6009	358	179712	0	main
 0fe33844-a035-46f9-a04f-4f882eabe05c	2026-04-16T00:58:22.800Z	skills	glm-5.1	94	7	11599	564	111424	0	main
+20260416_145220_61548d	2026-04-16T14:52:51+08:00	unknown	glm-5	2643	67	178866	9511	1923456	0	unknown
+20260416_153654_d85f37	2026-04-16T15:36:54+08:00	unknown	glm-5	3860	118	87343	11165	1884224	0	unknown
+20260416_164153_cb6332	2026-04-16T16:43:26+08:00	unknown	glm-5	4727	159	107149	11055	3106240	0	unknown

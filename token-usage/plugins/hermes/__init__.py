@@ -321,9 +321,9 @@ def _backfill_missing() -> int:
     return total
 
 
-def _record_usage(session_id: str, platform: str) -> None:
+def _record_usage(session_id: str, platform_name: str) -> None:
     """Main logic: read session data, write TSV, git sync, then backfill missing sessions."""
-    _log(f"START session={session_id[:8] if session_id else 'None'} platform={platform}")
+    _log(f"START session={session_id[:8] if session_id else 'None'} platform={platform_name}")
 
     if not session_id:
         _log("SKIP: no session_id")
