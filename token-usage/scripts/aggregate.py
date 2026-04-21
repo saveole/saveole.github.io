@@ -35,7 +35,9 @@ def main():
         return
 
     for data_file in data_files:
-        date = os.path.splitext(os.path.basename(data_file))[0]
+        # Extract date from filename: YYYY-MM-DD_{hostname}-{os}.data -> YYYY-MM-DD
+        basename = os.path.basename(data_file)
+        date = basename.split('_')[0] if '_' in basename else os.path.splitext(basename)[0]
         try:
             with open(data_file, newline="") as f:
                 reader = csv.DictReader(f, delimiter="\t")

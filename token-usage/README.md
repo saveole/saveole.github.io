@@ -10,17 +10,17 @@
 Claude Code 会话结束
     ↓ Stop Hook 触发
     ↓ 解析会话 transcript，按 message.id 去重，累加 token 用量
-    ↓ 追加到 YYYY-MM-DD.data（按天分文件，TSV 格式）
+    ↓ 追加到 YYYY-MM-DD_{hostname}-{os}.data（按天+设备分文件，TSV 格式）
     ↓ 自动 git commit + push
 ────────────────────────────
 Hermes Agent 会话结束
     ↓ on_session_finalize Plugin hook 触发
     ↓ 从 state.db 读取 session token 统计
-    ↓ 追加到同一天的 YYYY-MM-DD.data（同一 TSV 文件）
+    ↓ 追加到同一天的 YYYY-MM-DD_{hostname}-{os}.data（同一 TSV 文件）
     ↓ 自动 git commit + push
 ────────────────────────────
 博客构建（node build.js）
-    ↓ 直接读取所有 YYYY-MM-DD.data 文件
+    ↓ 直接读取所有 YYYY-MM-DD_*.data 文件
     ↓ 按 session_id 去重，按日聚合 token
     ↓ 生成热力图数据，渲染到首页
 ```
@@ -99,11 +99,11 @@ python3 ~/blog/saveole.github.io/token-usage/scripts/backfill.py
 开始并结束一次 Claude Code 会话，然后检查：
 
 ```bash
-# 应该能看到当天生成的 .data 文件
-ls ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d).data
+# 应该能看到当天生成的 .data 文件（文件名包含主机名和系统）
+ls ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d)_*.data
 
 # 查看记录内容（TSV 格式）
-cat ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d).data
+cat ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d)_*.data
 ```
 
 如果 `.data` 文件存在且包含 TSV header + 数据行，说明配置成功。
@@ -132,7 +132,7 @@ cp ~/blog/saveole.github.io/token-usage/plugins/hermes/plugin.yaml ~/.hermes/plu
 cat ~/.hermes/plugins/token-usage-tracker.log
 
 # 查看 TSV 文件（应能看到 Hermes 格式的 session_id）
-tail -1 ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d).data
+tail -1 ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d)_*.data
 ```
 
 详细说明见 [plugins/hermes/README.md](./plugins/hermes/README.md)。
@@ -141,7 +141,7 @@ tail -1 ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d).data
 
 ```
 token-usage/
-├── YYYY-MM-DD.data          # 每日会话记录（hook/plugin 自动追加，TSV 格式）
+├── YYYY-MM-DD_{hostname}-{os}.data  # 每日每设备会话记录（hook/plugin 自动追加，TSV 格式）
 ├── plugins/
 │   └── hermes/               # Hermes Agent 插件
 │       ├── __init__.py       # 插件实现
@@ -216,9 +216,16 @@ session_id   timestamp   project   model   duration_seconds   message_count   to
 
 ## 多机使用
 
-在另一台电脑上重复「安装」步骤即可。多台机器的会话数据会写入同一仓库的不同 `.data` 文件行，push 时自动合并。
+在另一台电脑上重复「安装」步骤即可。每台机器会生成独立的 `{hostname}-{os}` 后缀文件，避免冲突。
 
-注意：多机并发 push 时 hook 脚本会 `git pull --rebase` 处理冲突。极端情况下（两台机器同时 push 同一天的文件）可能需要手动解决 rebase 冲突。
+**文件命名规则**：
+- 格式：`YYYY-MM-DD_{hostname}-{os}.data`
+- 示例：
+  - `2026-04-21_desktop1-Linux.data`
+  - `2026-04-21_macbook2-Darwin.data`
+  - `2026-04-21_workpc-Windows.data`
+
+这样多台机器可以同时向同一仓库 push，不会相互覆盖。博客构建脚本会自动读取所有 `{YYYY-MM-DD}_*.data` 文件并按 `session_id` 去重聚合。
 
 ## 故障排查
 

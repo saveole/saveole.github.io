@@ -42,8 +42,10 @@ session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count\ttokens_i
 
 ## File Naming Convention
 
-- **Filename format**: `YYYY-MM-DD.data` (e.g., `2026-04-15.data`)
-- One file per calendar day (UTC), containing all sessions that started on that day.
+- **Filename format**: `YYYY-MM-DD_{hostname}-{os}.data` (e.g., `2026-04-15_myhost-Linux.data`)
+  - `hostname`: System hostname (from `hostname` command or `platform.node()`)
+  - `os`: Operating system name (from `uname -s` or `platform.system()`, e.g., "Linux", "Darwin")
+- One file per calendar day (UTC) **per device**, containing all sessions that started on that day from that device.
 - **Encoding**: UTF-8, no BOM.
 - **Line endings**: Unix-style (`\n`), no trailing newline at end of file.
 

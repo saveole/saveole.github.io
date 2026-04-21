@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import os
+import platform
 import sqlite3
 import subprocess
 import time
@@ -248,7 +249,9 @@ def _record_usage(session_id: str, platform: str) -> None:
     ])
 
     date_str = now.strftime("%Y-%m-%d")
-    data_file = DATA_DIR / f"{date_str}.data"
+    hostname = platform.node() or "unknown"
+    os_name = platform.system() or "unknown"
+    data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
 
     # Concurrency lock
     if not _acquire_lock():

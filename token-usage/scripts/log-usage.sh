@@ -92,6 +92,10 @@ GIT_BRANCH=$(jq -r 'select(.type == "assistant") | .gitBranch // "unknown"' "$TR
 NOW=$(date +"%Y-%m-%dT%H:%M:%S+08:00")
 DATE=$(date +"%Y-%m-%d")
 
+# Get hostname and OS for device-specific file naming
+HOSTNAME=$(hostname 2>/dev/null || echo "unknown")
+OS=$(uname -s 2>/dev/null || echo "unknown")
+
 # ── Extract token fields ──
 INPUT_TOKENS=$(echo "$TOKEN_JSON" | jq -r '.input // 0')
 OUTPUT_TOKENS=$(echo "$TOKEN_JSON" | jq -r '.output // 0')
@@ -106,7 +110,7 @@ TSV_RECORD=$(printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' \
     "$GIT_BRANCH")
 
 # ── Deduplicate by session_id ──
-DATA_FILE="${DATA_DIR}/${DATE}.data"
+DATA_FILE="${DATA_DIR}/${DATE}_${HOSTNAME}-${OS}.data"
 if [[ -f "$DATA_FILE" ]]; then
     if grep -q "$SESSION_ID" "$DATA_FILE" 2>/dev/null; then
         log "SKIP: session ${SESSION_ID:0:8} already recorded"
@@ -135,7 +139,7 @@ else
     log "GIT: pull FAILED (${_PULL_ELAPSED}s, see $ERROR_LOG)"
 fi
 
-git add "token-usage/${DATE}.data" 2>/dev/null || true
+git add "token-usage/${DATE}_${HOSTNAME}-${OS}.data" 2>/dev/null || true
 if ! git diff --cached --quiet 2>/dev/null; then
     _COMMIT_START=$(date +%s)
     log "GIT: committing session ${SESSION_ID:0:8}..."

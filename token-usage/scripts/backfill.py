@@ -12,6 +12,7 @@ import csv
 import glob
 import json
 import os
+import platform
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 
@@ -218,7 +219,9 @@ def record_to_row(rec):
 
 def write_data_file(date, records):
     """Write a complete .data file for a given date. records is {session_id: row_string}."""
-    data_path = os.path.join(DATA_DIR, f"{date}.data")
+    hostname = platform.node() or "unknown"
+    os_name = platform.system() or "unknown"
+    data_path = os.path.join(DATA_DIR, f"{date}_{hostname}-{os_name}.data")
     with open(data_path, "w") as f:
         f.write(TSV_HEADER + "\n")
         for sid in sorted(records.keys()):

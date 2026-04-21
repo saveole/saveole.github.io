@@ -82,9 +82,9 @@ let tokenUsageData = { days: [] };
 const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
 if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
-    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}\.data$/.test(f)).sort();
+    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}_.+\.data$/.test(f)).sort();
     for (const df of dataFiles) {
-        const date = df.replace('.data', '');
+        const date = df.split('_')[0]; // Extract YYYY-MM-DD from YYYY-MM-DD_{hostname}-{os}.data
         const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
         if (lines.length < 2) continue; // header only
         const header = lines[0].split('\t');
