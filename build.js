@@ -82,9 +82,9 @@ let tokenUsageData = { days: [] };
 const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
 if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
-    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}_.+\.data$/.test(f)).sort();
+    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
     for (const df of dataFiles) {
-        const date = df.split('_')[0]; // Extract YYYY-MM-DD from YYYY-MM-DD_{hostname}-{os}.data
+        const date = df.replace(/_.+$/, '').replace(/\.data$/, ''); // Extract YYYY-MM-DD
         const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
         if (lines.length < 2) continue; // header only
         const header = lines[0].split('\t');
@@ -97,7 +97,11 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
             tokens.cache_read += get('tokens_cache_read');
             tokens.cache_creation += get('tokens_cache_creation');
         }
-        dayMap[date] = tokens;
+        if (!dayMap[date]) dayMap[date] = { input: 0, output: 0, cache_read: 0, cache_creation: 0 };
+        dayMap[date].input += tokens.input;
+        dayMap[date].output += tokens.output;
+        dayMap[date].cache_read += tokens.cache_read;
+        dayMap[date].cache_creation += tokens.cache_creation;
     }
     tokenUsageData.days = Object.keys(dayMap).sort().map(date => ({
         date,
