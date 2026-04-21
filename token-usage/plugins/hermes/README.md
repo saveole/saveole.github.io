@@ -8,11 +8,13 @@
 Hermes 会话结束（退出 CLI / /new / context compression）
     ↓ on_session_finalize hook 触发
     ↓ 从 ~/.hermes/state.db 读取 session token 统计
-    ↓ 追加到 YYYY-MM-DD.data（与 Claude Code 同一文件）
+    ↓ 追加到 YYYY-MM-DD_{hostname}-{os}.data（与 Claude Code 同一目录）
     ↓ 自动 git commit + push
+    ↓ 扫描 state.db 全部 session，补录缺失的历史 session（仅 append，不碰 git）
+    ↓ 补录的数据在下次 hook 触发时随 git add/commit/push 一起提交
 ────────────────────────────
 博客构建（node build.js）
-    ↓ 直接读取所有 YYYY-MM-DD.data 文件
+    ↓ 直接读取所有 YYYY-MM-DD_*.data 文件
     ↓ 按 session_id 去重，按日聚合
     ↓ 生成热力图数据渲染到首页
 ```
@@ -25,6 +27,7 @@ Hermes 会话结束（退出 CLI / /new / context compression）
 | 数据来源 | 解析 transcript JSONL | 查询 state.db sessions 表 |
 | session_id 格式 | UUID (`c26c934d-...`) | `YYYYMMDD_HHMMSS_hex` |
 | 输出格式 | TSV（同一个 `.data` 文件） | TSV（同一个 `.data` 文件） |
+| 自动补录 | incremental.py（扫描 transcript） | _backfill_missing()（扫描 state.db） |
 | 配置位置 | `~/.claude/hooks/log-usage.sh` | `~/.hermes/plugins/token-usage/` |
 
 两者写入完全相同的 TSV schema（11 列），可在同一份 `.data` 文件中共存，无需额外处理。

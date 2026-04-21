@@ -12,6 +12,9 @@ Claude Code 会话结束
     ↓ 解析会话 transcript，按 message.id 去重，累加 token 用量
     ↓ 追加到 YYYY-MM-DD_{hostname}-{os}.data（按天+设备分文件，TSV 格式）
     ↓ 自动 git commit + push
+    ↓ 后台启动 incremental.py
+    ↓ 扫描全部 transcript，补录缺失的历史 session（仅 append，不碰 git）
+    ↓ 补录的数据在下次 hook 触发时随 git add/commit/push 一起提交
 ────────────────────────────
 Hermes Agent 会话结束
     ↓ on_session_finalize Plugin hook 触发
@@ -92,6 +95,8 @@ python3 ~/blog/saveole.github.io/token-usage/scripts/backfill.py
 
 脚本会扫描 `~/.claude/projects/` 下所有 transcript 文件，提取 token 用量并写入 TSV 文件。**增量设计**：已记录的 session 会自动跳过，已有但 token 不同的 session 会原地更新，不会删除其他机器记录的数据。回填完成后会自动运行 `aggregate.py` 打印汇总统计。
 
+此外，hook 脚本在每次会话结束后会自动后台运行 `incremental.py`，扫描所有 transcript 并补录缺失的 session。因此正常使用中无需手动回填，`backfill.py` 仅在首次安装时需要运行一次。
+
 > **注意：** 回填范围受 Claude Code 本地数据保留期限限制（默认 30 天，见下方「数据保留说明」）。超过保留期的 transcript 文件已被自动清理，无法回填。因此建议尽早安装 hook 进行持续记录。
 
 ### 第 6 步：验证
@@ -149,8 +154,9 @@ token-usage/
 │       └── README.md         # Hermes 插件文档
 ├── scripts/
 │   ├── log-usage.sh          # Claude Code Hook 脚本（复制到 ~/.claude/hooks/ 使用）
+│   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
-│   └── backfill.py           # 历史数据回填脚本（增量 merge，按 session_id）
+│   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
 ├── SCHEMA.md                 # TSV 格式规范
 ├── .gitignore                # 忽略已废弃的 daily-summary.json / REPORT.md
 └── README.md                 # 本文件

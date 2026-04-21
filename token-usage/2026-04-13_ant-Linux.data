@@ -1,0 +1,8 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+7ec15f64-54c4-4527-a7a8-ccc165636da6	2026-04-13T08:01:01.926Z	scrm-api	glm-5.1	132	9	61819	525	535616	0	feature/saveole/9.2
+b9f4a7d8-939d-4be7-bb4b-81fdd718ecd9	2026-04-13T08:13:15.458Z	scrm-api	glm-5.1	1616	24	120756	5968	1188288	0	feature/saveole/9.2
+06e940af-5ced-4643-abc1-52bd65c5781f	2026-04-13T08:41:21.878Z	projects	glm-5.1	1574	6	73925	3999	349184	0	HEAD
+5d5d0b90-49e5-490c-8904-e20135247d60	2026-04-13T09:10:38.424Z	projects	glm-5.1	49	6	29754	346	127680	0	HEAD
+71fd5c40-497c-4222-ab43-de185b9991f2	2026-04-13T09:25:11.809Z	projects	glm-5.1	775	29	98148	15859	671168	0	HEAD
+492a10bb-21d5-4ab4-8374-d3dd93e2d584	2026-04-13T00:48:29.592Z	xueqiu-crawler	glm-5.1	259	25	24434	4744	460608	0	main
+a0ae2393-6aa0-4ff5-a195-3b3034cc2953	2026-04-13T00:56:29.518Z	xueqiu-crawler	glm-5.1	3173	256	79808	24437	9564928	0	main

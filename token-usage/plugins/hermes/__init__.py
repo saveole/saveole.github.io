@@ -208,8 +208,121 @@ def _git_sync(data_file: Path) -> None:
         _log(f"GIT push error ({elapsed:.1f}s): {exc}")
 
 
+def _backfill_missing() -> int:
+    """Scan state.db for all sessions, append any not yet recorded in .data files.
+
+    Returns count of newly backfilled sessions.
+    Only appends — never modifies existing records. No git operations.
+    """
+    if not STATE_DB.exists() or not DATA_DIR.exists():
+        return 0
+
+    # 1. Collect already-recorded session_ids from .data files
+    recorded = set()
+    for data_file in DATA_DIR.glob("*.data"):
+        try:
+            content = data_file.read_text()
+            for line in content.splitlines()[1:]:  # skip header
+                parts = line.split("\t", 1)
+                if parts and parts[0]:
+                    recorded.add(parts[0])
+        except Exception:
+            pass
+
+    # 2. Query all non-zero sessions from state.db
+    try:
+        conn = sqlite3.connect(str(STATE_DB))
+        conn.row_factory = sqlite3.Row
+        cur = conn.execute(
+            """
+            SELECT id, model, started_at, ended_at,
+                   message_count, input_tokens, output_tokens,
+                   cache_read_tokens, cache_write_tokens, title
+            FROM sessions
+            WHERE input_tokens > 0 OR output_tokens > 0
+            """
+        )
+        rows = cur.fetchall()
+        conn.close()
+    except Exception as exc:
+        _log(f"BACKFILL: state.db query failed: {exc}")
+        return 0
+
+    # 3. Find unrecorded sessions, group by date
+    hostname = platform.node() or "unknown"
+    os_name = platform.system() or "unknown"
+    new_by_date = {}  # {date_str: [tsv_row, ...]}
+
+    for row in rows:
+        sid = row["id"]
+        if sid in recorded:
+            continue
+
+        duration = 0
+        if row["started_at"] and row["ended_at"]:
+            duration = int(row["ended_at"] - row["started_at"])
+
+        project = row["title"] or "unknown"
+        model = row["model"] or "unknown"
+
+        ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
+        if row["started_at"]:
+            try:
+                dt = datetime.fromtimestamp(row["started_at"], tz=timezone(timedelta(hours=8)))
+                ts = dt.strftime("%Y-%m-%dT%H:%M:%S+08:00")
+            except Exception:
+                pass
+
+        # Date from started_at
+        date_str = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+        if row["started_at"]:
+            try:
+                dt = datetime.fromtimestamp(row["started_at"], tz=timezone(timedelta(hours=8)))
+                date_str = dt.strftime("%Y-%m-%d")
+            except Exception:
+                pass
+
+        tsv_row = "\t".join([
+            sid, ts, project, model,
+            str(duration), str(row["message_count"] or 0),
+            str(row["input_tokens"] or 0), str(row["output_tokens"] or 0),
+            str(row["cache_read_tokens"] or 0), str(row["cache_write_tokens"] or 0),
+            "unknown",
+        ])
+
+        if date_str not in new_by_date:
+            new_by_date[date_str] = []
+        new_by_date[date_str].append(tsv_row)
+
+    if not new_by_date:
+        return 0
+
+    # 4. Append new records
+    total = 0
+    for date_str, rows_list in sorted(new_by_date.items()):
+        data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
+
+        # Double-check for race with concurrent writes
+        if data_file.exists():
+            existing = data_file.read_text()
+            rows_list = [r for r in rows_list if r.split("\t", 1)[0] not in existing]
+            if not rows_list:
+                continue
+
+        if not data_file.exists():
+            data_file.write_text(TSV_HEADER + "\n")
+        with open(data_file, "a") as f:
+            for r in rows_list:
+                f.write(r + "\n")
+                total += 1
+
+    if total:
+        _log(f"BACKFILL: {total} missing sessions appended")
+    return total
+
+
 def _record_usage(session_id: str, platform: str) -> None:
-    """Main logic: read session data, write TSV, git sync."""
+    """Main logic: read session data, write TSV, git sync, then backfill missing sessions."""
     _log(f"START session={session_id[:8] if session_id else 'None'} platform={platform}")
 
     if not session_id:
@@ -277,6 +390,12 @@ def _record_usage(session_id: str, platform: str) -> None:
 
         # Git sync (commit is sync, push is async)
         _git_sync(data_file)
+
+        # Backfill any missing sessions from state.db (no git, append-only)
+        try:
+            _backfill_missing()
+        except Exception as exc:
+            _log(f"BACKFILL error: {exc}")
 
     except Exception as exc:
         _log(f"ERROR: {exc}")

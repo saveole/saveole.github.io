@@ -164,5 +164,8 @@ else
     log "GIT: no changes to commit"
 fi
 
+# ── Background incremental backfill ──
+python3 "${REPO_DIR}/token-usage/scripts/incremental.py" >> "$LOG_FILE" 2>&1 &
+
 log "DONE session=${SESSION_ID:0:8}"
 exit 0

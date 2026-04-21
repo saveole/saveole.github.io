@@ -1,0 +1,6 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+5ed21fc5-15ed-4d20-a5f3-3966319256e6	2026-03-25T01:53:50.188Z	scrm-api	glm-4.7	20743	118	799934	20951	2911360	0	hotfix/saveole/9.1
+a6f2c38f-1e67-45ef-ac8b-90f329d4fb09	2026-03-25T09:38:39.129Z	scrm-api	glm-4.7	64	9	64489	1162	232192	0	hotfix/saveole/9.1
+d301fea0-225d-4fb8-a449-a725c2c2db58	2026-03-25T01:34:41.063Z	scrm-api	glm-4.7	23	22	58238	818	394368	0	hotfix/saveole/9.1
+e03334b4-4fcf-4371-ad15-a627847b83f2	2026-03-25T09:50:15.731Z	scrm-api	glm-4.7	423	49	128963	8633	1302784	0	hotfix/saveole/9.1
+0b94f85f-dc34-4127-ad3c-ad8ab1f9300d	2026-03-25T03:32:53.387Z	spring-test	glm-4.7	11541	213	668862	43461	6750464	0	HEAD

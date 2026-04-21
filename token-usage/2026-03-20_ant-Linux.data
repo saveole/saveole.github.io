@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+01609855-580d-487c-a8ef-380c2e76db79	2026-03-20T05:58:26.001Z	scrm-api	glm-4.7	265220	166	4310647	36944	3099904	0	feature/saveole/9.1

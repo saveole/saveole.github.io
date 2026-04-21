@@ -1,0 +1,4 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+b5d0ff6f-154c-42ac-8ed1-2195f4681576	2026-04-07T06:36:40.285Z	dex-tools	glm-5	243	11	7710	436	76352	0	master
+2229dffb-225b-4575-a669-412210a1fa51	2026-04-07T06:17:40.097Z	projects	glm-5	1534	22	28067	2291	158080	0	master
+b590f23c-5408-42a8-a0f6-b3c6f6c77b81	2026-04-07T02:35:21.845Z	projects	glm-5	3377	50	55286	3190	673600	0	master
