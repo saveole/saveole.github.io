@@ -151,6 +151,12 @@ printf '%s\n' "$TSV_RECORD" >> "$DATA_FILE"
 
 cd "$REPO_DIR"
 
+# Stash any unstaged changes before pulling (prevents rebase failure on dirty workdir)
+if ! git diff --quiet 2>/dev/null; then
+    log "GIT: stashing unstaged changes..."
+    git stash push -u -m "auto-stash $(date -u +"%Y-%m-%dT%H:%M:%SZ")" 2>/dev/null || true
+fi
+
 # Pull BEFORE staging — rebase fails when index has staged changes
 _PULL_START=$(date +%s)
 log "GIT: pulling origin main..."
