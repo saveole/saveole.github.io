@@ -27,6 +27,29 @@ log() {
     echo "$msg" >> "$LOG_FILE"
 }
 
+error_log() {
+    local msg="[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] $*"
+    echo "$msg" >> "$ERROR_LOG"
+}
+
+# Wrapper to run commands and log stderr with timestamps
+run_with_error_logging() {
+    local output
+    local exit_code
+
+    output=$("$@" 2>&1)
+    exit_code=$?
+
+    if [[ $exit_code -ne 0 ]]; then
+        # Split output by lines and add timestamp to each
+        while IFS= read -r line; do
+            [[ -n "$line" ]] && error_log "$line"
+        done <<< "$output"
+    fi
+
+    return $exit_code
+}
+
 # ── Guard: check dependencies ──
 command -v jq &>/dev/null || { echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] SKIP: jq not found" >> "$LOG_FILE"; exit 0; }
 [[ -d "$REPO_DIR" ]] || { echo "[$(date -u +"%Y-%m-%dT%H:%M:%SZ")] SKIP: REPO_DIR not found ($REPO_DIR)" >> "$LOG_FILE"; exit 0; }
@@ -131,7 +154,7 @@ cd "$REPO_DIR"
 # Pull BEFORE staging — rebase fails when index has staged changes
 _PULL_START=$(date +%s)
 log "GIT: pulling origin main..."
-if git pull --rebase origin main 2>>"$ERROR_LOG"; then
+if run_with_error_logging git pull --rebase origin main; then
     _PULL_ELAPSED=$(( $(date +%s) - _PULL_START ))
     log "GIT: pull OK (${_PULL_ELAPSED}s)"
 else
@@ -143,7 +166,7 @@ git add "token-usage/${DATE}_${HOSTNAME}-${OS}.data" 2>/dev/null || true
 if ! git diff --cached --quiet 2>/dev/null; then
     _COMMIT_START=$(date +%s)
     log "GIT: committing session ${SESSION_ID:0:8}..."
-    if git commit -m "track: token usage ${DATE} session ${SESSION_ID:0:8}" 2>>"$ERROR_LOG"; then
+    if run_with_error_logging git commit -m "track: token usage ${DATE} session ${SESSION_ID:0:8}"; then
         _COMMIT_ELAPSED=$(( $(date +%s) - _COMMIT_START ))
         log "GIT: commit OK (${_COMMIT_ELAPSED}s)"
     else
@@ -153,7 +176,7 @@ if ! git diff --cached --quiet 2>/dev/null; then
 
     _PUSH_START=$(date +%s)
     log "GIT: pushing origin main..."
-    if git push origin main 2>>"$ERROR_LOG"; then
+    if run_with_error_logging git push origin main; then
         _PUSH_ELAPSED=$(( $(date +%s) - _PUSH_START ))
         log "GIT: push OK (${_PUSH_ELAPSED}s)"
     else
