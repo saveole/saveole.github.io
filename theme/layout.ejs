@@ -30,6 +30,18 @@
                 <% if (subtitle) { %>
                     <p class="subtitle"><%= subtitle %></p>
                 <% } %>
+                <div class="post-meta">
+                    <% if (categories && categories.length) { %>
+                        <span class="post-categories"><%= categories.join(' / ') %></span>
+                    <% } %>
+                    <% if (tags && tags.length) { %>
+                        <span class="post-tags">
+                            <% tags.forEach(function(tag, i) { %>
+                                <a href="#" class="post-header-tag" data-tag="<%= tag %>"><%= tag %></a>
+                            <% }) %>
+                        </span>
+                    <% } %>
+                </div>
             </header>
 
             <section class="post-content">
@@ -41,5 +53,65 @@
     <footer class="container">
         <p>&copy; 2026 saveole.</p>
     </footer>
+
+    <div class="tag-popup-overlay" id="tagPopupOverlay"></div>
+    <div class="tag-popup" id="tagPopup">
+        <div class="tag-popup-header">
+            <h3><span class="tag-popup-tag-name" id="tagPopupName"></span></h3>
+            <button class="tag-popup-close" id="tagPopupClose">&times;</button>
+        </div>
+        <ul class="tag-popup-list" id="tagPopupList"></ul>
+    </div>
+
+    <script>
+    (function() {
+        var tagIndex = <%- tagIndex %>;
+        var popup = document.getElementById('tagPopup');
+        var overlay = document.getElementById('tagPopupOverlay');
+        var popupName = document.getElementById('tagPopupName');
+        var popupList = document.getElementById('tagPopupList');
+        var popupClose = document.getElementById('tagPopupClose');
+
+        function closePopup() {
+            popup.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        function openPopup(tag) {
+            var posts = tagIndex[tag] || [];
+            popupName.textContent = '#' + tag;
+            popupList.innerHTML = '';
+            if (posts.length === 0) {
+                popupList.innerHTML = '<li class="tag-popup-empty">暂无相关文章</li>';
+            } else {
+                posts.sort(function(a, b) { return a.date > b.date ? -1 : 1; });
+                posts.forEach(function(p) {
+                    var li = document.createElement('li');
+                    var a = document.createElement('a');
+                    a.href = p.url;
+                    a.innerHTML = '<span class="popup-post-title">' + p.title + '</span><span class="popup-post-date">' + p.date + '</span>';
+                    li.appendChild(a);
+                    popupList.appendChild(li);
+                });
+            }
+            popup.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        overlay.addEventListener('click', closePopup);
+        popupClose.addEventListener('click', closePopup);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closePopup();
+        });
+
+        document.addEventListener('click', function(e) {
+            var el = e.target.closest('.inline-tag, .post-header-tag');
+            if (el) {
+                e.preventDefault();
+                openPopup(el.getAttribute('data-tag'));
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

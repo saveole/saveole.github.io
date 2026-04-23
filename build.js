@@ -43,6 +43,36 @@ if (fs.existsSync(path.join(__dirname, 'assets'))) {
 const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
 
 const postList = [];
+const allTags = {}; // tag -> [{title, url, date}]
+
+// Extract inline #hashtags from markdown content, excluding code blocks, headings, etc.
+function extractInlineTags(content) {
+    const tags = new Set();
+    // Remove code blocks (fenced and inline) to avoid false positives
+    const cleaned = content
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/`[^`]*`/g, '')
+        .replace(/^#{1,6}\s+.*/gm, ''); // Remove markdown headings
+    // Match #tag patterns: # followed by CJK or alphanumeric chars
+    const tagRegex = /(?:^|\s)#([\w一-鿿぀-ゟ゠-ヿ]+)/g;
+    let match;
+    while ((match = tagRegex.exec(cleaned)) !== null) {
+        tags.add(match[1]);
+    }
+    return Array.from(tags);
+}
+
+// Replace inline #tag with styled links in rendered HTML
+function replaceInlineTags(html, tags) {
+    tags.forEach(tag => {
+        // Match #tag that is NOT inside <code>, <pre>, or already inside an HTML tag
+        // Use a simple approach: replace #tag that appears as text content
+        const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp('(?<![\\w/])#' + escapedTag + '(?![\\w])', 'g');
+        html = html.replace(regex, '<a href="#" class="inline-tag" data-tag="' + tag + '">#' + tag + '</a>');
+    });
+    return html;
+}
 
 // 1. 循环处理每一篇文章
 files.forEach(file => {
@@ -50,7 +80,15 @@ files.forEach(file => {
     const { data, content } = matter(rawContent);
     // 修正图片路径：将 ../assets/ 替换为 ./assets/
     const fixedContent = content.replace(/\.\.\/assets\//g, './assets/');
-    const htmlContent = md.render(fixedContent);
+
+    // Extract tags from frontmatter and inline
+    const frontmatterTags = (data.tags || []).map(t => String(t));
+    const inlineTags = extractInlineTags(fixedContent);
+    const mergedTags = [...new Set([...frontmatterTags, ...inlineTags])];
+
+    // Render markdown first, then replace inline #tags with links
+    let htmlContent = md.render(fixedContent);
+    htmlContent = replaceInlineTags(htmlContent, inlineTags);
 
     // 日期处理逻辑
     const postDate = data.date ? new Date(data.date) : new Date(0);
@@ -62,15 +100,27 @@ files.forEach(file => {
         date: isValidDate ? postDate.toISOString().split('T')[0] : '未知日期',
         rawDate: postDate,
         url: file.replace('.md', '.html'),
-        content: htmlContent
+        content: htmlContent,
+        tags: mergedTags,
+        categories: data.categories || []
     };
 
-    // --- 注意这里：文章详情页渲染 ---
-    // 使用 layout.ejs 渲染，只传入 postData (包含 title, date, content 等)
-    const postHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'layout.ejs'), 'utf-8'), postData);
-    fs.writeFileSync(path.join(DIST_DIR, postData.url), postHtml);
-    
+    // Build tag index
+    mergedTags.forEach(tag => {
+        if (!allTags[tag]) allTags[tag] = [];
+        allTags[tag].push({ title: postData.title, url: postData.url, date: postData.date });
+    });
+
     postList.push(postData);
+});
+
+// 2. Render post detail pages (after tag index is built)
+postList.forEach(postData => {
+    const postHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'layout.ejs'), 'utf-8'), {
+        ...postData,
+        tagIndex: JSON.stringify(allTags)
+    });
+    fs.writeFileSync(path.join(DIST_DIR, postData.url), postHtml);
 });
 
 // 2. 首页渲染（在循环结束后执行一次）

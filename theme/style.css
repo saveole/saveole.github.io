@@ -77,6 +77,45 @@ footer {
   margin-top: 4rem;
 }
 
+/* Post header meta (categories + tags) */
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.post-categories {
+  font-family: "Inter", sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.post-header-tag {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 15%, transparent);
+  padding: 1px 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.post-header-tag:hover {
+  background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+}
+
 .post-content p {
   margin-bottom: 1.5rem;
 }
@@ -396,6 +435,151 @@ pre code {
   width: 1.1rem;
   height: 1.1rem;
   cursor: default;
+}
+
+/* ============ Inline Tag Links ============ */
+.inline-tag {
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  font-family: "Inter", sans-serif;
+  font-size: 0.88em;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 15%, transparent);
+}
+
+.inline-tag:hover {
+  background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+  color: var(--primary-color);
+}
+
+/* ============ Tag Popup ============ */
+.tag-popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+}
+
+.tag-popup-overlay.active {
+  display: block;
+}
+
+.tag-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: calc(100vw - 2rem);
+  max-height: 70vh;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 201;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tag-popup.active {
+  display: flex;
+}
+
+.tag-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tag-popup-header h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.tag-popup-header .tag-popup-tag-name {
+  color: var(--primary-color);
+}
+
+.tag-popup-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tag-popup-close:hover {
+  background: var(--border-color);
+  color: var(--text-main);
+}
+
+.tag-popup-list {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tag-popup-list li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-popup-list a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.6rem 1.25rem;
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  transition: background 0.15s;
+}
+
+.tag-popup-list a:hover {
+  background: color-mix(in srgb, var(--primary-color) 6%, transparent);
+}
+
+.tag-popup-list a .popup-post-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-popup-list a .popup-post-date {
+  font-family: "Inter", sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-left: 1rem;
+  flex-shrink: 0;
+}
+
+.tag-popup-empty {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
 }
 
 /* ============ Token Contribution Graph ============ */
