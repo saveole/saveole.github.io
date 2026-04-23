@@ -20,7 +20,7 @@
 
     <main class="container">
         <header class="home-header">
-            <p class="contrib-title">Token 用量</p>
+            <p class="contrib-title">Token 不够？跑步来凑！</p>
             <div class="contrib-wrapper">
                 <div class="contrib-months" id="contrib-months"></div>
                 <div class="contrib-body">
@@ -31,16 +31,30 @@
                 </div>
             </div>
             <div class="contrib-legend">
-                <span class="legend-label">Less</span>
-                <span class="legend-cell" data-level="0"></span>
-                <span class="legend-cell" data-level="1"></span>
-                <span class="legend-cell" data-level="2"></span>
-                <span class="legend-cell" data-level="3"></span>
-                <span class="legend-cell" data-level="4"></span>
-                <span class="legend-label">More</span>
+                <div class="legend-group">
+                    <span class="legend-label">🏃 Less</span>
+                    <span class="legend-cell run-0"></span>
+                    <span class="legend-cell run-1"></span>
+                    <span class="legend-cell run-2"></span>
+                    <span class="legend-cell run-3"></span>
+                    <span class="legend-cell run-4"></span>
+                    <span class="legend-cell run-5"></span>
+                    <span class="legend-label">More</span>
+                </div>
+                <span class="legend-divider"></span>
+                <div class="legend-group">
+                    <span class="legend-label">💻 Less</span>
+                    <span class="legend-cell token-0"></span>
+                    <span class="legend-cell token-1"></span>
+                    <span class="legend-cell token-2"></span>
+                    <span class="legend-cell token-3"></span>
+                    <span class="legend-cell token-4"></span>
+                    <span class="legend-label">More</span>
+                </div>
                 <span class="legend-info-btn" tabindex="0">&#9432;</span>
                 <div class="legend-info-panel">
-                    <p><strong>统计方式</strong>：仅统计 <strong>Claude Code</strong> 和 <strong>Hermes</strong> 的 token 消耗，不包含其他 AI 工具或平台。每个会话结束时，按 <code>session_id</code> 记录总消耗，归入<strong>会话结束当日</strong>（UTC）。</p>
+                    <p><strong>Token 统计</strong>：仅统计 <strong>Claude Code</strong> 和 <strong>Hermes</strong> 的 token 消耗，不包含其他 AI 工具或平台。每个会话结束时，按 <code>session_id</code> 记录总消耗，归入<strong>会话结束当日</strong>（UTC）。</p>
+                    <p><strong>跑步数据</strong>：来自 Garmin Connect CN，颜色基准 5km。</p>
                     <p><strong>可能的误差</strong>：</p>
                     <ul>
                         <li>跨天会话的所有 token 均计入结束日，开始日数据会偏低</li>
@@ -74,34 +88,32 @@
 
     <script>
     (function() {
-        const data = <%- tokenData %>;
+        var data = <%- dailyData %>;
         if (!data || !data.days || data.days.length === 0) return;
 
-        // 构建日期 -> token 总量映射
-        const tokenMap = {};
+        var tokenMap = {};
+        var runningMap = {};
         data.days.forEach(function(d) {
-            var t = d.total_tokens;
-            tokenMap[d.date] = t.input + t.output + t.cache_read + t.cache_creation;
+            if (d.total_tokens) {
+                var t = d.total_tokens;
+                tokenMap[d.date] = t.input + t.output + t.cache_read + t.cache_creation;
+            }
+            if (d.running_km) runningMap[d.date] = d.running_km;
         });
 
-        // 计算日期范围：最近一年，从一年前的周一开始到今天
         var today = new Date();
         var todayStr = today.getFullYear() + '-' +
             String(today.getMonth() + 1).padStart(2, '0') + '-' +
             String(today.getDate()).padStart(2, '0');
 
-        // 一年前的同一天
         var oneYearAgo = new Date(today);
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        // 回退到该周的周一
         var dayOfWeek = oneYearAgo.getDay();
         var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
         var startDate = new Date(oneYearAgo);
         startDate.setDate(startDate.getDate() + mondayOffset);
 
-        // 生成所有周的列
         var weeks = [];
-        var current = new Date(startDate);
         var monthLabels = [];
         var lastMonth = -1;
 
@@ -111,14 +123,14 @@
                 String(d.getDate()).padStart(2, '0');
         }
 
-        while (toDateStr(current) <= todayStr) {
+        while (toDateStr(startDate) <= todayStr) {
             var week = [];
             for (var i = 0; i < 7; i++) {
-                var dateStr = toDateStr(current);
-                var month = current.getMonth();
+                var dateStr = toDateStr(startDate);
+                var month = startDate.getMonth();
                 if (i === 0 && month !== lastMonth) {
                     monthLabels.push({
-                        month: current.toLocaleString('zh-CN', { month: 'short' }),
+                        month: startDate.toLocaleString('zh-CN', { month: 'short' }),
                         weekIndex: weeks.length
                     });
                     lastMonth = month;
@@ -126,34 +138,28 @@
                 week.push({
                     date: dateStr,
                     tokens: tokenMap[dateStr] || 0,
+                    running: runningMap[dateStr] || 0,
                     future: dateStr > todayStr
                 });
-                current.setDate(current.getDate() + 1);
+                startDate.setDate(startDate.getDate() + 1);
             }
             weeks.push(week);
         }
 
-        // 计算颜色分级阈值（用四分位数）
-        var values = data.days.map(function(d) {
-            var t = d.total_tokens;
-            return t.input + t.output + t.cache_read + t.cache_creation;
-        }).filter(function(v) { return v > 0; }).sort(function(a, b) { return a - b; });
-
+        // Token color levels (quartile-based, all data)
+        var tokenValues = Object.values(tokenMap).filter(function(v) { return v > 0; }).sort(function(a, b) { return a - b; });
         function getQuantile(arr, q) {
             var pos = (arr.length - 1) * q;
             var base = Math.floor(pos);
             var rest = pos - base;
-            if (arr[base + 1] !== undefined) {
-                return arr[base] + rest * (arr[base + 1] - arr[base]);
-            }
+            if (arr[base + 1] !== undefined) return arr[base] + rest * (arr[base + 1] - arr[base]);
             return arr[base];
         }
+        var q1 = tokenValues.length > 0 ? getQuantile(tokenValues, 0.25) : 0;
+        var q2 = tokenValues.length > 0 ? getQuantile(tokenValues, 0.5) : 0;
+        var q3 = tokenValues.length > 0 ? getQuantile(tokenValues, 0.75) : 0;
 
-        var q1 = values.length > 0 ? getQuantile(values, 0.25) : 0;
-        var q2 = values.length > 0 ? getQuantile(values, 0.5) : 0;
-        var q3 = values.length > 0 ? getQuantile(values, 0.75) : 0;
-
-        function getLevel(v) {
+        function getTokenLevel(v) {
             if (v === 0) return 0;
             if (v <= q1) return 1;
             if (v <= q2) return 2;
@@ -161,13 +167,29 @@
             return 4;
         }
 
-        function formatTokens(n) {
-            if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-            return n.toString();
+        function getRunLevel(km) {
+            if (km <= 0) return 0;
+            if (km < 3) return 1;
+            if (km < 5) return 2;
+            if (km < 10) return 3;
+            if (km < 15) return 4;
+            return 5;
         }
 
-        // 渲染月份标签
+        function formatRunning(km) {
+            return km < 10 ? km.toFixed(1) : km.toFixed(0);
+        }
+
+        function formatTokens(n) {
+            if (n >= 1e6) return (n / 1e6).toFixed(1) + ' M';
+            if (n >= 1e3) {
+                var k = n / 1e3;
+                return (k >= 100 ? k.toFixed(0) : k.toFixed(1)) + ' K';
+            }
+            return String(n);
+        }
+
+        // Render month labels
         var monthsEl = document.getElementById('contrib-months');
         var monthHtml = '';
         var prevWeekIdx = -10;
@@ -180,27 +202,47 @@
         });
         monthsEl.innerHTML = monthHtml;
 
-        // 渲染格子
+        // Render grid
         var totalWeeks = weeks.length;
-        var edgeCount = 8; // tooltip约180px / 12px列宽 ≈ 8列
+        var edgeCount = 8;
         var gridEl = document.getElementById('contrib-grid');
         var gridHtml = '';
+
         weeks.forEach(function(week, wi) {
             week.forEach(function(day, di) {
-                var level = day.future ? -1 : getLevel(day.tokens);
-                var cls = day.future ? '' : 'contrib-cell level-' + level;
+                if (day.future) {
+                    gridHtml += '<span class="contrib-cell" data-date="' + day.date + '" style="grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '"></span>';
+                    return;
+                }
+
+                var hasRun = day.running > 0;
+                var hasTok = day.tokens > 0;
+                var runLvl = getRunLevel(day.running);
+                var tokLvl = getTokenLevel(day.tokens);
+
+                var bg;
+                if (hasRun && hasTok) {
+                    bg = 'background:linear-gradient(90deg,var(--run-' + runLvl + ') 50%,var(--token-' + tokLvl + ') 50%)';
+                } else if (hasRun) {
+                    bg = 'background:var(--run-' + runLvl + ')';
+                } else if (hasTok) {
+                    bg = 'background:var(--token-' + tokLvl + ')';
+                } else {
+                    bg = 'background:var(--empty-cell)';
+                }
+
+                var cls = 'contrib-cell';
                 if (wi < edgeCount) cls += ' edge-left';
                 if (wi >= totalWeeks - edgeCount) cls += ' edge-right';
-                var tooltip = day.future ? '' : day.date + ': ' + formatTokens(day.tokens) + ' tokens';
-                gridHtml += '<span class=\"' + cls + '\" data-date=\"' + day.date + '\" data-tooltip=\"' + tooltip + '\" style=\"grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '\"></span>';
+
+                var runStr = (hasRun ? formatRunning(day.running) : '0') + ' km';
+                var tokStr = hasTok ? formatTokens(day.tokens) : '0 M';
+                var tooltip = day.date + '\n🏃 ' + runStr + '\n💻 ' + tokStr;
+
+                gridHtml += '<span class="' + cls + '" data-date="' + day.date + '" data-tooltip="' + tooltip + '" style="' + bg + ';grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '"></span>';
             });
         });
         gridEl.innerHTML = gridHtml;
-
-        // Tooltip 处理（用 CSS :hover + ::after）
-        var style = document.createElement('style');
-        style.textContent = '.contrib-cell:hover::after { content: attr(data-tooltip); }';
-        document.head.appendChild(style);
     })();
     </script>
 </body>

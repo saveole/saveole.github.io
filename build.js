@@ -159,10 +159,30 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
     }));
 }
 
-// 使用 index.ejs 渲染，传入 posts 列表和 token 数据
+// Read running data and merge
+const runningMap = {};
+const RUNNING_DATA_FILE = path.join(__dirname, 'running-data', 'activities.json');
+if (fs.existsSync(RUNNING_DATA_FILE)) {
+    JSON.parse(fs.readFileSync(RUNNING_DATA_FILE, 'utf-8')).forEach(a => {
+        runningMap[a.date] = a.distance_km;
+    });
+}
+const existingDates = new Set(tokenUsageData.days.map(d => d.date));
+tokenUsageData.days.forEach(d => { d.running_km = runningMap[d.date] || 0; });
+Object.keys(runningMap).forEach(date => {
+    if (!existingDates.has(date)) {
+        tokenUsageData.days.push({
+            date,
+            total_tokens: { input: 0, output: 0, cache_read: 0, cache_creation: 0 },
+            running_km: runningMap[date]
+        });
+    }
+});
+tokenUsageData.days.sort((a, b) => a.date.localeCompare(b.date));
+
 const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 'utf-8'), {
     posts: postList,
-    tokenData: JSON.stringify(tokenUsageData)
+    dailyData: JSON.stringify(tokenUsageData)
 });
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
