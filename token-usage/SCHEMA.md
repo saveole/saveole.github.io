@@ -51,29 +51,46 @@ session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count\ttokens_i
 
 ## JSONL to TSV Field Mapping
 
-| JSONL Field                  | TSV Column             | Transformation             |
-|------------------------------|------------------------|----------------------------|
-| session_id                   | session_id             | Direct copy                |
-| timestamp                    | timestamp              | Direct copy                |
-| project                      | project                | Direct copy                |
-| project_path                 | *(removed)*            | Dropped                    |
-| model                        | model                  | Direct copy                |
-| duration_seconds             | duration_seconds       | Direct copy                |
-| message_count                | message_count          | Direct copy                |
-| tokens.input                 | tokens_input           | Flatten (nested → column)  |
-| tokens.output                | tokens_output          | Flatten (nested → column)  |
-| tokens.cache_read            | tokens_cache_read      | Flatten (nested → column)  |
-| tokens.cache_creation        | tokens_cache_creation  | Flatten (nested → column)  |
-| git_branch                   | git_branch             | Direct copy                |
+数据来源为 Claude Code 本地会话文件（`~/.claude/projects/<project>/<session>.jsonl`），每行一个 JSON 对象。脚本仅处理 `type == "assistant"` 的行，按 `message.id` 去重后聚合。
+
+| JSONL Path                              | TSV Column             | Transformation                         |
+|-----------------------------------------|------------------------|----------------------------------------|
+| `sessionId`                             | session_id             | Direct copy                            |
+| *(record time)*                         | timestamp              | 当前时刻 (CST +08:00)                   |
+| *(from path: projects/\<name\>/)*       | project                | 从文件路径提取 project 目录名            |
+| `message.model`                         | model                  | 取频率最高的 model；`speed=="fast"` 追加 `-fast` |
+| *(computed from timestamps)*            | duration_seconds       | 首末条 assistant timestamp 之差         |
+| *(count unique `message.id`)*           | message_count          | 去重计数                               |
+| `message.usage.input_tokens`            | tokens_input           | Sum across deduplicated messages       |
+| `message.usage.output_tokens`           | tokens_output          | Sum across deduplicated messages       |
+| `message.usage.cache_read_input_tokens` | tokens_cache_read      | Sum across deduplicated messages       |
+| `message.usage.cache_creation_input_tokens` | tokens_cache_creation | Sum across deduplicated messages    |
+| `gitBranch`                             | git_branch             | 取第一条 assistant 消息的值             |
 
 ## Example
 
-**JSONL record (input)**:
+**JSONL assistant entry (input)** — `~/.claude/projects/-home-ant-blog/74fae944-...jsonl` 中的一行：
 ```json
-{"session_id": "426a4a26-94ba-401f-be63-96aa17803446", "timestamp": "2026-04-15T11:48:03.018Z", "project": "blog", "project_path": "/Users/saveole/blog", "model": "glm-5.1", "duration_seconds": 54, "message_count": 11, "tokens": {"input": 25195, "output": 1374, "cache_read": 87680, "cache_creation": 0}, "git_branch": "main"}
+{
+  "type": "assistant",
+  "sessionId": "74fae944-a291-4109-b646-687343e146f0",
+  "timestamp": "2026-04-24T02:14:26.890Z",
+  "gitBranch": "main",
+  "message": {
+    "id": "msg_20260424101421ba7ac6ac5c20419a",
+    "model": "glm-5.1",
+    "usage": {
+      "input_tokens": 8979,
+      "output_tokens": 53,
+      "cache_read_input_tokens": 17984,
+      "cache_creation_input_tokens": 0,
+      "speed": "standard"
+    }
+  }
+}
 ```
 
-**TSV data row (output)**:
+**TSV data row (output)** — 聚合整个 session 后写入 `.data` 文件：
 ```
-426a4a26-94ba-401f-be63-96aa17803446\t2026-04-15T11:48:03.018Z\tblog\tglm-5.1\t54\t11\t25195\t1374\t87680\t0\tmain
+74fae944-a291-4109-b646-687343e146f0\t2026-04-24T10:55:17+08:00\t-home-ant-blog-saveole-github-io\tglm-5.1\t2324\t19\t27678\t9552\t679296\t0\tmain
 ```
