@@ -1,130 +1,130 @@
 [
   {
     "date": "2025-11-11",
-    "distance_km": 10.8
+    "distance_km": 16.2
   },
   {
     "date": "2025-11-12",
-    "distance_km": 8.4
+    "distance_km": 12.6
   },
   {
     "date": "2025-11-13",
-    "distance_km": 5.6
+    "distance_km": 8.4
   },
   {
     "date": "2025-11-14",
-    "distance_km": 13.6
+    "distance_km": 20.4
   },
   {
     "date": "2025-11-16",
-    "distance_km": 12.2
+    "distance_km": 18.3
   },
   {
     "date": "2025-11-18",
-    "distance_km": 20.2
+    "distance_km": 30.3
   },
   {
     "date": "2025-11-19",
-    "distance_km": 10.2
+    "distance_km": 15.3
   },
   {
     "date": "2025-11-20",
-    "distance_km": 16.0
+    "distance_km": 24.0
   },
   {
     "date": "2025-11-24",
-    "distance_km": 20.2
+    "distance_km": 30.3
   },
   {
     "date": "2025-11-25",
-    "distance_km": 12.2
+    "distance_km": 18.3
   },
   {
     "date": "2025-12-02",
-    "distance_km": 24.2
+    "distance_km": 36.3
   },
   {
     "date": "2025-12-03",
-    "distance_km": 11.8
+    "distance_km": 17.7
   },
   {
     "date": "2025-12-04",
-    "distance_km": 20.2
+    "distance_km": 30.3
   },
   {
     "date": "2025-12-08",
-    "distance_km": 16.6
+    "distance_km": 24.9
   },
   {
     "date": "2025-12-10",
-    "distance_km": 24.8
+    "distance_km": 37.2
   },
   {
     "date": "2025-12-11",
-    "distance_km": 26.2
+    "distance_km": 39.3
   },
   {
     "date": "2025-12-16",
-    "distance_km": 24.8
+    "distance_km": 37.2
   },
   {
     "date": "2025-12-17",
-    "distance_km": 30.2
+    "distance_km": 45.3
   },
   {
     "date": "2025-12-18",
-    "distance_km": 10.6
+    "distance_km": 15.9
   },
   {
     "date": "2025-12-23",
-    "distance_km": 14.2
+    "distance_km": 21.3
   },
   {
     "date": "2026-01-05",
-    "distance_km": 10.2
+    "distance_km": 15.3
   },
   {
     "date": "2026-01-06",
-    "distance_km": 23.0
+    "distance_km": 34.5
   },
   {
     "date": "2026-01-07",
-    "distance_km": 12.8
+    "distance_km": 19.2
   },
   {
     "date": "2026-01-08",
-    "distance_km": 15.4
+    "distance_km": 23.1
   },
   {
     "date": "2026-01-09",
-    "distance_km": 22.6
+    "distance_km": 33.9
   },
   {
     "date": "2026-01-10",
-    "distance_km": 16.8
+    "distance_km": 25.2
   },
   {
     "date": "2026-01-13",
-    "distance_km": 32.6
+    "distance_km": 48.9
   },
   {
     "date": "2026-01-14",
-    "distance_km": 25.6
+    "distance_km": 38.4
   },
   {
     "date": "2026-01-20",
-    "distance_km": 20.8
+    "distance_km": 31.2
   },
   {
     "date": "2026-01-22",
-    "distance_km": 20.2
+    "distance_km": 30.3
   },
   {
     "date": "2026-01-23",
-    "distance_km": 25.0
+    "distance_km": 37.5
   },
   {
     "date": "2026-01-28",
-    "distance_km": 15.2
+    "distance_km": 22.8
   }
 ]
