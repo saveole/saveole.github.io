@@ -84,8 +84,9 @@ def main():
     existing = load_existing()
     since_date = None
     if existing:
-        since_date = min(existing.keys())
-        print(f"Incremental sync from {since_date}")
+        yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
+        since_date = yesterday
+        print(f"Incremental sync from yesterday ({since_date})")
 
     # Fetch
     activities = fetch_running_activities(since_date)
@@ -101,11 +102,9 @@ def main():
         distance_m = act.get("distance", 0) or 0
         distance_km = distance_m / 1000
 
-        if date in day_map:
-            # Sum if same date has multiple runs
-            day_map[date] = day_map[date] + distance_km
-        else:
-            day_map[date] = distance_km
+        # Replace existing date distance with the latest fetched value
+        # to avoid double-counting when syncing the same day again.
+        day_map[date] = distance_km
 
     save_output(day_map)
 
