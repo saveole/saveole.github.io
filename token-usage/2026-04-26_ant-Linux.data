@@ -1,3 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	tokens_total	git_branch	is_subagent	user_turns
 9896d0d9-d1cc-4c72-b78c-ef716b681d81	2026-04-26T10:30:14+08:00	-home-ant-blog-saveole-github-io	glm-5.1	58	9	37195	993	290304	0	328492	main	false	0
 9cb33053-df2e-4202-b8f6-22e93d27999c	2026-04-26T03:00:39.496Z	blog	glm-5.1	112	4	11475	2810	49280	0	main
+ec13726e-2e31-4998-b000-f51a2eef887b	2026-04-26T04:10:57.250Z	xueqiu-crawler	glm-5.1	646	70	54657	5647	1861504	0	main
+20260426_124859_67e73b	2026-04-26T12:57:12+08:00	xueqiu-crawler	glm-5.1	492	13	19351	1784	176832	0	main
