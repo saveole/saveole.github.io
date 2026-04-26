@@ -300,50 +300,31 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
         f.write(record + "\n")
 
     # ── Git sync ──
-    if subprocess.run(
-        ["git", "diff", "--quiet"],
-        capture_output=True, cwd=str(REPO_DIR),
-    ).returncode != 0:
-        log("GIT: stashing unstaged changes...")
-        subprocess.run(
-            ["git", "stash", "push", "-u", "-m",
-             f"auto-stash {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}"],
-            capture_output=True, cwd=str(REPO_DIR),
-        )
-
-    t0 = time.monotonic()
-    log("GIT: pulling origin main...")
-    if run_git("pull", "--rebase", "origin", "main"):
-        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
-
     subprocess.run(
         ["git", "add", f"token-usage/{date}_{hostname}-{os_name}.data"],
         capture_output=True, cwd=str(REPO_DIR),
     )
 
-    has_staged = subprocess.run(
-        ["git", "diff", "--cached", "--quiet"],
-        capture_output=True, cwd=str(REPO_DIR),
-    ).returncode != 0
-
-    if has_staged:
-        t0 = time.monotonic()
-        log(f"GIT: committing session {session_id[:8]}...")
-        if run_git("commit", "-m", f"track: token usage {date} session {session_id[:8]}"):
-            log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
-        else:
-            log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
-
-        t0 = time.monotonic()
-        log("GIT: pushing origin main...")
-        if run_git("push", "origin", "main"):
-            log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
-        else:
-            log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
+    t0 = time.monotonic()
+    log(f"GIT: committing session {session_id[:8]}...")
+    if run_git("commit", "-m", f"track: token usage {date} session {session_id[:8]}"):
+        log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
     else:
-        log("GIT: no changes to commit")
+        log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
+
+    t0 = time.monotonic()
+    log("GIT: pulling --rebase origin main...")
+    if run_git("pull", "--rebase", "origin", "main"):
+        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
+    else:
+        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
+
+    t0 = time.monotonic()
+    log("GIT: pushing origin main...")
+    if run_git("push", "origin", "main"):
+        log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
+    else:
+        log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
 
     # ── Background incremental backfill ──
     incremental = REPO_DIR / "token-usage" / "scripts" / "incremental.py"
