@@ -7,8 +7,8 @@
 ## 工作原理
 
 ```
-Claude Code 会话结束
-    ↓ Stop Hook 触发
+Claude Code 退出（SessionEnd Hook）
+    ↓ log-usage.py 触发
     ↓ 从 ~/.claude/projects/<project>/<session>.jsonl 读取会话数据（ccusage 兼容方式）
     ↓ 按 message.id 去重，累加 token 用量
     ↓ 追加到 YYYY-MM-DD_{hostname}-{os}.data（按天+设备分文件，TSV 格式）
@@ -16,6 +16,9 @@ Claude Code 会话结束
     ↓ 后台启动 incremental.py
     ↓ 扫描全部 JSONL，补录缺失的历史 session（仅 append，不碰 git）
     ↓ 补录的数据在下次 hook 触发时随 git add/commit/push 一起提交
+────────────────────────────
+    ↓ notify.cjs 触发（tokentracker 通知脚本）
+    ↓ 写入信号文件，节流触发远程同步（最多 20 秒一次）
 ────────────────────────────
 Hermes Agent 会话结束
     ↓ on_session_finalize Plugin hook 触发
@@ -62,20 +65,24 @@ REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" 
 
 如果你把仓库克隆到了其他位置，可以设置环境变量 `TOKEN_USAGE_REPO_DIR`，或直接修改代码中的路径。
 
-### 第 4 步：注册 Stop Hook
+### 第 4 步：注册 SessionEnd Hook
 
-打开 `~/.claude/settings.json`（如不存在则创建），在 `hooks` 中添加 `Stop` 配置：
+打开 `~/.claude/settings.json`（如不存在则创建），在 `hooks` 中添加 `SessionEnd` 配置：
 
 ```json
 {
   "hooks": {
-    "Stop": [
+    "SessionEnd": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/log-usage.py"
+            "command": "/usr/bin/env node ~/.tokentracker/bin/notify.cjs --source=claude"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage.py",
+            "timeout": 10000
           }
         ]
       }
@@ -84,7 +91,10 @@ REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" 
 }
 ```
 
-如果 `settings.json` 中已有其他 hooks 配置（如 `PreToolUse`），只需将 `Stop` 数组追加到 `hooks` 对象中即可，不要覆盖已有配置。
+- **log-usage.py**：Claude Code 退出时触发，从 JSONL 读取会话数据，记录 token 用量并 git 同步。
+- **notify.cjs**：tokentracker 通知脚本，写入信号文件并节流触发远程同步（最多 20 秒一次）。
+
+如果 `settings.json` 中已有其他 hooks 配置（如 `PreToolUse`），只需将 `SessionEnd` 数组追加到 `hooks` 对象中即可，不要覆盖已有配置。
 
 ### 第 5 步：回填历史数据（可选）
 
@@ -155,7 +165,6 @@ token-usage/
 │       └── README.md         # Hermes 插件文档
 ├── scripts/
 │   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
-│   ├── log-usage.sh          # （已废弃）旧版 Bash 脚本
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）

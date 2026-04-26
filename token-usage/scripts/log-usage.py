@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # ┌─────────────────────────────────────────────────────────────┐
-# │  Claude Code Token Usage Tracker — Stop Hook               │
+# │  Claude Code Token Usage Tracker — SessionEnd Hook         │
 # │                                                             │
 # │  参考 ccusage (github.com/ryoppippi/ccusage) 的数据读取方式  │
 # │  直接从 ~/.claude/projects/ 读取 JSONL，不依赖 transcript   │
-# │  将此脚本复制到 ~/.claude/hooks/log-usage.py                │
-# │  然后在 ~/.claude/settings.json 中注册 Stop hook            │
+# │  在 ~/.claude/settings.json 中注册为 SessionEnd hook        │
 # │  详见 saveole.github.io/token-usage/README.md               │
 # └─────────────────────────────────────────────────────────────┘
 from __future__ import annotations
