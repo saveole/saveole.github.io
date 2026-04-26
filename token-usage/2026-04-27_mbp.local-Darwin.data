@@ -5,3 +5,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 db30b3fc-5c50-4d5b-adfb-16287763d6c6	2026-04-27T00:38:32+08:00	-Users-saveole-projects-xueqiu-crawler	glm-5.1	241	10	20614	5342	354176	0	main
 658e057b-c48b-4b11-b8dc-fdb9c759319a	2026-04-27T00:43:19+08:00	-Users-saveole-projects-xueqiu-crawler	glm-5.1	223	8	27798	5198	291904	0	main
 af4597ff-4df5-459c-b8db-cf82856d1765	2026-04-27T00:46:06+08:00	-Users-saveole-projects-xueqiu-crawler	glm-5.1	155	12	39294	4261	426560	0	main
+1988822d-06de-419a-8578-feabeaf0a269	2026-04-27T00:55:00+08:00	-Users-saveole-projects-xueqiu-crawler	glm-5.1	216	10	30149	6759	385664	0	main
