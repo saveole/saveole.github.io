@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 e2ab4753-546c-4765-9170-32bd58bfa258	2026-04-27T11:14:50+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	4658	5	65644	2271	166720	0	feat/NFQX-11893
 b993fce5-e1b5-4268-a785-f812f4f16618	2026-04-27T14:02:36+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	9174	40	101155	11546	2265280	0	feat/NFQX-11893
+939e5bcf-11cb-4da3-a15c-3d04dd516963	2026-04-27T15:30:25+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	2302	43	81503	15409	2866176	0	test
