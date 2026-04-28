@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+bbe25957-67a5-4b97-a23b-16235105321f	2026-04-29T00:09:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	793	26	46280	18648	1513472	0	main
