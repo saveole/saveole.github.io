@@ -93,7 +93,9 @@ def main():
     print(f"Fetched {len(activities)} running activities")
 
     # Merge: aggregate by date
+    # Clear existing entries for dates covered by the fetch to avoid double-counting
     day_map = dict(existing)
+    fetched_dates = set()
     for act in activities:
         start_local = act.get("startTimeLocal", "")
         if not start_local:
@@ -102,9 +104,10 @@ def main():
         distance_m = act.get("distance", 0) or 0
         distance_km = distance_m / 1000
 
-        # Replace existing date distance with the latest fetched value
-        # to avoid double-counting when syncing the same day again.
-        day_map[date] = distance_km
+        if date not in fetched_dates:
+            fetched_dates.add(date)
+            day_map[date] = 0
+        day_map[date] += distance_km
 
     save_output(day_map)
 
