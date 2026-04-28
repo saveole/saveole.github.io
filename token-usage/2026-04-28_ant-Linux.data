@@ -1,2 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 a1024250-1291-422f-8d15-8ef9ea5086c8	2026-04-28T09:26:01+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	260	16	20430	4507	611968	0	main
+9c1ba086-d058-499d-b7cd-71c1d0078a2d	2026-04-28T01:11:36.590Z	xueqiu-crawler	glm-5.1	256	10	27478	7381	133184	0	main
+d80103d6-33fc-4f7a-9510-a48a9fbf41dc	2026-04-28T01:16:34.365Z	xueqiu-crawler	glm-5.1	213	37	19199	5572	382144	0	main
+f9930cc7-78ba-4b0f-bb04-c23958b80f11	2026-04-28T09:29:50+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	218	21	21497	3707	847744	0	main
