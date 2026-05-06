@@ -1,2 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 325939a1-87d6-40b8-9d51-3a7797f2725d	2026-05-06T10:20:41+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	2116	8	29306	1095	337024	0	test
+f1597aa3-c50c-4322-a1d6-6c61520b286c	2026-05-06T01:53:07.923Z	xueqiu-crawler	glm-5.1	1036	49	66694	16170	1304512	0	main
+798061d5-c72a-4235-9593-11bf9c43bdc6	2026-05-06T11:03:25+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	538	13	40653	2402	616576	0	master
