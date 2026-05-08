@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 6d7c9a23-7064-463d-8dc0-a2bebb7ac5cc	2026-05-08T11:28:19+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	59	5	21682	722	121280	0	main
 8501d804-ad2e-4109-899e-d51da99ff94c	2026-05-08T03:16:45.673Z	xueqiu-crawler	glm-5.1	621	19	83258	3419	263168	0	main
 f00598a7-819a-4df4-b9c9-227b070e47c6	2026-05-08T11:30:09+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	66	6	22632	2511	160960	0	main
+8c04e4b4-0bdc-455f-8345-35ee03a6d0de	2026-05-08T11:30:34+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	46759	35	122638	26759	2181824	0	fix/NFQX-11933
