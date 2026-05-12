@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 528dc7eb-03b4-4ca6-b391-ed900e69bf2d	2026-05-12T09:14:00+08:00	-home-ant-code-java-scrm-api	glm-5.1	4684	44	52552	10647	2892544	0	feature/scrm/9.4
 ddd2ca94-1ed6-422c-a7e3-4f5a5877e983	2026-05-12T00:30:55.618Z	xueqiu-crawler	glm-5.1	2587	199	99254	29993	7823104	0	main
+82b7a890-679d-4f02-8c20-4d9e9548e153	2026-05-12T10:03:07+08:00	-home-ant-code-java-scrm-api	glm-5.1	2613	73	219298	15361	5276928	0	dev
