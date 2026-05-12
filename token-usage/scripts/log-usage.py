@@ -338,11 +338,19 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
     else:
         log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
 
-    # ── Background incremental backfill ──
+    # ── Background incremental scan + git sync ──
     incremental = REPO_DIR / "token-usage" / "scripts" / "incremental.py"
     if incremental.is_file():
+        sync_script = (
+            f'{sys.executable} "{incremental}" '
+            f'&& cd "{REPO_DIR}" '
+            f'&& git add token-usage/ '
+            f'&& git diff --cached --quiet || git commit -m "track: token usage incremental update" '
+            f'&& git pull --rebase origin main '
+            f'&& git push origin main'
+        )
         subprocess.Popen(
-            [sys.executable, str(incremental)],
+            ["bash", "-c", sync_script],
             stdout=open(LOG_FILE, "a"),
             stderr=subprocess.STDOUT,
         )

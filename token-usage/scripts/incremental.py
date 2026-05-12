@@ -15,7 +15,10 @@ import sys
 from collections import Counter
 from datetime import datetime, timezone
 
-CLAUDE_DIR = os.path.expanduser("~/.claude/projects")
+CLAUDE_DATA_DIRS = [
+    os.path.expanduser("~/.config/claude/projects"),
+    os.path.expanduser("~/.claude/projects"),
+]
 # incremental.py is at token-usage/scripts/incremental.py
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -176,9 +179,9 @@ def process_transcript(transcript_path):
     }
 
 
-def load_recorded_session_ids():
-    """Scan all .data files, return set of already-recorded session_ids."""
-    recorded = set()
+def load_recorded_sessions():
+    """Scan all .data files, return dict of {session_id: (data_file_path, input, output, cache_read, cache_creation)}."""
+    recorded = {}
     for data_file in glob.glob(os.path.join(DATA_DIR, "*.data")):
         try:
             with open(data_file, newline="") as f:
@@ -186,69 +189,106 @@ def load_recorded_session_ids():
                 for row in reader:
                     sid = row.get("session_id", "")
                     if sid:
-                        recorded.add(sid)
+                        recorded[sid] = {
+                            "file": data_file,
+                            "input": int(row.get("tokens_input", 0)),
+                            "output": int(row.get("tokens_output", 0)),
+                            "cache_read": int(row.get("tokens_cache_read", 0)),
+                            "cache_creation": int(row.get("tokens_cache_creation", 0)),
+                        }
         except (OSError, IOError, csv.Error):
             pass
     return recorded
+
+
+def format_row(record):
+    return (
+        f"{record['session_id']}\t{record['timestamp']}\t{record['project']}"
+        f"\t{record['model']}\t{record['duration_seconds']}\t{record['message_count']}"
+        f"\t{record['tokens']['input']}\t{record['tokens']['output']}"
+        f"\t{record['tokens']['cache_read']}\t{record['tokens']['cache_creation']}"
+        f"\t{record['git_branch']}"
+    )
+
+
+def update_data_file(data_file, session_id, new_row):
+    """Replace existing session line or append new one."""
+    lines = []
+    if os.path.exists(data_file):
+        with open(data_file) as f:
+            lines = f.readlines()
+
+    replaced = False
+    out = []
+    for line in lines:
+        if line.startswith(session_id + "\t"):
+            out.append(new_row + "\n")
+            replaced = True
+        else:
+            out.append(line)
+
+    if not replaced:
+        if not out or not out[0].startswith("session_id\t"):
+            out.insert(0, TSV_HEADER + "\n")
+        out.append(new_row + "\n")
+
+    with open(data_file, "w") as f:
+        f.writelines(out)
+    return replaced
 
 
 def main():
     hostname = platform.node() or "unknown"
     os_name = platform.system() or "unknown"
 
-    # Phase 1: collect all already-recorded session_ids (fast set lookup)
-    recorded = load_recorded_session_ids()
+    recorded = load_recorded_sessions()
 
-    # Phase 2: scan transcripts, find unrecorded sessions
-    pattern = os.path.join(CLAUDE_DIR, "*", "*.jsonl")
-    transcripts = sorted(glob.glob(pattern))
+    transcripts = []
+    for base in CLAUDE_DATA_DIRS:
+        if os.path.isdir(base):
+            pattern = os.path.join(base, "*", "*.jsonl")
+            transcripts.extend(glob.glob(pattern))
+    transcripts = sorted(set(transcripts))
 
-    # Group new records by date
-    # {date: [tsv_row_string, ...]}
-    new_by_date = {}
+    total_new = 0
+    total_updated = 0
 
     for transcript_path in transcripts:
         session_id = os.path.splitext(os.path.basename(transcript_path))[0]
-        if session_id in recorded:
-            continue
-
         record = process_transcript(transcript_path)
         if record is None:
             continue
 
-        date = record["_date"]
-        row = (
-            f"{record['session_id']}\t{record['timestamp']}\t{record['project']}"
-            f"\t{record['model']}\t{record['duration_seconds']}\t{record['message_count']}"
-            f"\t{record['tokens']['input']}\t{record['tokens']['output']}"
-            f"\t{record['tokens']['cache_read']}\t{record['tokens']['cache_creation']}"
-            f"\t{record['git_branch']}"
+        new_tokens = (
+            record["tokens"]["input"],
+            record["tokens"]["output"],
+            record["tokens"]["cache_read"],
+            record["tokens"]["cache_creation"],
         )
 
-        if date not in new_by_date:
-            new_by_date[date] = []
-        new_by_date[date].append(row)
+        if session_id in recorded:
+            old = recorded[session_id]
+            old_tokens = (old["input"], old["output"], old["cache_read"], old["cache_creation"])
+            if new_tokens == old_tokens:
+                continue
+            # Token counts changed — update
+            data_file = os.path.join(DATA_DIR, f"{record['_date']}_{hostname}-{os_name}.data")
+            update_data_file(data_file, session_id, format_row(record))
+            total_updated += 1
+        else:
+            # New session — append
+            date = record["_date"]
+            data_file = os.path.join(DATA_DIR, f"{date}_{hostname}-{os_name}.data")
+            update_data_file(data_file, session_id, format_row(record))
+            total_new += 1
 
-    if not new_by_date:
-        return
-
-    # Phase 3: append new records to per-date files
-    total_new = 0
-    for date in sorted(new_by_date.keys()):
-        data_file = os.path.join(DATA_DIR, f"{date}_{hostname}-{os_name}.data")
-
-        # Ensure header exists
-        if not os.path.exists(data_file):
-            with open(data_file, "w") as f:
-                f.write(TSV_HEADER + "\n")
-
-        # Append new rows
-        with open(data_file, "a") as f:
-            for row in new_by_date[date]:
-                f.write(row + "\n")
-                total_new += 1
-
-    print(f"incremental: {total_new} new sessions backfilled")
+    parts = []
+    if total_new:
+        parts.append(f"{total_new} new")
+    if total_updated:
+        parts.append(f"{total_updated} updated")
+    if parts:
+        print(f"incremental: {', '.join(parts)} sessions synced")
 
 
 if __name__ == "__main__":
