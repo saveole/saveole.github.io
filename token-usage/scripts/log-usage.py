@@ -285,19 +285,31 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
         data["git_branch"],
     ])
 
-    # ── Deduplicate by session_id ──
+    # ── Deduplicate / update by session_id ──
     data_file = DATA_DIR / f"{date}_{hostname}-{os_name}.data"
-    if data_file.is_file():
-        if session_id in data_file.read_text():
-            log(f"SKIP: session {session_id[:8]} already recorded")
-            return
-
-    # ── Append record ──
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    with open(data_file, "a") as f:
-        if not data_file.exists() or data_file.stat().st_size == 0:
+
+    if data_file.is_file():
+        lines = data_file.read_text().splitlines(keepends=True)
+        replaced = False
+        new_lines: list[str] = []
+        for line in lines:
+            if line.startswith(session_id + "\t"):
+                # Replace with updated record
+                new_lines.append(record + "\n")
+                replaced = True
+            else:
+                new_lines.append(line)
+        if replaced:
+            data_file.write_text("".join(new_lines))
+            log(f"UPDATE: session {session_id[:8]} token counts updated")
+        else:
+            with open(data_file, "a") as f:
+                f.write(record + "\n")
+    else:
+        with open(data_file, "w") as f:
             f.write(TSV_HEADER + "\n")
-        f.write(record + "\n")
+            f.write(record + "\n")
 
     # ── Git sync ──
     subprocess.run(
