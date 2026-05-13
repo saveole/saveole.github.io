@@ -20,7 +20,7 @@
 
     <main class="container">
         <header class="home-header">
-            <p class="contrib-title">Token 不够？跑步来凑！</p>
+            <p class="contrib-title">Token 不够？跑步来凑！ <span class="contrib-summary" id="contrib-summary"></span></p>
             <div class="contrib-wrapper">
                 <div class="contrib-months" id="contrib-months"></div>
                 <div class="contrib-body">
@@ -243,6 +243,40 @@
             });
         });
         gridEl.innerHTML = gridHtml;
+
+        // Summary statistics
+        var totalTokens = 0, totalRunning = 0, activeDays = 0;
+        weeks.forEach(function(week) {
+            week.forEach(function(day) {
+                if (day.future) return;
+                if (day.tokens > 0) { totalTokens += day.tokens; }
+                if (day.running > 0) { totalRunning += day.running; }
+                if (day.tokens > 0 || day.running > 0) { activeDays++; }
+            });
+        });
+        var summaryParts = [];
+        if (totalTokens > 0) summaryParts.push(formatTokens(totalTokens) + ' tokens');
+        if (totalRunning > 0) summaryParts.push(totalRunning.toFixed(0) + ' km');
+        if (activeDays > 0) summaryParts.push(activeDays + ' 天活跃');
+        var summaryEl = document.getElementById('contrib-summary');
+        if (summaryEl && summaryParts.length > 0) {
+            summaryEl.textContent = '· ' + summaryParts.join(' · ');
+        }
+
+        // Info panel click toggle (touch-friendly)
+        var infoBtn = document.querySelector('.legend-info-btn');
+        var infoPanel = document.querySelector('.legend-info-panel');
+        if (infoBtn && infoPanel) {
+            infoBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                infoPanel.classList.toggle('active');
+            });
+            document.addEventListener('click', function(e) {
+                if (!infoPanel.contains(e.target) && e.target !== infoBtn) {
+                    infoPanel.classList.remove('active');
+                }
+            });
+        }
     })();
     </script>
 </body>

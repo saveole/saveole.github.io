@@ -625,6 +625,12 @@ pre code {
   margin-bottom: 0.75rem;
 }
 
+.contrib-summary {
+  font-weight: 400;
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+
 .contrib-year-selector {
   display: flex;
   gap: 4px;
@@ -704,8 +710,8 @@ pre code {
 }
 
 .contrib-cell:hover {
-  outline: 2px solid var(--text-main);
-  outline-offset: -1px;
+  box-shadow: 0 0 0 2px var(--text-main);
+  z-index: 5;
 }
 
 .contrib-cell[data-tooltip]:hover::after {
@@ -842,6 +848,52 @@ pre code {
 
 .legend-info-btn:hover + .legend-info-panel,
 .legend-info-btn:focus + .legend-info-panel,
-.legend-info-panel:hover {
+.legend-info-panel:hover,
+.legend-info-panel.active {
   display: block;
+}
+
+/* ============ Responsive: heatmap on small screens ============ */
+@media (max-width: 680px) {
+  .home-header {
+    margin: 2rem 0 1rem;
+  }
+
+  .contrib-title {
+    font-size: 0.78rem;
+  }
+
+  .contrib-summary {
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  .contrib-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+  }
+
+  .contrib-legend {
+    flex-wrap: wrap;
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .legend-info-panel {
+    width: calc(100vw - 3rem);
+    right: -1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .contrib-months {
+    margin-left: 22px;
+    font-size: 0.6rem;
+  }
+
+  .contrib-days {
+    font-size: 0.5rem;
+    width: 20px;
+  }
 }
