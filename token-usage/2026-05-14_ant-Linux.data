@@ -5,3 +5,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 b7b88296-85a7-4e69-98b6-6c6831cacaca	2026-05-14T08:19:48+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	280	11	31661	11358	491584	0	main
 1273bf4e-dbea-44ac-916f-0257997fbee4	2026-05-14T08:27:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	468	32	47593	17247	1923584	0	main
 db7ee55c-ed12-49c1-b631-88620afe92dd	2026-05-14T08:30:23+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	140	7	16139	3886	235008	0	main
+a7d0eaf4-422f-45b8-bde2-fa2f5ea529c5	2026-05-14T08:39:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	530	45	41145	15180	2364544	0	main
