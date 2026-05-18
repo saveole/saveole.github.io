@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+c6491992-370a-46ac-8e4d-b6830a531aec	2026-05-18T09:47:01+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	1214	36	60346	9066	2426688	0	master
