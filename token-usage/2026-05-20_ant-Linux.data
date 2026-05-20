@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 79949f51-df3b-4282-ab8e-5aac282a05ae	2026-05-20T09:05:56+08:00	-home-ant-blog-saveole-github-io	glm-5.1	114	8	28506	446	195136	0	main
 ca95f5e2-ffaa-4252-b836-be3c63a8efad	2026-05-20T11:01:05+08:00	-home-ant-code-java-scrm-api	glm-5.1	5353	66	135836	27340	6015936	0	master
+6197bc40-8a77-4874-a005-30e0f3e3c2d4	2026-05-20T18:22:12+08:00	-home-ant-blog-saveole-github-io	glm-5.1	2564	17	113022	12058	491328	0	main
