@@ -20,14 +20,11 @@ def load_existing():
         return {}
     with open(OUTPUT_FILE, "r") as f:
         data = json.load(f)
-    return {item["date"]: item["distance_km"] for item in data}
+    return {item["date"]: item for item in data}
 
 
-def save_output(day_map):
-    result = [
-        {"date": d, "distance_km": round(km, 1)}
-        for d, km in sorted(day_map.items())
-    ]
+def save_output(records_by_date):
+    result = sorted(records_by_date.values(), key=lambda x: x["date"])
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
     with open(OUTPUT_FILE, "w") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
@@ -92,24 +89,69 @@ def main():
     activities = fetch_running_activities(since_date)
     print(f"Fetched {len(activities)} running activities")
 
-    # Merge: aggregate by date
-    # Clear existing entries for dates covered by the fetch to avoid double-counting
-    day_map = dict(existing)
-    fetched_dates = set()
+    # Aggregate by date
+    day_map = {}
     for act in activities:
         start_local = act.get("startTimeLocal", "")
         if not start_local:
             continue
         date = start_local.split(" ")[0]
-        distance_m = act.get("distance", 0) or 0
-        distance_km = distance_m / 1000
 
-        if date not in fetched_dates:
-            fetched_dates.add(date)
-            day_map[date] = 0
-        day_map[date] += distance_km
+        distance_m = act.get("distance") or 0
+        duration_s = act.get("duration") or 0
+        avg_hr = act.get("averageHR") or 0
+        max_hr = act.get("maxHR") or 0
+        cadence = act.get("averageRunningCadenceInStepsPerMinute") or 0
+        vo2max = act.get("vO2MaxValue") or 0
 
-    save_output(day_map)
+        if date not in day_map:
+            day_map[date] = {
+                "date": date,
+                "distance_km": 0.0,
+                "duration_s": 0,
+                "avg_pace_s_per_km": 0,
+                "avg_hr": 0.0,
+                "max_hr": 0,
+                "cadence_spm": 0.0,
+                "vo2max": 0.0,
+                "_hr_weight": 0.0,
+                "_cadence_weight": 0.0,
+            }
+
+        d = day_map[date]
+        dist_km = distance_m / 1000
+        d["distance_km"] += dist_km
+        d["duration_s"] += duration_s
+        d["max_hr"] = max(d["max_hr"], max_hr)
+        d["vo2max"] = max(d["vo2max"], vo2max)
+
+        # Distance-weighted average for heart rate
+        if avg_hr and dist_km > 0:
+            w = d["_hr_weight"] + dist_km
+            d["avg_hr"] = (d["avg_hr"] * d["_hr_weight"] + avg_hr * dist_km) / w
+            d["_hr_weight"] = w
+
+        # Distance-weighted average for cadence
+        if cadence and dist_km > 0:
+            w = d["_cadence_weight"] + dist_km
+            d["cadence_spm"] = (d["cadence_spm"] * d["_cadence_weight"] + cadence * dist_km) / w
+            d["_cadence_weight"] = w
+
+    # Finalize: calculate pace from totals, round values, remove helper fields
+    for d in day_map.values():
+        d["distance_km"] = round(d["distance_km"], 1)
+        if d["distance_km"] > 0 and d["duration_s"] > 0:
+            d["avg_pace_s_per_km"] = round(d["duration_s"] / d["distance_km"])
+        d["avg_hr"] = round(d["avg_hr"])
+        d["cadence_spm"] = round(d["cadence_spm"], 1)
+        d["vo2max"] = round(d["vo2max"], 1) if d["vo2max"] else 0
+        del d["_hr_weight"]
+        del d["_cadence_weight"]
+
+    # Merge: fetched dates replace existing entries
+    merged = dict(existing)
+    merged.update(day_map)
+    save_output(merged)
 
 
 if __name__ == "__main__":
