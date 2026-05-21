@@ -3,241 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>身体成分与运动负荷综合看板</title>
+    <title>Running | 我的技术博客</title>
     <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            background-color: var(--bg-color, #faf8f5);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #2c3e50;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-        .container {
-            max-width: 840px;
-            margin: 0 auto;
-        }
-        header.page-header {
-            padding: 40px 20px 0;
-        }
-        header.page-header h1 {
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: -0.5px;
-            margin: 0 0 8px 0;
-        }
-        header.page-header p {
-            color: #8a9597;
-            font-size: 13px;
-            margin: 0;
-        }
-
-        .dashboard-card {
-            background: #ffffff;
-            border: 1px solid #eeebe5;
-            border-radius: 6px;
-            padding: 24px;
-            box-shadow: 0 4px 24px rgba(7, 5, 0, 0.015);
-            margin: 30px 20px;
-        }
-        .chart-row {
-            position: relative;
-            width: 100%;
-            height: 200px;
-        }
-        .divider {
-            height: 1px;
-            background-color: #f5f2ec;
-            margin: 20px 0;
-        }
-
-        .list-section {
-            background: #ffffff;
-            border: 1px solid #eeebe5;
-            border-radius: 6px;
-            padding: 24px;
-            box-shadow: 0 4px 24px rgba(7, 5, 0, 0.015);
-            margin: 0 20px 30px;
-        }
-        .list-title {
-            font-size: 15px;
-            font-weight: 400;
-            color: #1a252f;
-            margin: 0 0 20px 0;
-            letter-spacing: 0.5px;
-        }
-        .activity-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .activity-table th {
-            font-weight: 400;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #a0aab0;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e6dfd7;
-        }
-        .activity-table td {
-            padding: 10px 0;
-            border-bottom: 1px solid #f5f2ec;
-            color: #34495e;
-            font-weight: 300;
-        }
-        .activity-table tr:last-child td {
-            border-bottom: none;
-        }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
-        .run-title { color: #2c3e50; font-weight: 400; }
-        .km-val { font-weight: 500; color: #1a252f; }
-        .time-secondary { color: #b2bec3; font-size: 11px; margin-left: 5px; }
-    </style>
 </head>
 <body>
-
-<nav class="navbar">
-    <div class="container">
-        <a href="index.html" class="logo">Blog.</a>
-        <ul class="nav-links">
-            <li><a href="index.html">返回首页</a></li>
-        </ul>
-    </div>
-</nav>
-
-<div class="container">
-    <header class="page-header">
-        <h1>身体成分与运动负荷综合看板</h1>
-        <p>多维数据垂直联动分析 · 跨越时间周期的体能蜕变</p>
-    </header>
-
-    <div class="dashboard-card">
-        <div class="chart-row">
-            <canvas id="bodyChart"></canvas>
+    <nav class="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo">Blog.</a>
+            <a href="index.html" class="nav-link">返回首页</a>
         </div>
-        <div class="divider"></div>
-        <div class="chart-row">
-            <canvas id="runningChart"></canvas>
+    </nav>
+
+    <main class="container">
+        <header class="running-header">
+            <h1>身体成分与运动负荷</h1>
+            <p>多维数据联动分析</p>
+        </header>
+
+        <div class="dashboard-card">
+            <div class="chart-row">
+                <canvas id="bodyChart"></canvas>
+            </div>
+            <div class="chart-divider"></div>
+            <div class="chart-row">
+                <canvas id="runningChart"></canvas>
+            </div>
         </div>
-    </div>
 
-    <div class="list-section">
-        <h2 class="list-title">历史跑步足迹</h2>
-        <table class="activity-table">
-            <thead>
-                <tr>
-                    <th class="text-left">活动</th>
-                    <th class="text-right">KM</th>
-                    <th class="text-right">Pace</th>
-                    <th class="text-right">BPM</th>
-                    <th class="text-right">Time</th>
-                    <th class="text-right">Date</th>
-                </tr>
-            </thead>
-            <tbody id="activityListBody"></tbody>
-        </table>
-    </div>
-</div>
+        <div class="dashboard-card">
+            <h2 class="list-title">历史跑步足迹</h2>
+            <div class="table-wrapper">
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left">活动</th>
+                            <th class="text-right">KM</th>
+                            <th class="text-right">Pace</th>
+                            <th class="text-right">BPM</th>
+                            <th class="text-right">Time</th>
+                            <th class="text-right">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityListBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-<footer class="container">
-    <p>&copy; 2026 saveole.</p>
-</footer>
+    <footer class="container">
+        <p>&copy; 2026 saveole.</p>
+    </footer>
 
-<script>
-const timeline = <%- timelineJSON %>;
-const bodyRecords = <%- bodyJSON %>;
-const activityRecords = <%- activitiesJSON %>;
+    <script>
+    (function() {
+        var timeline = <%- timelineJSON %>;
+        var bodyRecords = <%- bodyJSON %>;
+        var activityRecords = <%- activitiesJSON %>;
 
-// 图表数据空槽位
-const weightData = Array(timeline.length).fill(null);
-const fatData = Array(timeline.length).fill(null);
-const distanceData = Array(timeline.length).fill(null);
-const hrData = Array(timeline.length).fill(null);
+        var weightData = Array(timeline.length).fill(null);
+        var fatData = Array(timeline.length).fill(null);
+        var distanceData = Array(timeline.length).fill(null);
+        var hrData = Array(timeline.length).fill(null);
 
-// 映射填充图表数据
-bodyRecords.forEach(d => {
-    const idx = timeline.indexOf(d.date);
-    if (idx !== -1) { weightData[idx] = d.weight_kg; fatData[idx] = d.body_fat_pct; }
-});
-activityRecords.forEach(d => {
-    const idx = timeline.indexOf(d.date);
-    if (idx !== -1) { distanceData[idx] = d.distance_km; hrData[idx] = d.avg_hr; }
-});
+        bodyRecords.forEach(function(d) {
+            var idx = timeline.indexOf(d.date);
+            if (idx !== -1) { weightData[idx] = d.weight_kg; fatData[idx] = d.body_fat_pct; }
+        });
 
-// 渲染活动列表
-const listContainer = document.getElementById('activityListBody');
-let listHtml = '';
-activityRecords.forEach(item => {
-    listHtml += '<tr>' +
-        '<td class="text-left run-title">' + item.name + '</td>' +
-        '<td class="text-right km-val">' + item.distance_km.toFixed(2) + '</td>' +
-        '<td class="text-right">' + item.pace + '</td>' +
-        '<td class="text-right">' + item.avg_hr + '</td>' +
-        '<td class="text-right">' + item.duration + '</td>' +
-        '<td class="text-right">' + item.date + '</td>' +
-        '</tr>';
-});
-listContainer.innerHTML = listHtml;
+        activityRecords.forEach(function(a) {
+            var idx = timeline.indexOf(a.date);
+            if (idx !== -1) { distanceData[idx] = a.distance_km; hrData[idx] = a.avg_hr; }
+        });
 
-// Chart.js 配置
-const commonScalesX = { grid: { display: false }, ticks: { color: '#a0aab0', font: { size: 10, weight: 300 }, maxTicksLimit: 8, maxRotation: 0 }, border: { display: false } };
+        // Render activity list
+        var listBody = document.getElementById('activityListBody');
+        var html = '';
+        activityRecords.forEach(function(a) {
+            html += '<tr>' +
+                '<td class="text-left run-title">' + a.name + '</td>' +
+                '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
+                '<td class="text-right">' + a.pace + '</td>' +
+                '<td class="text-right">' + a.avg_hr + '</td>' +
+                '<td class="text-right">' + a.duration + '</td>' +
+                '<td class="text-right">' + a.date + '</td>' +
+                '</tr>';
+        });
+        listBody.innerHTML = html;
 
-const chartBody = new Chart(document.getElementById('bodyChart').getContext('2d'), {
-    type: 'line',
-    data: {
-        labels: timeline,
-        datasets: [
-            { label: '体重', data: weightData, borderColor: '#5c768d', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yW' },
-            { label: '体脂率', data: fatData, borderColor: '#c4a475', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yF' }
-        ]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11 } } } },
-        scales: {
-            x: { ...commonScalesX, ticks: { display: false } },
-            yW: { type: 'linear', position: 'left', min: 70, max: 85, ticks: { color: '#a0aab0', font: { size: 10 }, stepSize: 5, callback: v => v+' kg' }, grid: { color: '#f2eee9' }, border: { display: false } },
-            yF: { type: 'linear', position: 'right', min: 15, max: 35, ticks: { color: '#a0aab0', font: { size: 10 }, stepSize: 5, callback: v => v+' %' }, grid: { display: false }, border: { display: false } }
+        // Read CSS variables for theme-aware chart colors
+        var cs = getComputedStyle(document.documentElement);
+        var muted = cs.getPropertyValue('--text-muted').trim();
+        var borderClr = cs.getPropertyValue('--border-color').trim();
+
+        var commonScalesX = {
+            grid: { display: false },
+            ticks: { color: muted, font: { size: 10, family: 'Inter', weight: '300' }, maxTicksLimit: 8, maxRotation: 0 },
+            border: { display: false }
+        };
+
+        var chartBody = new Chart(document.getElementById('bodyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: timeline,
+                datasets: [
+                    { label: '体重', data: weightData, borderColor: '#5c768d', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yW' },
+                    { label: '体脂率', data: fatData, borderColor: '#c4a475', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yF' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11, family: 'Inter' } } } },
+                scales: {
+                    x: Object.assign({}, commonScalesX, { ticks: Object.assign({}, commonScalesX.ticks, { display: false }) }),
+                    yW: { type: 'linear', position: 'left', min: 70, max: 85, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' kg'; } }, grid: { color: borderClr }, border: { display: false } },
+                    yF: { type: 'linear', position: 'right', min: 15, max: 35, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' %'; } }, grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+
+        var chartRunning = new Chart(document.getElementById('runningChart').getContext('2d'), {
+            data: {
+                labels: timeline,
+                datasets: [
+                    { type: 'bar', label: '跑步距离', data: distanceData, backgroundColor: 'rgba(92, 118, 141, 0.4)', hoverBackgroundColor: 'rgba(92, 118, 141, 0.7)', barThickness: 6, yAxisID: 'yDistance' },
+                    { type: 'line', label: '平均心率', data: hrData, borderColor: '#db8a75', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11, family: 'Inter' } } }, tooltip: { usePointStyle: true } },
+                scales: {
+                    x: commonScalesX,
+                    yDistance: { type: 'linear', position: 'left', min: 0, max: 20, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' km'; } }, grid: { color: borderClr }, border: { display: false } },
+                    yH: { type: 'linear', position: 'right', min: 100, max: 180, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' bpm'; } }, grid: { display: false }, border: { display: false } }
+                }
+            }
+        });
+
+        // Dual chart hover sync
+        function triggerHover(targetChart, event) {
+            var points = targetChart.getElementsAtEventForMode(event, 'index', { intersect: false }, true);
+            if (points.length > 0) {
+                targetChart.setActiveElements(points);
+                targetChart.tooltip.setActiveElements(points, { x: event.x, y: event.y });
+                targetChart.update('none');
+            }
         }
-    }
-});
 
-const chartRunning = new Chart(document.getElementById('runningChart').getContext('2d'), {
-    data: {
-        labels: timeline,
-        datasets: [
-            { type: 'bar', label: '跑步距离', data: distanceData, backgroundColor: 'rgba(92, 118, 141, 0.4)', hoverBackgroundColor: 'rgba(92, 118, 141, 0.7)', barThickness: 6, yAxisID: 'yDistance' },
-            { type: 'line', label: '平均心率', data: hrData, borderColor: '#db8a75', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' }
-        ]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11 } } }, tooltip: { usePointStyle: true } },
-        scales: {
-            x: commonScalesX,
-            yDistance: { type: 'linear', position: 'left', min: 0, max: 20, ticks: { color: '#a0aab0', font: { size: 10 }, stepSize: 5, callback: v => v+' km' }, grid: { color: '#f2eee9' }, border: { display: false } },
-            yH: { type: 'linear', position: 'right', min: 110, max: 160, ticks: { color: '#a0aab0', font: { size: 10 }, stepSize: 10, callback: v => v+' bpm' }, grid: { display: false }, border: { display: false } }
-        }
-    }
-});
-
-// 多图表垂直十字联动
-function triggerHover(targetChart, event) {
-    const points = targetChart.getElementsAtEventForMode(event, 'index', { intersect: false }, true);
-    if (points.length > 0) { targetChart.setActiveElements(points); targetChart.tooltip.setActiveElements(points, { x: event.x, y: event.y }); targetChart.update('none'); }
-}
-document.getElementById('bodyChart').addEventListener('mousemove', (e) => { triggerHover(chartRunning, Chart.helpers.getRelativePosition(e, chartBody)); });
-document.getElementById('runningChart').addEventListener('mousemove', (e) => { triggerHover(chartBody, Chart.helpers.getRelativePosition(e, chartRunning)); });
-</script>
+        document.getElementById('bodyChart').addEventListener('mousemove', function(e) {
+            triggerHover(chartRunning, Chart.helpers.getRelativePosition(e, chartBody));
+        });
+        document.getElementById('runningChart').addEventListener('mousemove', function(e) {
+            triggerHover(chartBody, Chart.helpers.getRelativePosition(e, chartRunning));
+        });
+    })();
+    </script>
 </body>
 </html>

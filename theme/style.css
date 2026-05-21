@@ -326,6 +326,123 @@ pre code {
   }
 }
 
+/* ============ Running Page ============ */
+
+.running-header {
+  margin: 4rem 0 2rem;
+}
+
+.running-header h1 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  margin: 0 0 0.3rem;
+  color: var(--text-main);
+}
+
+.running-header p {
+  color: var(--text-muted);
+  font-family: "Inter", sans-serif;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.dashboard-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-row {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.chart-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 1.25rem 0;
+}
+
+.list-title {
+  font-family: "Inter", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-main);
+  margin: 0 0 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Inter", sans-serif;
+  font-size: 0.82rem;
+}
+
+.activity-table th {
+  font-weight: 400;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activity-table td {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.activity-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.run-title {
+  color: var(--text-main);
+  font-weight: 400;
+}
+
+.km-val {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* Running page responsive */
+@media (max-width: 640px) {
+  .dashboard-card {
+    padding: 1rem;
+    border-radius: 0;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    border-left: none;
+    border-right: none;
+  }
+
+  .activity-table {
+    font-size: 0.75rem;
+  }
+
+  .activity-table th {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+  }
+}
+
 /* 紧凑型文章列表样式 */
 .post-list .post-item {
   margin-bottom: 1.5rem; /* 每一项之间的垂直间距 */
