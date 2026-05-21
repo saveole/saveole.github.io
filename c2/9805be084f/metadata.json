@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "c29805be084f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "files_touched": [
+    "build.js",
+    "running-data/activities.json",
+    "scripts/sync_garmin.py",
+    "theme/index.ejs",
+    "theme/running.ejs",
+    "theme/style.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c2/9805be084f/0/metadata.json",
+      "transcript": "/c2/9805be084f/0/full.jsonl",
+      "content_hash": "/c2/9805be084f/0/content_hash.txt",
+      "prompt": "/c2/9805be084f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 165906,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 3230400,
+    "output_tokens": 10878,
+    "api_call_count": 78
+  }
+}
