@@ -186,6 +186,54 @@ const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 
 });
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
+// --- Running page data processing ---
+const RUNNING_DATA_DIR = path.join(__dirname, 'running-data');
+
+function formatDuration(seconds) {
+    return Math.round(seconds / 60) + 'min';
+}
+
+function formatPace(secondsPerKm) {
+    const min = Math.floor(secondsPerKm / 60);
+    const sec = secondsPerKm % 60;
+    return min + "'" + (sec < 10 ? '0' : '') + sec + '"';
+}
+
+let runningPageData = null;
+if (fs.existsSync(RUNNING_DATA_DIR)) {
+    const activitiesRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'activities.json'), 'utf-8'));
+    const bodyRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'body.json'), 'utf-8'));
+
+    // Build unified timeline from all dates in both data sources
+    const dateSet = new Set();
+    activitiesRaw.forEach(a => dateSet.add(a.date));
+    bodyRaw.forEach(b => dateSet.add(b.date));
+    const timeline = Array.from(dateSet).sort();
+
+    // Format activities for template
+    const activities = activitiesRaw.map(a => ({
+        date: a.date,
+        name: '跑步',
+        distance_km: a.distance_km,
+        duration: formatDuration(a.duration_s),
+        pace: formatPace(a.avg_pace_s_per_km),
+        avg_hr: a.avg_hr,
+        max_hr: a.max_hr,
+        cadence_spm: a.cadence_spm
+    })).sort((a, b) => b.date.localeCompare(a.date));
+
+    runningPageData = {
+        timelineJSON: JSON.stringify(timeline),
+        bodyJSON: JSON.stringify(bodyRaw),
+        activitiesJSON: JSON.stringify(activities)
+    };
+}
+
+if (runningPageData) {
+    const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData);
+    fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
+}
+
 console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个首页。`);
 
 // 复制独立页面（如 token-usage）
