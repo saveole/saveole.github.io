@@ -213,7 +213,8 @@ if (fs.existsSync(RUNNING_DATA_DIR)) {
     // Format activities for template
     const activities = activitiesRaw.map(a => ({
         date: a.date,
-        name: '跑步',
+        start_time: a.start_time || '',
+        type: a.type || 'running',
         distance_km: a.distance_km,
         duration: formatDuration(a.duration_s),
         pace: formatPace(a.avg_pace_s_per_km),

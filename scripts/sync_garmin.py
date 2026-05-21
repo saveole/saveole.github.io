@@ -95,7 +95,10 @@ def main():
         start_local = act.get("startTimeLocal", "")
         if not start_local:
             continue
-        date = start_local.split(" ")[0]
+        parts = start_local.split(" ")
+        date = parts[0]
+        start_time = parts[1][:8] if len(parts) > 1 else ""
+        act_type = act.get("activityType", {}).get("typeKey", "running")
 
         distance_m = act.get("distance") or 0
         duration_s = act.get("duration") or 0
@@ -107,6 +110,8 @@ def main():
         if date not in day_map:
             day_map[date] = {
                 "date": date,
+                "start_time": start_time,
+                "type": act_type,
                 "distance_km": 0.0,
                 "duration_s": 0,
                 "avg_pace_s_per_km": 0,

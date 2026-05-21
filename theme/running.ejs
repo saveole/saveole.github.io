@@ -22,8 +22,7 @@
 
     <main class="container">
         <header class="running-header">
-            <h1>身体成分与运动负荷</h1>
-            <p>多维数据联动分析</p>
+            <h1>跑步和体重趋势</h1>
         </header>
 
         <div class="dashboard-card">
@@ -37,7 +36,10 @@
         </div>
 
         <div class="dashboard-card">
-            <h2 class="list-title">历史跑步足迹</h2>
+            <div class="list-header">
+                <h2 class="list-title">足迹</h2>
+                <div class="year-tabs" id="yearTabs"></div>
+            </div>
             <div class="table-wrapper">
                 <table class="activity-table">
                     <thead>
@@ -83,18 +85,59 @@
 
         // Render activity list
         var listBody = document.getElementById('activityListBody');
-        var html = '';
+
+        // Extract years and build tabs
+        var yearSet = {};
         activityRecords.forEach(function(a) {
-            html += '<tr>' +
-                '<td class="text-left run-title">' + a.name + '</td>' +
-                '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
-                '<td class="text-right">' + a.pace + '</td>' +
-                '<td class="text-right">' + a.avg_hr + '</td>' +
-                '<td class="text-right">' + a.duration + '</td>' +
-                '<td class="text-right">' + a.date + '</td>' +
-                '</tr>';
+            yearSet[a.date.slice(0, 4)] = true;
         });
-        listBody.innerHTML = html;
+        var years = Object.keys(yearSet).sort().reverse();
+        var currentYear = String(new Date().getFullYear());
+        var activeYear = years.indexOf(currentYear) !== -1 ? currentYear : years[0];
+
+        var tabsEl = document.getElementById('yearTabs');
+        years.forEach(function(y) {
+            var btn = document.createElement('button');
+            btn.textContent = y;
+            btn.className = 'year-tab' + (y === activeYear ? ' active' : '');
+            btn.onclick = function() {
+                activeYear = y;
+                var tabs = tabsEl.querySelectorAll('.year-tab');
+                for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+                btn.classList.add('active');
+                renderList(y);
+            };
+            tabsEl.appendChild(btn);
+        });
+
+        function renderList(year) {
+            var html = '';
+            activityRecords.forEach(function(a) {
+                if (a.date.slice(0, 4) !== year) return;
+                var hour = a.start_time ? parseInt(a.start_time.split(':')[0], 10) : 12;
+                var isTreadmill = a.type === 'treadmill_running';
+                var period;
+                if (hour >= 5 && hour < 9) period = '清晨';
+                else if (hour >= 9 && hour < 12) period = '上午';
+                else if (hour >= 12 && hour < 18) period = '下午';
+                else period = '夜晚';
+                var label = period + (isTreadmill ? '跑步机' : '户外');
+
+                var dateDisplay = a.date + ' ' + (a.start_time || '00:00:00');
+
+                html += '<tr>' +
+                    '<td class="text-left run-title">' + label + '</td>' +
+                    '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
+                    '<td class="text-right">' + a.pace + '</td>' +
+                    '<td class="text-right">' + a.avg_hr + '</td>' +
+                    '<td class="text-right">' + a.duration + '</td>' +
+                    '<td class="text-right">' + dateDisplay + '</td>' +
+                    '</tr>';
+            });
+            listBody.innerHTML = html;
+        }
+
+        renderList(activeYear);
 
         // Read CSS variables for theme-aware chart colors
         var cs = getComputedStyle(document.documentElement);
@@ -118,7 +161,7 @@
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11, family: 'Inter' } } } },
+                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 10, family: 'Inter' } } } },
                 scales: {
                     x: Object.assign({}, commonScalesX, { ticks: Object.assign({}, commonScalesX.ticks, { display: false }) }),
                     yW: { type: 'linear', position: 'left', min: 70, max: 85, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' kg'; } }, grid: { color: borderClr }, border: { display: false } },
@@ -137,7 +180,7 @@
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 11, family: 'Inter' } } }, tooltip: { usePointStyle: true } },
+                plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 10, family: 'Inter' } } }, tooltip: { usePointStyle: true } },
                 scales: {
                     x: commonScalesX,
                     yDistance: { type: 'linear', position: 'left', min: 0, max: 20, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' km'; } }, grid: { color: borderClr }, border: { display: false } },

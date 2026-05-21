@@ -20,7 +20,7 @@
 
     <main class="container">
         <header class="home-header">
-            <p class="contrib-title">Token 不够？跑步来凑！ <span class="contrib-summary" id="contrib-summary"></span></p>
+            <p class="contrib-title">Token 不够？<a href="running.html">跑步</a>来凑！ <span class="contrib-summary" id="contrib-summary"></span></p>
             <div class="contrib-wrapper">
                 <div class="contrib-months" id="contrib-months"></div>
                 <div class="contrib-body">
@@ -194,7 +194,7 @@
         var monthHtml = '';
         var prevWeekIdx = -10;
         monthLabels.forEach(function(m) {
-            var offset = m.weekIndex * 12;
+            var offset = m.weekIndex * 14;
             if (m.weekIndex > prevWeekIdx + 3) {
                 monthHtml += '<span style="position:absolute;left:' + offset + 'px">' + m.month + '</span>';
                 prevWeekIdx = m.weekIndex;
