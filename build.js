@@ -129,7 +129,7 @@ postList.sort((a, b) => b.rawDate - a.rawDate);
 
 // 读取 token 用量数据（直接从 .data TSV 文件聚合）
 let tokenUsageData = { days: [] };
-const TOKEN_USAGE_DIR=path.j...ame, 'token-usage');
+const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
 if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
     const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
