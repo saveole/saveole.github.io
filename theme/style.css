@@ -51,13 +51,17 @@ footer {
 
 .navbar-inner {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
 }
 
 .nav-link {
   font-family: "Inter", sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   text-decoration: none;
   letter-spacing: 0.2px;
@@ -1272,20 +1276,8 @@ pre code {
     color: var(--text-muted);
 }
 
-/* Navbar link styles */
-.navbar .nav-link {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.navbar .nav-link:hover {
-    color: var(--text-primary);
-}
-
-.navbar .nav-link.active {
-    color: var(--text-primary);
+.nav-link.active {
+    color: var(--text-main);
     font-weight: 600;
 }
 
