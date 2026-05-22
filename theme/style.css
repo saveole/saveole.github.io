@@ -55,6 +55,20 @@ footer {
   align-items: center;
 }
 
+.logo {
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.7;
+}
+
 .nav-link {
   font-family: "Inter", sans-serif;
   font-size: 0.82rem;
