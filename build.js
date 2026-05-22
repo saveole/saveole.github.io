@@ -129,7 +129,7 @@ postList.sort((a, b) => b.rawDate - a.rawDate);
 
 // 读取 token 用量数据（直接从 .data TSV 文件聚合）
 let tokenUsageData = { days: [] };
-const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
+const TOKEN_USAGE_DIR=path.j...ame, 'token-usage');
 if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
     const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
@@ -233,6 +233,38 @@ if (fs.existsSync(RUNNING_DATA_DIR)) {
 if (runningPageData) {
     const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData);
     fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
+}
+
+// --- Reading page data processing ---
+const READING_DATA_DIR = path.join(__dirname, 'reading-data');
+let readingPageData = null;
+if (fs.existsSync(READING_DATA_DIR)) {
+    const booksRaw = JSON.parse(fs.readFileSync(path.join(READING_DATA_DIR, 'books.json'), 'utf-8'));
+    const quotesRaw = JSON.parse(fs.readFileSync(path.join(READING_DATA_DIR, 'quotes.json'), 'utf-8'));
+
+    const currentYear = String(new Date().getFullYear());
+    const stats = {
+        total: booksRaw.length,
+        reading: booksRaw.filter(b => b.status === 'reading').length,
+        finished: booksRaw.filter(b => b.status === 'finished').length,
+        wishlist: booksRaw.filter(b => b.status === 'wishlist').length,
+        yearFinished: booksRaw.filter(b => b.status === 'finished' && b.finished_at && b.finished_at.startsWith(currentYear)).length
+    };
+
+    readingPageData = {
+        booksJSON: JSON.stringify(booksRaw),
+        quotesJSON: JSON.stringify(quotesRaw),
+        statsJSON: JSON.stringify(stats)
+    };
+}
+
+if (readingPageData) {
+    const readingHtml = ejs.render(
+        fs.readFileSync(path.join(THEME_DIR, 'reading.ejs'), 'utf-8'),
+        readingPageData
+    );
+    fs.writeFileSync(path.join(DIST_DIR, 'reading.html'), readingHtml);
+    console.log('Reading page generated.');
 }
 
 console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个首页。`);
