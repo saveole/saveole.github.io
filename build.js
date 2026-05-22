@@ -235,6 +235,42 @@ if (runningPageData) {
     fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
 }
 
+// --- Reading page data processing ---
+const READING_DATA_DIR = path.join(__dirname, 'reading-data');
+
+let readingPageData = null;
+if (fs.existsSync(READING_DATA_DIR)) {
+    const booksFile = path.join(READING_DATA_DIR, 'books.json');
+    const quotesFile = path.join(READING_DATA_DIR, 'quotes.json');
+    const booksRaw = fs.existsSync(booksFile) ? JSON.parse(fs.readFileSync(booksFile, 'utf-8')) : [];
+    const quotesRaw = fs.existsSync(quotesFile) ? JSON.parse(fs.readFileSync(quotesFile, 'utf-8')) : [];
+
+    const currentYear = new Date().getFullYear().toString();
+    const stats = {
+        total: booksRaw.length,
+        reading: booksRaw.filter(b => b.status === 'reading').length,
+        finished: booksRaw.filter(b => b.status === 'finished').length,
+        wishlist: booksRaw.filter(b => b.status === 'wishlist').length,
+        finished_this_year: booksRaw.filter(b =>
+            b.status === 'finished' && b.finished_at && b.finished_at.startsWith(currentYear)
+        ).length
+    };
+
+    readingPageData = {
+        booksJSON: JSON.stringify(booksRaw),
+        quotesJSON: JSON.stringify(quotesRaw),
+        statsJSON: JSON.stringify(stats)
+    };
+}
+
+if (readingPageData) {
+    const readingHtml = ejs.render(
+        fs.readFileSync(path.join(THEME_DIR, 'reading.ejs'), 'utf-8'),
+        readingPageData
+    );
+    fs.writeFileSync(path.join(DIST_DIR, 'reading.html'), readingHtml);
+}
+
 console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个首页。`);
 
 // 复制独立页面（如 token-usage）

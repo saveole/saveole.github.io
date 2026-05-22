@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "title": "重构：改善既有代码的设计",
+    "author": "Martin Fowler",
+    "cover": null,
+    "status": "reading",
+    "started_at": "2026-05-01",
+    "finished_at": null,
+    "rating": null,
+    "isbn": "978-7-115-50654-9",
+    "tags": ["编程", "软件工程"],
+    "notes": "经典必读，第二章开始有干货"
+  },
+  {
+    "title": "写作这回事",
+    "author": "Stephen King",
+    "cover": null,
+    "status": "finished",
+    "started_at": "2026-04-10",
+    "finished_at": "2026-05-15",
+    "rating": 4,
+    "isbn": "9787532153626",
+    "tags": ["写作", "回忆录"],
+    "notes": "关于写作最好的书之一"
+  },
+  {
+    "title": "系统之美",
+    "author": "Donella Meadows",
+    "cover": null,
+    "status": "wishlist",
+    "started_at": null,
+    "finished_at": null,
+    "rating": null,
+    "isbn": "978-7-572-23102-3",
+    "tags": ["系统思维"],
+    "notes": null
+  }
+]

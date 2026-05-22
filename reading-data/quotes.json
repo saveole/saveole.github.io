@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "content": "任何傻瓜都能写出计算机能理解的代码。优秀的程序员写出人类能理解的代码。",
+    "book_title": "重构",
+    "book_author": "Martin Fowler",
+    "page": 15,
+    "highlighted_at": "2026-05-10",
+    "tags": ["编程哲学"]
+  },
+  {
+    "content": "多读，多写。如果你没时间阅读，你就没时间（也没工具）写作。",
+    "book_title": "写作这回事",
+    "book_author": "Stephen King",
+    "page": 145,
+    "highlighted_at": "2026-05-12",
+    "tags": ["写作"]
+  }
+]
