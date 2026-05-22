@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading | 我的技术博客</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo">Blog.</a>
+            <a href="running.html" class="nav-link">Running</a>
+            <a href="reading.html" class="nav-link active">Reading</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="running-header">
+            <h1>📚 阅读</h1>
+        </header>
+
+        <!-- Stats card -->
+        <div class="dashboard-card reading-stats-card">
+            <div class="reading-stats-row">
+                <div class="reading-stat">
+                    <span class="reading-stat-value" id="statReading">0</span>
+                    <span class="reading-stat-label">在读</span>
+                </div>
+                <div class="reading-stat">
+                    <span class="reading-stat-value" id="statFinished">0</span>
+                    <span class="reading-stat-label">已读</span>
+                </div>
+                <div class="reading-stat">
+                    <span class="reading-stat-value" id="statWishlist">0</span>
+                    <span class="reading-stat-label">想读</span>
+                </div>
+                <div class="reading-stat">
+                    <span class="reading-stat-value" id="statYearFinished">0</span>
+                    <span class="reading-stat-label">本年已读</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books card -->
+        <div class="dashboard-card">
+            <div class="list-header">
+                <h2 class="list-title">书单</h2>
+                <div class="reading-tabs" id="statusTabs">
+                    <button class="reading-tab active" data-status="all">全部</button>
+                    <button class="reading-tab" data-status="reading">在读</button>
+                    <button class="reading-tab" data-status="finished">已读</button>
+                    <button class="reading-tab" data-status="wishlist">想读</button>
+                </div>
+                <div class="year-tabs" id="yearTabs"></div>
+            </div>
+            <div class="reading-book-list" id="bookList"></div>
+            <div class="reading-empty" id="bookEmpty" style="display:none;">
+                <p>暂无书籍</p>
+            </div>
+        </div>
+
+        <!-- Quotes card -->
+        <div class="dashboard-card">
+            <div class="list-header">
+                <h2 class="list-title">摘录</h2>
+            </div>
+            <div class="reading-quotes-list" id="quoteList"></div>
+            <div class="reading-empty" id="quoteEmpty" style="display:none;">
+                <p>暂无摘录</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 saveole.</p>
+    </footer>
+
+    <script>
+    (function() {
+        var books = <%- booksJSON %>;
+        var quotes = <%- quotesJSON %>;
+
+        // Stats
+        var now = new Date();
+        var currentYear = String(now.getFullYear());
+        var statReading = 0, statFinished = 0, statWishlist = 0, statYearFinished = 0;
+        books.forEach(function(b) {
+            if (b.status === 'reading') statReading++;
+            else if (b.status === 'finished') {
+                statFinished++;
+                if (b.finished_at && b.finished_at.startsWith(currentYear)) statYearFinished++;
+            }
+            else if (b.status === 'wishlist') statWishlist++;
+        });
+        document.getElementById('statReading').textContent = statReading;
+        document.getElementById('statFinished').textContent = statFinished;
+        document.getElementById('statWishlist').textContent = statWishlist;
+        document.getElementById('statYearFinished').textContent = statYearFinished;
+
+        // Year tabs
+        var yearSet = {};
+        books.forEach(function(b) {
+            var y = (b.started_at || b.finished_at || '').slice(0, 4);
+            if (y) yearSet[y] = true;
+        });
+        var years = Object.keys(yearSet).sort().reverse();
+        years.unshift('全部');
+        var activeYear = '全部';
+
+        var tabsEl = document.getElementById('yearTabs');
+        years.forEach(function(y) {
+            var btn = document.createElement('button');
+            btn.textContent = y === '全部' ? '全部' : y;
+            btn.className = 'year-tab' + (y === activeYear ? ' active' : '');
+            btn.onclick = function() {
+                activeYear = y;
+                var tabs = tabsEl.querySelectorAll('.year-tab');
+                for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+                btn.classList.add('active');
+                renderBooks();
+            };
+            tabsEl.appendChild(btn);
+        });
+
+        // Status tabs
+        var activeStatus = 'all';
+        var statusTabs = document.querySelectorAll('#statusTabs .reading-tab');
+        statusTabs.forEach(function(btn) {
+            btn.onclick = function() {
+                activeStatus = btn.getAttribute('data-status');
+                statusTabs.forEach(function(t) { t.classList.remove('active'); });
+                btn.classList.add('active');
+                renderBooks();
+            };
+        });
+
+        function renderBooks() {
+            var html = '';
+            var count = 0;
+            books.forEach(function(b) {
+                if (activeStatus !== 'all' && b.status !== activeStatus) return;
+                if (activeYear !== '全部') {
+                    var bookYear = (b.started_at || b.finished_at || '').slice(0, 4);
+                    if (bookYear !== activeYear) return;
+                }
+                count++;
+                var coverHtml;
+                if (b.cover) {
+                    coverHtml = '<img class="reading-book-cover" src="./assets/img/reading/' + b.cover + '" alt="' + b.title + '" loading="lazy">';
+                } else {
+                    var initial = b.title ? b.title.charAt(0) : '?';
+                    coverHtml = '<div class="reading-book-cover-placeholder">' + initial + '</div>';
+                }
+
+                var statusLabel = '';
+                if (b.status === 'reading') statusLabel = '<span class="reading-status-tag reading-status-reading">在读</span>';
+                else if (b.status === 'finished') statusLabel = '<span class="reading-status-tag reading-status-finished">已读</span>';
+                else if (b.status === 'wishlist') statusLabel = '<span class="reading-status-tag reading-status-wishlist">想读</span>';
+
+                var ratingHtml = '';
+                if (b.rating) {
+                    ratingHtml = '<div class="reading-rating">';
+                    for (var i = 1; i <= 5; i++) {
+                        ratingHtml += i <= b.rating ? '★' : '☆';
+                    }
+                    ratingHtml += '</div>';
+                }
+
+                var tagsHtml = '';
+                if (b.tags && b.tags.length) {
+                    tagsHtml = '<div class="reading-tags">' + b.tags.map(function(t) {
+                        return '<span class="reading-tag">' + t + '</span>';
+                    }).join('') + '</div>';
+                }
+
+                html += '<div class="reading-book-item">' +
+                    '<div class="reading-book-cover-wrap">' + coverHtml + '</div>' +
+                    '<div class="reading-book-info">' +
+                        '<div class="reading-book-title">' + b.title + ' ' + statusLabel + '</div>' +
+                        '<div class="reading-book-author">' + (b.author || '') + '</div>' +
+                        (b.started_at ? '<div class="reading-book-date">开始: ' + b.started_at + '</div>' : '') +
+                        (b.finished_at ? '<div class="reading-book-date">读完: ' + b.finished_at + '</div>' : '') +
+                        ratingHtml +
+                        (b.notes ? '<div class="reading-book-notes">' + b.notes + '</div>' : '') +
+                        tagsHtml +
+                    '</div>' +
+                '</div>';
+            });
+            document.getElementById('bookList').innerHTML = html;
+            document.getElementById('bookEmpty').style.display = count === 0 ? '' : 'none';
+        }
+
+        // Quotes
+        function renderQuotes() {
+            if (quotes.length === 0) {
+                document.getElementById('quoteEmpty').style.display = '';
+                return;
+            }
+            var html = '';
+            quotes.forEach(function(q) {
+                html += '<div class="reading-quote-item">' +
+                    '<blockquote class="reading-quote-text">"' + q.content + '"</blockquote>' +
+                    '<div class="reading-quote-source">— ' + (q.book_title || '') + (q.book_author ? ' · ' + q.book_author : '') + (q.page ? ' · p.' + q.page : '') + '</div>' +
+                    (q.highlighted_at ? '<div class="reading-quote-date">' + q.highlighted_at + '</div>' : '') +
+                '</div>';
+            });
+            document.getElementById('quoteList').innerHTML = html;
+        }
+
+        renderBooks();
+        renderQuotes();
+    })();
+    </script>
+</body>
+</html>
