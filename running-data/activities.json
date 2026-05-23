@@ -454,5 +454,17 @@
     "max_hr": 158.0,
     "cadence_spm": 174.6,
     "vo2max": 50.0
+  },
+  {
+    "date": "2026-05-23",
+    "start_time": "07:23:56",
+    "type": "running",
+    "distance_km": 7.2,
+    "duration_s": 3004.48388671875,
+    "avg_pace_s_per_km": 417,
+    "avg_hr": 130,
+    "max_hr": 142.0,
+    "cadence_spm": 171.4,
+    "vo2max": 49.0
   }
 ]
