@@ -195,7 +195,14 @@ def acquire_lock() -> bool:
         os.close(fd)
         return True
     except FileExistsError:
-        return False
+        # Stale lock: if owner process is dead, reclaim it
+        try:
+            owner_pid = int(LOCK_FILE.read_text().strip())
+            os.kill(owner_pid, 0)  # raises if process doesn't exist
+            return False  # process still alive, can't acquire
+        except (ValueError, ProcessLookupError, PermissionError):
+            LOCK_FILE.unlink(missing_ok=True)
+            return acquire_lock()
 
 
 def release_lock() -> None:
