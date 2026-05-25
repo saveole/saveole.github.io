@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "049c8e5b5814",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "token-usage/scripts/log-usage.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/04/9c8e5b5814/0/metadata.json",
+      "transcript": "/04/9c8e5b5814/0/full.jsonl",
+      "content_hash": "/04/9c8e5b5814/0/content_hash.txt",
+      "prompt": "/04/9c8e5b5814/0/prompt.txt"
+    },
+    {
+      "metadata": "/04/9c8e5b5814/1/metadata.json",
+      "transcript": "/04/9c8e5b5814/1/full.jsonl",
+      "content_hash": "/04/9c8e5b5814/1/content_hash.txt",
+      "prompt": "/04/9c8e5b5814/1/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 123567,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 790848,
+    "output_tokens": 3915,
+    "api_call_count": 20
+  },
+  "combined_attribution": {
+    "calculated_at": "2026-05-24T10:59:14.308847664Z",
+    "agent_lines": 8,
+    "agent_removed": 1,
+    "human_added": 9,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 17,
+    "total_lines_changed": 18,
+    "agent_percentage": 50,
+    "metric_version": 2
+  }
+}
