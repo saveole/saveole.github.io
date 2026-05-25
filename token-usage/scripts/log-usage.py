@@ -40,7 +40,6 @@ else:
     ]
 
 DATA_DIR = REPO_DIR / "token-usage"
-LOCK_FILE = Path("/tmp/claude-token-tracker.lock")
 ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
 LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
 
@@ -186,31 +185,7 @@ def parse_session_jsonl(path: Path) -> dict | None:
     }
 
 
-# ── Lock / main ───────────────────────────────────────────────
-
-def acquire_lock() -> bool:
-    try:
-        fd = os.open(str(LOCK_FILE), os.O_CREAT | os.O_WRONLY | os.O_EXCL)
-        os.write(fd, str(os.getpid()).encode())
-        os.close(fd)
-        return True
-    except FileExistsError:
-        # Stale lock: if owner process is dead, reclaim it
-        try:
-            owner_pid = int(LOCK_FILE.read_text().strip())
-            os.kill(owner_pid, 0)  # raises if process doesn't exist
-            return False  # process still alive, can't acquire
-        except (ValueError, ProcessLookupError, PermissionError):
-            LOCK_FILE.unlink(missing_ok=True)
-            return acquire_lock()
-
-
-def release_lock() -> None:
-    try:
-        LOCK_FILE.unlink()
-    except FileNotFoundError:
-        pass
-
+# ── main ──────────────────────────────────────────────────────
 
 def main() -> None:
     if not REPO_DIR.is_dir():
@@ -250,13 +225,10 @@ def main() -> None:
 
     log(f"JSONL: {jsonl_path}")
 
-    if not acquire_lock():
-        return
-
     try:
         _run(session_id, jsonl_path, cwd)
-    finally:
-        release_lock()
+    except Exception as e:
+        error_log(f"RUN FAILED: {e}")
 
 
 def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
