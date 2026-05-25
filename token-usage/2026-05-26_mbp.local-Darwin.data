@@ -1,2 +1,3 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 396019fc-dbaa-4156-bf43-6ad34df1549d	2026-05-26T06:54:01+08:00	-Users-saveole-code-java-scrm-api	glm-4.7	29542	81	249413	37288	7911040	0	feature/saveole/9.2
+a6a72ed9-e7f7-495c-a8f6-390c6bad55d9	2026-05-26T07:24:43+08:00	-Users-saveole-go-src-scrmgo	glm-4.7	1678	35	153528	53207	2065984	0	ai-refactor
