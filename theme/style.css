@@ -1305,3 +1305,10 @@ pre code {
         height: 66px;
     }
 }
+
+/* Giscus 评论系统 */
+.giscus-container {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+}
