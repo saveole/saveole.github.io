@@ -466,5 +466,17 @@
     "max_hr": 142.0,
     "cadence_spm": 171.4,
     "vo2max": 49.0
+  },
+  {
+    "date": "2026-05-27",
+    "start_time": "06:40:28",
+    "type": "treadmill_running",
+    "distance_km": 6.4,
+    "duration_s": 2240.468017578125,
+    "avg_pace_s_per_km": 350,
+    "avg_hr": 117,
+    "max_hr": 127.0,
+    "cadence_spm": 171.1,
+    "vo2max": 0
   }
 ]
