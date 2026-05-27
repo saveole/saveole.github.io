@@ -1,2 +1,3 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 29a221ca-7312-4767-8f06-d9429a2a17f2	2026-05-27T09:19:14+08:00	-home-ant-projects-app-usage	glm-5.1	61781	170	513212	57870	21266752	0	master
+1e35791f-a7f8-4d4a-8e70-d374791eea40	2026-05-27T09:30:36+08:00	-home-ant-projects-app-usage	glm-5.1	183	3	31419	1561	108608	0	main
