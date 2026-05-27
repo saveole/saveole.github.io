@@ -5,3 +5,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 7a46b575-6e4d-4cba-bbe5-6a9ede1c5858	2026-05-27T01:52:40.076Z	projects	deepseek-v4-pro	1553	86	131222	18478	2085504	0	main
 2ec8e6ad-bfb6-4bb9-a793-38321f3d2ccd	2026-05-27T10:57:30+08:00	-home-ant-projects-app-usage	glm-5.1	1161	36	59432	8028	2144640	0	main
 1107df3e-928d-49ad-bff7-f48b0e79b1af	2026-05-27T14:29:10+08:00	-home-ant-projects-app-usage	glm-5.1	1539	52	168813	28017	4522176	0	main
+edded3a1-3775-4dc7-90bc-60b055b3e223	2026-05-27T15:52:18+08:00	-home-ant-projects-xposedwework	glm-5.1	3013	44	632432	30465	3971456	0	main
