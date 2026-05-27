@@ -6,3 +6,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 2ec8e6ad-bfb6-4bb9-a793-38321f3d2ccd	2026-05-27T10:57:30+08:00	-home-ant-projects-app-usage	glm-5.1	1161	36	59432	8028	2144640	0	main
 1107df3e-928d-49ad-bff7-f48b0e79b1af	2026-05-27T14:29:10+08:00	-home-ant-projects-app-usage	glm-5.1	1539	52	168813	28017	4522176	0	main
 edded3a1-3775-4dc7-90bc-60b055b3e223	2026-05-27T15:52:18+08:00	-home-ant-projects-xposedwework	glm-5.1	3013	44	632432	30465	3971456	0	main
+20260527_172302_c81a71	2026-05-27T17:37:23+08:00	saveole.github.io	glm-5.1	793	77	54214	5055	1163136	0	main
