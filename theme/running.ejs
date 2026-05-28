@@ -25,10 +25,16 @@
 
     <main class="container">
         <header class="running-header">
-            <h1>跑步和体重趋势</h1>
+            <div class="running-header-row">
+                <h1>跑步和体重趋势</h1>
+                <div class="chart-tabs" id="chartTabs">
+                    <button class="chart-tab active" data-tab="charts">图表</button>
+                    <button class="chart-tab" data-tab="tracks">轨迹</button>
+                </div>
+            </div>
         </header>
 
-        <div class="dashboard-card">
+        <div class="dashboard-card" id="chartsPanel">
             <div class="chart-row">
                 <canvas id="bodyChart"></canvas>
             </div>
@@ -36,6 +42,10 @@
             <div class="chart-row">
                 <canvas id="runningChart"></canvas>
             </div>
+        </div>
+
+        <div class="dashboard-card" id="tracksPanel" style="display:none;">
+            <div class="tracks-grid" id="tracksGrid"></div>
         </div>
 
         <div class="dashboard-card">
@@ -70,6 +80,98 @@
         var timeline = <%- timelineJSON %>;
         var bodyRecords = <%- bodyJSON %>;
         var activityRecords = <%- activitiesJSON %>;
+        var trackRecords = <%- tracksJSON %>;
+
+        // ---- Chart/Tracks tab switching ----
+        (function() {
+            var tabs = document.querySelectorAll('.chart-tab');
+            var chartsPanel = document.getElementById('chartsPanel');
+            var tracksPanel = document.getElementById('tracksPanel');
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(function(t) { t.classList.remove('active'); });
+                    tab.classList.add('active');
+                    if (tab.dataset.tab === 'charts') {
+                        chartsPanel.style.display = '';
+                        tracksPanel.style.display = 'none';
+                    } else {
+                        chartsPanel.style.display = 'none';
+                        tracksPanel.style.display = '';
+                        renderTracks();
+                    }
+                });
+            });
+        })();
+
+        // ---- Polyline decoder (Google encoded polyline) ----
+        function decodePolyline(encoded) {
+            var points = [];
+            var index = 0, lat = 0, lng = 0;
+            while (index < encoded.length) {
+                var b, shift = 0, result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                lat += ((result & 1) ? ~(result >> 1) : (result >> 1));
+                shift = 0; result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                lng += ((result & 1) ? ~(result >> 1) : (result >> 1));
+                points.push([lat / 1e5, lng / 1e5]);
+            }
+            return points;
+        }
+
+        function renderTracks() {
+            var grid = document.getElementById('tracksGrid');
+            if (grid.children.length > 0) return; // already rendered
+
+            if (trackRecords.length === 0) {
+                grid.innerHTML = '<p class="tracks-empty">暂无轨迹数据。同步活动数据后，户外跑步的轨迹将展示在这里。</p>';
+                return;
+            }
+
+            trackRecords.forEach(function(track) {
+                var points = decodePolyline(track.summary_polyline);
+                if (points.length < 2) return;
+
+                // Normalize to SVG viewBox
+                var minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+                points.forEach(function(p) {
+                    if (p[0] < minLat) minLat = p[0];
+                    if (p[0] > maxLat) maxLat = p[0];
+                    if (p[1] < minLng) minLng = p[1];
+                    if (p[1] > maxLng) maxLng = p[1];
+                });
+                var rangeLat = maxLat - minLat || 0.001;
+                var rangeLng = maxLng - minLng || 0.001;
+                var pad = 5;
+                var w = 200, h = 200;
+
+                var coords = points.map(function(p) {
+                    var x = pad + ((p[1] - minLng) / rangeLng) * (w - pad * 2);
+                    var y = pad + ((maxLat - p[0]) / rangeLat) * (h - pad * 2);
+                    return x.toFixed(1) + ',' + y.toFixed(1);
+                }).join(' ');
+
+                var card = document.createElement('div');
+                card.className = 'track-card';
+                card.innerHTML =
+                    '<svg viewBox="0 0 ' + w + ' ' + h + '" class="track-svg" preserveAspectRatio="xMidYMid meet">' +
+                        '<polyline points="' + coords + '" fill="none" stroke="#5c768d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+                    '</svg>' +
+                    '<div class="track-info">' +
+                        '<span class="track-date">' + track.date + '</span>' +
+                        '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + track.pace + '</span>' +
+                    '</div>';
+                grid.appendChild(card);
+            });
+        }
 
         var weightData = Array(timeline.length).fill(null);
         var fatData = Array(timeline.length).fill(null);

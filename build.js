@@ -223,10 +223,24 @@ if (fs.existsSync(RUNNING_DATA_DIR)) {
         cadence_spm: a.cadence_spm
     })).sort((a, b) => b.date.localeCompare(a.date));
 
+    // Build tracks data: activities with polyline, sorted by date desc
+    const tracks = activitiesRaw
+        .filter(a => a.summary_polyline)
+        .map(a => ({
+            date: a.date,
+            distance_km: a.distance_km,
+            pace: formatPace(a.avg_pace_s_per_km),
+            duration: formatDuration(a.duration_s),
+            summary_polyline: a.summary_polyline
+        }))
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 12);
+
     runningPageData = {
         timelineJSON: JSON.stringify(timeline),
         bodyJSON: JSON.stringify(bodyRaw),
-        activitiesJSON: JSON.stringify(activities)
+        activitiesJSON: JSON.stringify(activities),
+        tracksJSON: JSON.stringify(tracks)
     };
 }
 
