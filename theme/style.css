@@ -19,6 +19,12 @@
   --token-3: #3b8aff;
   --token-4: #2563eb;
   --empty-cell: #ebedf0;
+  --chart-weight: #5c768d;
+  --chart-fat: #c4a475;
+  --chart-hr: #db8a75;
+  --chart-distance: rgba(92, 118, 141, 0.4);
+  --chart-distance-hover: rgba(92, 118, 141, 0.7);
+  --track-stroke: #5c768d;
 }
 
 /* 基础重置 */
@@ -264,6 +270,12 @@ pre code {
     --token-3: #3b82f6;
     --token-4: #60a5fa;
     --empty-cell: #161b22;
+    --chart-weight: #7a9ab5;
+    --chart-fat: #d4b88a;
+    --chart-hr: #e8a594;
+    --chart-distance: rgba(122, 154, 181, 0.4);
+    --chart-distance-hover: rgba(122, 154, 181, 0.7);
+    --track-stroke: #7a9ab5;
   }
 
   pre {
@@ -357,12 +369,14 @@ pre code {
   margin: 0;
 }
 
-.chart-tabs {
+.chart-tabs,
+.year-tabs {
   display: flex;
   gap: 4px;
 }
 
-.chart-tab {
+.chart-tab,
+.year-tab {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-muted);
@@ -374,16 +388,17 @@ pre code {
   transition: all 0.2s ease;
 }
 
-.chart-tab:hover {
+.chart-tab:hover,
+.year-tab:hover {
   color: var(--text-main);
   border-color: var(--text-muted);
 }
 
-.chart-tab.active {
-  background: var(--text-main);
+.chart-tab.active,
+.year-tab.active {
+  background: var(--primary-color);
   color: #fff;
-  border-color: var(--text-main);
-  opacity: 0.7;
+  border-color: var(--primary-color);
 }
 
 .tracks-grid {
@@ -468,35 +483,6 @@ pre code {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.25rem;
-}
-
-.year-tabs {
-  display: flex;
-  gap: 4px;
-}
-
-.year-tab {
-  background: none;
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  font-family: "Inter", sans-serif;
-  font-size: 0.72rem;
-  padding: 3px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.year-tab:hover {
-  color: var(--text-main);
-  border-color: var(--text-muted);
-}
-
-.year-tab.active {
-  background: var(--text-main);
-  color: #fff;
-  border-color: var(--text-main);
-  opacity: 0.7;
 }
 
 .table-wrapper {
@@ -1168,7 +1154,7 @@ pre code {
     display: block;
     font-size: 2rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-main);
     font-family: 'Inter', sans-serif;
 }
 
@@ -1200,9 +1186,9 @@ pre code {
 }
 
 .reading-tab.active {
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    border-color: var(--text-primary);
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
 }
 
 .reading-book-list {
@@ -1256,7 +1242,7 @@ pre code {
     font-family: 'Source Serif Pro', serif;
     font-size: 1rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--text-main);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -1291,12 +1277,12 @@ pre code {
 
 .reading-note-item {
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     line-height: 1.5;
 }
 
 .reading-note-date {
-    color: var(--text-tertiary, #999);
+    color: var(--text-muted);
     font-size: 0.75rem;
     margin-right: 0.5rem;
 }
@@ -1358,7 +1344,7 @@ pre code {
     font-style: italic;
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     margin: 0;
     padding: 0;
     border: none;

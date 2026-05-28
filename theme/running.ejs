@@ -163,7 +163,7 @@
                 card.className = 'track-card';
                 card.innerHTML =
                     '<svg viewBox="0 0 ' + w + ' ' + h + '" class="track-svg" preserveAspectRatio="xMidYMid meet">' +
-                        '<polyline points="' + coords + '" fill="none" stroke="#5c768d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+                        '<polyline points="' + coords + '" fill="none" stroke="' + trackClr + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
                     '</svg>' +
                     '<div class="track-info">' +
                         '<span class="track-date">' + track.date + '</span>' +
@@ -248,6 +248,12 @@
         var cs = getComputedStyle(document.documentElement);
         var muted = cs.getPropertyValue('--text-muted').trim();
         var borderClr = cs.getPropertyValue('--border-color').trim();
+        var weightClr = cs.getPropertyValue('--chart-weight').trim();
+        var fatClr = cs.getPropertyValue('--chart-fat').trim();
+        var hrClr = cs.getPropertyValue('--chart-hr').trim();
+        var distClr = cs.getPropertyValue('--chart-distance').trim();
+        var distHoverClr = cs.getPropertyValue('--chart-distance-hover').trim();
+        var trackClr = cs.getPropertyValue('--track-stroke').trim();
 
         var commonScalesX = {
             grid: { display: false },
@@ -260,8 +266,8 @@
             data: {
                 labels: timeline,
                 datasets: [
-                    { label: '体重', data: weightData, borderColor: '#5c768d', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yW' },
-                    { label: '体脂率', data: fatData, borderColor: '#c4a475', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yF' }
+                    { label: '体重', data: weightData, borderColor: weightClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yW' },
+                    { label: '体脂率', data: fatData, borderColor: fatClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yF' }
                 ]
             },
             options: {
@@ -279,8 +285,8 @@
             data: {
                 labels: timeline,
                 datasets: [
-                    { type: 'bar', label: '跑步距离', data: distanceData, backgroundColor: 'rgba(92, 118, 141, 0.4)', hoverBackgroundColor: 'rgba(92, 118, 141, 0.7)', barThickness: 6, yAxisID: 'yDistance' },
-                    { type: 'line', label: '平均心率', data: hrData, borderColor: '#db8a75', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' }
+                    { type: 'bar', label: '跑步距离', data: distanceData, backgroundColor: distClr, hoverBackgroundColor: distHoverClr, barThickness: 6, yAxisID: 'yDistance' },
+                    { type: 'line', label: '平均心率', data: hrData, borderColor: hrClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' }
                 ]
             },
             options: {
