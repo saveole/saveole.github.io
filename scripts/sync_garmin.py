@@ -106,6 +106,7 @@ def main():
         max_hr = act.get("maxHR") or 0
         cadence = act.get("averageRunningCadenceInStepsPerMinute") or 0
         vo2max = act.get("vO2MaxValue") or 0
+        summary_polyline = act.get("summaryPolyline", "")
 
         if date not in day_map:
             day_map[date] = {
@@ -119,6 +120,7 @@ def main():
                 "max_hr": 0,
                 "cadence_spm": 0.0,
                 "vo2max": 0.0,
+                "summary_polyline": "",
                 "_hr_weight": 0.0,
                 "_cadence_weight": 0.0,
             }
@@ -141,6 +143,10 @@ def main():
             w = d["_cadence_weight"] + dist_km
             d["cadence_spm"] = (d["cadence_spm"] * d["_cadence_weight"] + cadence * dist_km) / w
             d["_cadence_weight"] = w
+
+        # Keep polyline from outdoor runs (prefer non-empty)
+        if summary_polyline:
+            d["summary_polyline"] = summary_polyline
 
     # Finalize: calculate pace from totals, round values, remove helper fields
     for d in day_map.values():
