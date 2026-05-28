@@ -6,8 +6,9 @@ Data sources (in priority order):
   2. Open Library API (free, no key needed)
 
 Usage:
-  python scripts/add_book.py --isbn 9787532153626 --status reading
-  python scripts/add_book.py --isbn 9787532153626 --status finished --rating 5 --tags 写作 文学
+  python scripts/add_book.py add --isbn 9787532153626 --status reading
+  python scripts/add_book.py add --isbn 9787532153626 --status finished --rating 5 --tags 写作 文学
+  python scripts/add_book.py update --isbn 9787532153626 --notes "读后感" --rating 4
 
 The Google Books API key can be provided via:
   - GOOGLE_BOOKS_API_KEY environment variable
@@ -18,6 +19,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import date as date_mod
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -147,23 +149,70 @@ def download_cover(url, dest_path):
         return False
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Add a book to reading-data/books.json by ISBN"
-    )
-    parser.add_argument("--isbn", required=True, help="ISBN (10 or 13 digits)")
-    parser.add_argument(
-        "--status", default="wishlist",
-        choices=["reading", "finished", "wishlist"],
-        help="Reading status (default: wishlist)",
-    )
-    parser.add_argument("--tags", nargs="*", default=[], help="Tags")
-    parser.add_argument("--rating", type=int, choices=range(1, 6), default=None, help="Rating 1-5")
-    parser.add_argument("--notes", default=None, help="Short notes/review")
-    parser.add_argument("--started-at", default=None, help="Date started reading (YYYY-MM-DD)")
-    parser.add_argument("--finished-at", default=None, help="Date finished reading (YYYY-MM-DD)")
-    args = parser.parse_args()
+def find_book_by_isbn(books, isbn):
+    """Find book index and entry by ISBN."""
+    for i, b in enumerate(books):
+        if b.get("isbn") == isbn:
+            return i, b
+    return -1, None
 
+
+def update_book(args):
+    """Update an existing book entry in books.json."""
+    books = []
+    if os.path.exists(BOOKS_FILE):
+        with open(BOOKS_FILE) as f:
+            books = json.load(f)
+
+    idx, existing = find_book_by_isbn(books, args.isbn)
+    if existing is None:
+        print(f"❌ ISBN {args.isbn} 未找到，无法更新", file=sys.stderr)
+        sys.exit(1)
+
+    # Build update map from provided args
+    updates = {}
+    if args.status is not None:
+        updates["status"] = args.status
+    if args.rating is not None:
+        updates["rating"] = args.rating
+    if args.description is not None:
+        updates["description"] = args.description
+    if args.started_at is not None:
+        updates["started_at"] = args.started_at
+    if args.finished_at is not None:
+        updates["finished_at"] = args.finished_at
+    if args.tags is not None and len(args.tags) > 0:
+        updates["tags"] = args.tags
+
+    # notes: append as array entry
+    notes_appended = False
+    if args.notes is not None:
+        if "notes" not in existing or not isinstance(existing.get("notes"), list):
+            existing["notes"] = []
+        existing["notes"].append({"date": date_mod.today().isoformat(), "text": args.notes})
+        notes_appended = True
+
+    if not updates and not notes_appended:
+        print("⚠️  未指定任何更新字段", file=sys.stderr)
+        sys.exit(1)
+
+    # Apply updates
+    for key, val in updates.items():
+        existing[key] = val
+
+    books[idx] = existing
+    with open(BOOKS_FILE, "w") as f:
+        json.dump(books, f, indent=2, ensure_ascii=False)
+
+    print(f"✅ 已更新《{existing.get('title')}》:")
+    for key, val in updates.items():
+        print(f"   {key}: {val}")
+    print(f"\n   完整记录:")
+    print(json.dumps(existing, indent=2, ensure_ascii=False))
+
+
+def add_book(args):
+    """Add a new book to books.json."""
     # Load .env and get API key
     load_dotenv()
     api_key = get_api_key()
@@ -206,6 +255,9 @@ def main():
         cover_filename = None
 
     # Build entry
+    notes_arr = []
+    if args.notes:
+        notes_arr.append({"date": date_mod.today().isoformat(), "text": args.notes})
     entry = {
         "title": book["title"],
         "subtitle": book.get("subtitle") or None,
@@ -218,7 +270,8 @@ def main():
         "isbn": args.isbn,
         "page_count": book.get("page_count"),
         "tags": args.tags,
-        "notes": args.notes,
+        "notes": notes_arr if notes_arr else None,
+        "description": book.get("description") or None,
     }
     # Remove None values for cleanliness
     entry = {k: v for k, v in entry.items() if v is not None}
@@ -230,11 +283,11 @@ def main():
             books = json.load(f)
 
     # Check for duplicate ISBN
-    for existing in books:
-        if existing.get("isbn") == args.isbn:
-            print(f"⚠️  ISBN {args.isbn} 已存在于 books.json，跳过添加", file=sys.stderr)
-            print(f"   已有: {existing.get('title')} — {existing.get('author')}", file=sys.stderr)
-            sys.exit(1)
+    idx, _ = find_book_by_isbn(books, args.isbn)
+    if idx >= 0:
+        print(f"⚠️  ISBN {args.isbn} 已存在于 books.json，跳过添加", file=sys.stderr)
+        print(f"   使用 --update 模式来更新已有书籍", file=sys.stderr)
+        sys.exit(1)
 
     books.append(entry)
     os.makedirs(os.path.dirname(BOOKS_FILE), exist_ok=True)
@@ -243,6 +296,49 @@ def main():
 
     print(f"\n✅ 已添加到 {BOOKS_FILE}")
     print(json.dumps(entry, indent=2, ensure_ascii=False))
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Add or update books in reading-data/books.json by ISBN"
+    )
+    sub = parser.add_subparsers(dest="command")
+
+    # add subcommand
+    add_p = sub.add_parser("add", help="Add a new book")
+    add_p.add_argument("--isbn", required=True, help="ISBN (10 or 13 digits)")
+    add_p.add_argument(
+        "--status", default="wishlist",
+        choices=["reading", "finished", "wishlist"],
+        help="Reading status (default: wishlist)",
+    )
+    add_p.add_argument("--tags", nargs="*", default=[], help="Tags")
+    add_p.add_argument("--rating", type=int, choices=range(1, 6), default=None, help="Rating 1-5")
+    add_p.add_argument("--notes", default=None, help="Short notes/review")
+    add_p.add_argument("--started-at", default=None, help="Date started reading (YYYY-MM-DD)")
+    add_p.add_argument("--finished-at", default=None, help="Date finished reading (YYYY-MM-DD)")
+
+    # update subcommand
+    upd_p = sub.add_parser("update", help="Update an existing book")
+    upd_p.add_argument("--isbn", required=True, help="ISBN of the book to update")
+    upd_p.add_argument(
+        "--status", default=None,
+        choices=["reading", "finished", "wishlist"],
+        help="Update reading status",
+    )
+    upd_p.add_argument("--rating", type=int, choices=range(1, 6), default=None, help="Update rating 1-5")
+    upd_p.add_argument("--notes", default=None, help="Update notes/review")
+    upd_p.add_argument("--description", default=None, help="Update book description/summary")
+    upd_p.add_argument("--started-at", default=None, help="Update date started (YYYY-MM-DD)")
+    upd_p.add_argument("--finished-at", default=None, help="Update date finished (YYYY-MM-DD)")
+    upd_p.add_argument("--tags", nargs="*", default=None, help="Update tags")
+
+    args = parser.parse_args()
+
+    if args.command == "update":
+        update_book(args)
+    else:
+        add_book(args)
 
 
 if __name__ == "__main__":

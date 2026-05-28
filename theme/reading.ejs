@@ -181,6 +181,17 @@
                     }).join('') + '</div>';
                 }
 
+                var notesHtml = '';
+                if (b.notes && b.notes.length) {
+                    notesHtml = '<div class="reading-book-notes">';
+                    b.notes.forEach(function(n) {
+                        notesHtml += '<div class="reading-note-item">';
+                        if (n.date) notesHtml += '<span class="reading-note-date">' + n.date + '</span>';
+                        notesHtml += '<span class="reading-note-text">' + n.text + '</span></div>';
+                    });
+                    notesHtml += '</div>';
+                }
+
                 html += '<div class="reading-book-item">' +
                     '<div class="reading-book-cover-wrap">' + coverHtml + '</div>' +
                     '<div class="reading-book-info">' +
@@ -189,7 +200,7 @@
                         (b.started_at ? '<div class="reading-book-date">开始: ' + b.started_at + '</div>' : '') +
                         (b.finished_at ? '<div class="reading-book-date">读完: ' + b.finished_at + '</div>' : '') +
                         ratingHtml +
-                        (b.notes ? '<div class="reading-book-notes">' + b.notes + '</div>' : '') +
+                        notesHtml +
                         tagsHtml +
                     '</div>' +
                 '</div>';
