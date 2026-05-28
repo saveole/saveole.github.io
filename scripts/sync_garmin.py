@@ -2,25 +2,21 @@
 """Sync running activities from Garmin CN to running-data/activities.json."""
 
 import argparse
+import io
 import json
 import os
 import sys
-import xml.etree.ElementTree as ET
+import zipfile
 from collections import defaultdict
 from datetime import datetime, timedelta
 
 import garth
-import httpx
+from fitparse import FitFile
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(SCRIPT_DIR)
 OUTPUT_FILE = os.path.join(REPO_DIR, "running-data", "activities.json")
-GPX_DIR = os.path.join(REPO_DIR, "running-data", "gpx")
-
-# Garmin CN API base URL
-MODERN_URL = "https://connectapi.garmin.cn"
-
-TIMEOUT = httpx.Timeout(120.0, connect=60.0)
+FIT_DIR = os.path.join(REPO_DIR, "running-data", "fit")
 
 
 def load_existing():
@@ -68,44 +64,57 @@ def fetch_running_activities(since_date=None):
     return all_activities
 
 
-def download_gpx(activity_id, headers):
-    """Download GPX file for a single activity from Garmin CN.
+def download_fit(activity_id):
+    """Download original FIT file for an activity using garth client.
 
-    Returns the raw GPX XML bytes, or None if download fails.
+    Garmin returns a ZIP archive containing the .fit file.
+    Returns raw FIT bytes, or None if download fails.
     """
-    url = f"{MODERN_URL}/download-service/export/gpx/activity/{activity_id}"
     try:
-        with httpx.Client(timeout=TIMEOUT) as client:
-            resp = client.get(url, headers=headers)
-            resp.raise_for_status()
-            return resp.content
+        fit_url = f"/download-service/files/activity/{activity_id}"
+        raw = garth.client.download(fit_url)
+        # Garmin wraps the FIT in a ZIP archive
+        if raw[:2] == b"PK":
+            with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+                fit_names = [n for n in zf.namelist() if n.endswith(".fit")]
+                if fit_names:
+                    return zf.read(fit_names[0])
+        return raw
     except Exception as e:
-        print(f"  Failed to download GPX for {activity_id}: {e}")
+        print(f"  Failed to download FIT for {activity_id}: {e}")
         return None
 
 
-def parse_gpx_polyline(gpx_bytes):
-    """Parse GPX XML bytes and extract track points as encoded polyline.
+def parse_fit_polyline(fit_bytes):
+    """Parse FIT file bytes and extract GPS track as encoded polyline.
 
-    Returns the Google Encoded Polyline string, or empty string if no track points.
+    FIT coordinates use semicircle units (180/2^31 degrees).
+    Returns the Google Encoded Polyline string, or empty string if no GPS data.
     """
     try:
-        root = ET.fromstring(gpx_bytes)
-    except ET.ParseError:
+        fit_file = FitFile(io.BytesIO(fit_bytes))
+    except Exception as e:
+        print(f"    Failed to parse FIT file: {e}")
         return ""
 
-    # GPX namespace
-    ns = {"gpx": "http://www.topografix.net/GPX/1/1"}
-
     coords = []
-    for trkpt in root.iter("{http://www.topografix.net/GPX/1/1}trkpt"):
-        lat = trkpt.get("lat")
-        lon = trkpt.get("lon")
-        if lat and lon:
-            coords.append((float(lat), float(lon)))
+    for record in fit_file.get_messages("record"):
+        lat_data = record.get_value("position_lat")
+        lon_data = record.get_value("position_long")
+
+        if lat_data is not None and lon_data is not None:
+            lat = lat_data * (180.0 / 2**31)
+            lon = lon_data * (180.0 / 2**31)
+            coords.append((lat, lon))
 
     if not coords:
         return ""
+
+    # Thin: keep every 5th point when dataset is large (> 400 points).
+    # Garmin records every second; 1 hour = 3600 points. Thinning cuts
+    # volume by 80% while keeping the route visually smooth.
+    if len(coords) > 400:
+        coords = coords[::5]
 
     return encode_polyline(coords)
 
@@ -124,7 +133,6 @@ def encode_polyline(coords):
     encoded = []
 
     for lat, lng in coords:
-        # Round to 5 decimal places (~1m precision)
         lat_val = int(round(lat * 1e5))
         lng_val = int(round(lng * 1e5))
 
@@ -142,7 +150,6 @@ def encode_polyline(coords):
 
 def _encode_signed(value):
     """Encode a signed integer using the polyline encoding algorithm."""
-    # ZigZag encoding: negative values become odd, positive become even
     if value < 0:
         value = ~(value << 1)
     else:
@@ -156,29 +163,18 @@ def _encode_signed(value):
     return "".join(chunks)
 
 
-def fetch_polyline_for_activity(activity_id, headers):
-    """Download GPX for an activity and extract polyline.
-
-    Returns encoded polyline string, or empty string if no GPS data.
-    """
-    gpx_bytes = download_gpx(activity_id, headers)
-    if not gpx_bytes:
-        return ""
-    return parse_gpx_polyline(gpx_bytes)
-
-
 def main():
     parser = argparse.ArgumentParser(description="Sync Garmin CN running data")
     parser.add_argument("--secret", help="Garmin secret string (or set GARMIN_SECRET env)")
     parser.add_argument(
-        "--full-gpx",
+        "--full-fit",
         action="store_true",
-        help="Download GPX files for all activities (slow but gets full polyline data)",
+        help="Download FIT files for all activities (slow but gets full track data)",
     )
     parser.add_argument(
-        "--gpx-only",
+        "--fit-only",
         action="store_true",
-        help="Only download GPX and update polylines, skip activity list fetch",
+        help="Only download FIT and update polylines, skip activity list fetch",
     )
     args = parser.parse_args()
 
@@ -193,20 +189,12 @@ def main():
     if garth.client.oauth2_token.expired:
         garth.client.refresh_oauth2()
 
-    # Build auth headers for httpx requests
-    auth_headers = {
-        "Authorization": str(garth.client.oauth2_token),
-        "User-Agent": "Mozilla/5.0",
-        "nk": "NT",
-    }
-
     # Load existing data for incremental sync
     existing = load_existing()
 
-    if not args.gpx_only:
-        # Fetch activities
+    if not args.fit_only:
         since_date = None
-        if existing:
+        if existing and not args.full_fit:
             yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
             since_date = yesterday
             print(f"Incremental sync from yesterday ({since_date})")
@@ -214,10 +202,8 @@ def main():
         activities = fetch_running_activities(since_date)
         print(f"Fetched {len(activities)} running activities")
     else:
-        # In gpx-only mode, we need to reload activities to get their IDs
-        # Load from existing data — we need activity IDs from Garmin
         activities = fetch_running_activities()
-        print(f"GPX-only mode: fetched {len(activities)} activity IDs from Garmin")
+        print(f"FIT-only mode: fetched {len(activities)} activity IDs from Garmin")
 
     # Aggregate by date
     day_map = {}
@@ -237,7 +223,6 @@ def main():
         cadence = act.get("averageRunningCadenceInStepsPerMinute") or 0
         vo2max = act.get("vO2MaxValue") or 0
 
-        # Get activity ID for GPX download
         activity_id = act.get("activityId")
 
         if date not in day_map:
@@ -265,24 +250,20 @@ def main():
         d["max_hr"] = max(d["max_hr"], max_hr)
         d["vo2max"] = max(d["vo2max"], vo2max)
 
-        # Distance-weighted average for heart rate
         if avg_hr and dist_km > 0:
             w = d["_hr_weight"] + dist_km
             d["avg_hr"] = (d["avg_hr"] * d["_hr_weight"] + avg_hr * dist_km) / w
             d["_hr_weight"] = w
 
-        # Distance-weighted average for cadence
         if cadence and dist_km > 0:
             w = d["_cadence_weight"] + dist_km
             d["cadence_spm"] = (d["cadence_spm"] * d["_cadence_weight"] + cadence * dist_km) / w
             d["_cadence_weight"] = w
 
-        # Collect activity IDs for GPX download
         if activity_id:
             d["_activity_ids"].append(activity_id)
 
-    # Download GPX and extract polylines
-    # Only for activities that don't already have polyline data
+    # Download FIT and extract polylines for activities that don't have one yet
     needs_polyline = {}
     for date, d in day_map.items():
         existing_entry = existing.get(date)
@@ -291,34 +272,31 @@ def main():
             needs_polyline[date] = d["_activity_ids"]
 
     if needs_polyline:
-        total_gpx = sum(len(ids) for ids in needs_polyline.values())
-        print(f"Downloading GPX for {total_gpx} activities without polyline...")
-        os.makedirs(GPX_DIR, exist_ok=True)
+        total_fit = sum(len(ids) for ids in needs_polyline.values())
+        print(f"Downloading FIT for {total_fit} activities without polyline...")
+        os.makedirs(FIT_DIR, exist_ok=True)
 
         for date, act_ids in needs_polyline.items():
             for act_id in act_ids:
-                print(f"  Downloading GPX for activity {act_id} ({date})...")
-                gpx_bytes = download_gpx(act_id, auth_headers)
+                print(f"  Downloading FIT for activity {act_id} ({date})...")
+                fit_bytes = download_fit(act_id)
 
-                if gpx_bytes:
-                    # Save GPX file for caching
-                    gpx_path = os.path.join(GPX_DIR, f"{act_id}.gpx")
-                    with open(gpx_path, "wb") as f:
-                        f.write(gpx_bytes)
+                if fit_bytes:
+                    fit_path = os.path.join(FIT_DIR, f"{act_id}.fit")
+                    with open(fit_path, "wb") as f:
+                        f.write(fit_bytes)
 
-                    # Extract polyline from GPX
-                    polyline = parse_gpx_polyline(gpx_bytes)
+                    polyline = parse_fit_polyline(fit_bytes)
                     if polyline:
                         day_map[date]["summary_polyline"] = polyline
                         print(f"    Got polyline ({len(polyline)} chars)")
                     else:
                         print(f"    No GPS data (treadmill or indoor run)")
                 else:
-                    print(f"    Failed to download GPX")
+                    print(f"    Failed to download FIT")
 
     # Backfill polyline for existing entries missing it
-    # Build a date->activityId map from the Garmin API response
-    if args.full_gpx or args.gpx_only:
+    if args.full_fit or args.fit_only:
         api_date_to_ids = {}
         for act in activities:
             start_local = act.get("startTimeLocal", "")
@@ -331,21 +309,21 @@ def main():
 
         for date, entry in existing.items():
             if date in day_map:
-                continue  # already handled above
+                continue
             if entry.get("summary_polyline"):
-                continue  # already has polyline
+                continue
             act_ids = api_date_to_ids.get(date, [])
             if not act_ids:
                 continue
-            os.makedirs(GPX_DIR, exist_ok=True)
+            os.makedirs(FIT_DIR, exist_ok=True)
             for act_id in act_ids:
-                print(f"  Backfill GPX for activity {act_id} ({date})...")
-                gpx_bytes = download_gpx(act_id, auth_headers)
-                if gpx_bytes:
-                    gpx_path = os.path.join(GPX_DIR, f"{act_id}.gpx")
-                    with open(gpx_path, "wb") as f:
-                        f.write(gpx_bytes)
-                    polyline = parse_gpx_polyline(gpx_bytes)
+                print(f"  Backfill FIT for activity {act_id} ({date})...")
+                fit_bytes = download_fit(act_id)
+                if fit_bytes:
+                    fit_path = os.path.join(FIT_DIR, f"{act_id}.fit")
+                    with open(fit_path, "wb") as f:
+                        f.write(fit_bytes)
+                    polyline = parse_fit_polyline(fit_bytes)
                     if polyline:
                         entry["summary_polyline"] = polyline
                         print(f"    Got polyline ({len(polyline)} chars)")
