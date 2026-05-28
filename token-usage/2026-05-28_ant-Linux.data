@@ -1,4 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-96189eb4-583f-4b32-81f5-0138796e81b3	2026-05-28T08:02:10+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1760108f-workdir	glm-5.1	48	2	29208	333	31296	0	HEAD
-21dcf3b2-816c-4ac8-89d6-0ef1c3e97ef0	2026-05-28T10:17:12+08:00	-home-ant-blog-saveole-github-io	glm-5.1	70	4	50841	942	141376	0	main
-c6372e3e-e14f-47c9-ba2c-1859a729ec1c	2026-05-28T10:59:56+08:00	-home-ant-blog-saveole-github-io	glm-5.1	1928	40	68689	9688	2298816	0	main
