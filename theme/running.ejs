@@ -134,7 +134,7 @@
                 return;
             }
 
-            trackRecords.forEach(function(track) {
+            trackRecords.slice(0, 9).forEach(function(track) {
                 var points = decodePolyline(track.summary_polyline);
                 if (points.length < 2) return;
 
