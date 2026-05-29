@@ -27,13 +27,17 @@
         <header class="running-header">
             <div class="running-header-row">
                 <div class="chart-tabs" id="chartTabs">
-                    <button class="chart-tab active" data-tab="charts">图表</button>
-                    <button class="chart-tab" data-tab="tracks">轨迹</button>
+                    <button class="chart-tab active" data-tab="tracks">轨迹</button>
+                    <button class="chart-tab" data-tab="charts">图表</button>
                 </div>
             </div>
         </header>
 
-        <div class="dashboard-card" id="chartsPanel">
+        <div class="dashboard-card" id="tracksPanel">
+            <div class="tracks-grid" id="tracksGrid"></div>
+        </div>
+
+        <div class="dashboard-card" id="chartsPanel" style="display:none;">
             <div class="chart-row">
                 <canvas id="bodyChart"></canvas>
             </div>
@@ -41,10 +45,6 @@
             <div class="chart-row">
                 <canvas id="runningChart"></canvas>
             </div>
-        </div>
-
-        <div class="dashboard-card" id="tracksPanel" style="display:none;">
-            <div class="tracks-grid" id="tracksGrid"></div>
         </div>
 
         <div class="dashboard-card">
@@ -85,6 +85,7 @@
             var tabs = document.querySelectorAll('.chart-tab');
             var chartsPanel = document.getElementById('chartsPanel');
             var tracksPanel = document.getElementById('tracksPanel');
+            renderTracks();
             tabs.forEach(function(tab) {
                 tab.addEventListener('click', function() {
                     tabs.forEach(function(t) { t.classList.remove('active'); });
