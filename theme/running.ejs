@@ -137,6 +137,150 @@
             return points;
         }
 
+        // ---- Track similarity (Grid Jaccard) ----
+        function downsampleTrack(points, n) {
+            if (points.length <= n) return points;
+            var step = points.length / n;
+            var result = [];
+            for (var i = 0; i < n; i++) {
+                result.push(points[Math.floor(i * step)]);
+            }
+            return result;
+        }
+
+        function computeSimilarityMatrix(tracks) {
+            var cellSize = 0.0004;   // ~44 meters per grid cell
+            var threshold = 0.20;
+            var sampleCount = 80;
+
+            // Build grid cell sets for each track
+            var gridSets = tracks.map(function(track) {
+                var pts = downsampleTrack(decodePolyline(track.summary_polyline), sampleCount);
+                var cells = {};
+                for (var i = 0; i < pts.length; i++) {
+                    var key = Math.round(pts[i][0] / cellSize) + ',' + Math.round(pts[i][1] / cellSize);
+                    cells[key] = true;
+                }
+                return cells;
+            });
+
+            // Compute pairwise Jaccard similarity
+            var result = [];
+            for (var i = 0; i < tracks.length; i++) result[i] = [];
+
+            for (var i = 0; i < tracks.length; i++) {
+                for (var j = i + 1; j < tracks.length; j++) {
+                    var inter = 0, union = 0;
+                    var a = gridSets[i], b = gridSets[j];
+                    for (var k in a) { if (b[k]) inter++; union++; }
+                    for (var k in b) { if (!a[k]) union++; }
+                    var score = union > 0 ? inter / union : 0;
+                    if (score >= threshold) {
+                        result[i].push({ index: j, score: score });
+                        result[j].push({ index: i, score: score });
+                    }
+                }
+            }
+            // Sort by score descending
+            for (var i = 0; i < result.length; i++) {
+                result[i].sort(function(a, b) { return b.score - a.score; });
+            }
+            return result;
+        }
+
+        // ---- SVG rendering helpers ----
+        function buildTrackSVG(track, w, h) {
+            var points = decodePolyline(track.summary_polyline);
+            if (points.length < 2) return null;
+
+            var minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+            points.forEach(function(p) {
+                if (p[0] < minLat) minLat = p[0];
+                if (p[0] > maxLat) maxLat = p[0];
+                if (p[1] < minLng) minLng = p[1];
+                if (p[1] > maxLng) maxLng = p[1];
+            });
+            var rangeLat = maxLat - minLat || 0.001;
+            var rangeLng = maxLng - minLng || 0.001;
+            var pad = 5;
+
+            var coords = points.map(function(p) {
+                var x = pad + ((p[1] - minLng) / rangeLng) * (w - pad * 2);
+                var y = pad + ((maxLat - p[0]) / rangeLat) * (h - pad * 2);
+                return x.toFixed(1) + ',' + y.toFixed(1);
+            }).join(' ');
+
+            return '<svg viewBox="0 0 ' + w + ' ' + h + '" class="track-svg" preserveAspectRatio="xMidYMid meet">' +
+                '<polyline points="' + coords + '" fill="none" stroke="' + trackClr + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>';
+        }
+
+        // ---- Similar tracks overlay ----
+        function showSimilarPanel(trackIdx, tracks, simMatrix) {
+            var track = tracks[trackIdx];
+            var similar = simMatrix[trackIdx] || [];
+
+            var overlay = document.createElement('div');
+            overlay.className = 'similar-overlay';
+
+            var panel = document.createElement('div');
+            panel.className = 'similar-panel';
+
+            // Header
+            var header = document.createElement('div');
+            header.className = 'similar-panel-header';
+            header.innerHTML =
+                '<span class="similar-panel-title">' + track.date + ' · ' + track.distance_km.toFixed(1) + ' km</span>' +
+                '<button class="similar-panel-close">关闭</button>';
+            panel.appendChild(header);
+
+            // Selected track SVG
+            var selectedWrap = document.createElement('div');
+            selectedWrap.className = 'similar-panel-selected';
+            selectedWrap.innerHTML = buildTrackSVG(track, 400, 180) +
+                '<div class="track-info">' +
+                    '<span class="track-date">' + track.date + '</span>' +
+                    '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + track.pace + '</span>' +
+                '</div>';
+            panel.appendChild(selectedWrap);
+
+            // Similar tracks row
+            if (similar.length > 0) {
+                var matchesWrap = document.createElement('div');
+                matchesWrap.className = 'similar-panel-matches';
+
+                similar.forEach(function(match) {
+                    var t = tracks[match.index];
+                    var pct = Math.round(match.score * 100);
+                    var thumb = document.createElement('div');
+                    thumb.className = 'similar-track-thumb';
+                    thumb.innerHTML = buildTrackSVG(t, 130, 90) +
+                        '<div class="track-info">' +
+                            '<span class="track-date">' + t.date + '</span>' +
+                            '<span class="track-stat">' + pct + '% 相似</span>' +
+                        '</div>';
+                    matchesWrap.appendChild(thumb);
+                });
+
+                panel.appendChild(matchesWrap);
+            }
+
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+
+            // Close handlers
+            function close() {
+                document.body.removeChild(overlay);
+            }
+            header.querySelector('.similar-panel-close').onclick = close;
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) close();
+            });
+            document.addEventListener('keydown', function esc(e) {
+                if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+            });
+        }
+
         function renderTracks() {
             var grid = document.getElementById('tracksGrid');
             if (grid.children.length > 0) return; // already rendered
@@ -146,41 +290,47 @@
                 return;
             }
 
-            trackRecords.slice(0, 9).forEach(function(track) {
-                var points = decodePolyline(track.summary_polyline);
-                if (points.length < 2) return;
+            var displayTracks = trackRecords.slice(0, 9);
+            var cards = [];
 
-                // Normalize to SVG viewBox
-                var minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
-                points.forEach(function(p) {
-                    if (p[0] < minLat) minLat = p[0];
-                    if (p[0] > maxLat) maxLat = p[0];
-                    if (p[1] < minLng) minLng = p[1];
-                    if (p[1] > maxLng) maxLng = p[1];
-                });
-                var rangeLat = maxLat - minLat || 0.001;
-                var rangeLng = maxLng - minLng || 0.001;
-                var pad = 5;
-                var w = 200, h = 200;
-
-                var coords = points.map(function(p) {
-                    var x = pad + ((p[1] - minLng) / rangeLng) * (w - pad * 2);
-                    var y = pad + ((maxLat - p[0]) / rangeLat) * (h - pad * 2);
-                    return x.toFixed(1) + ',' + y.toFixed(1);
-                }).join(' ');
+            displayTracks.forEach(function(track, idx) {
+                var svgHtml = buildTrackSVG(track, 200, 200);
+                if (!svgHtml) return;
 
                 var card = document.createElement('div');
                 card.className = 'track-card';
                 card.innerHTML =
-                    '<svg viewBox="0 0 ' + w + ' ' + h + '" class="track-svg" preserveAspectRatio="xMidYMid meet">' +
-                        '<polyline points="' + coords + '" fill="none" stroke="' + trackClr + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
-                    '</svg>' +
+                    '<div class="track-svg-wrap">' +
+                        svgHtml +
+                    '</div>' +
                     '<div class="track-info">' +
                         '<span class="track-date">' + track.date + '</span>' +
                         '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + track.pace + '</span>' +
                     '</div>';
                 grid.appendChild(card);
+                cards.push({ el: card, idx: idx });
             });
+
+            // Compute similarity and add badges
+            if (displayTracks.length >= 2) {
+                var simMatrix = computeSimilarityMatrix(displayTracks);
+                cards.forEach(function(item) {
+                    var similar = simMatrix[item.idx];
+                    if (similar && similar.length > 0) {
+                        item.el.classList.add('has-similar');
+                        var badge = document.createElement('span');
+                        badge.className = 'track-similar-badge';
+                        badge.textContent = similar.length;
+                        item.el.querySelector('.track-svg-wrap').appendChild(badge);
+
+                        (function(trackIdx) {
+                            item.el.addEventListener('click', function() {
+                                showSimilarPanel(trackIdx, displayTracks, simMatrix);
+                            });
+                        })(item.idx);
+                    }
+                });
+            }
         }
 
         var weightData = Array(timeline.length).fill(null);
