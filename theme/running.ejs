@@ -80,6 +80,17 @@
         var activityRecords = <%- activitiesJSON %>;
         var trackRecords = <%- tracksJSON %>;
 
+        // Read CSS variables early (needed by renderTracks)
+        var cs = getComputedStyle(document.documentElement);
+        var muted = cs.getPropertyValue('--text-muted').trim();
+        var borderClr = cs.getPropertyValue('--border-color').trim();
+        var weightClr = cs.getPropertyValue('--chart-weight').trim();
+        var fatClr = cs.getPropertyValue('--chart-fat').trim();
+        var hrClr = cs.getPropertyValue('--chart-hr').trim();
+        var distClr = cs.getPropertyValue('--chart-distance').trim();
+        var distHoverClr = cs.getPropertyValue('--chart-distance-hover').trim();
+        var trackClr = cs.getPropertyValue('--track-stroke').trim();
+
         // ---- Chart/Tracks tab switching ----
         (function() {
             var tabs = document.querySelectorAll('.chart-tab');
@@ -242,17 +253,6 @@
         }
 
         renderList(activeYear);
-
-        // Read CSS variables for theme-aware chart colors
-        var cs = getComputedStyle(document.documentElement);
-        var muted = cs.getPropertyValue('--text-muted').trim();
-        var borderClr = cs.getPropertyValue('--border-color').trim();
-        var weightClr = cs.getPropertyValue('--chart-weight').trim();
-        var fatClr = cs.getPropertyValue('--chart-fat').trim();
-        var hrClr = cs.getPropertyValue('--chart-hr').trim();
-        var distClr = cs.getPropertyValue('--chart-distance').trim();
-        var distHoverClr = cs.getPropertyValue('--chart-distance-hover').trim();
-        var trackClr = cs.getPropertyValue('--track-stroke').trim();
 
         var commonScalesX = {
             grid: { display: false },
