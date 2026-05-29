@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+0af838cc-7a64-4637-a153-ef21a304da85	2026-05-14T17:48:41+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	4101	32	317390	10807	1117952	0	main

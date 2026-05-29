@@ -9,5 +9,4 @@ dist/
 *.bak
 .idea
 .rick
-token-usage/
 __pycache__/

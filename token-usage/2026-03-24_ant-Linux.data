@@ -1,0 +1,6 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+0c66918e-c8c4-476a-ae0c-5f3f63b115d6	2026-03-24T02:56:56.675Z	scrmgo	glm-4.7	1569	99	2367926	13670	629376	0	master
+457678d1-7edf-40e2-8d8b-656b455d8c7d	2026-03-24T06:27:51.319Z	scrmgo	glm-4.7	25	22	44971	1838	150400	0	master
+d47176b4-abb6-4102-8638-1526422e3c9c	2026-03-24T03:29:22.655Z	scrmgo	glm-4.7	7917	13	88726	13550	200576	0	master
+99099122-cf03-4aaa-a584-36847eb172c1	2026-03-24T09:49:31.616Z	scrm-api	glm-4.7	56651	150	294572	31016	6329600	0	master
+ad0b0e0e-d615-4f3a-96a3-2c4b1812a55a	2026-03-24T02:08:57.312Z	scrm-api	glm-4.7	2040	121	1744453	19779	2873600	0	feature/saveole/mantis_wx_status_manual_pull

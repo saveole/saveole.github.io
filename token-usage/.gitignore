@@ -1,0 +1,6 @@
+# Project gitignore
+*.log
+.DS_Store
+__pycache__/
+daily-summary.json
+REPORT.md

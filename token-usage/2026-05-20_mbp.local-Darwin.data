@@ -1,0 +1,3 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+e41c24ae-6c6a-4794-b3d3-f904acfa4ffc	2026-05-20T20:27:58+08:00	-Users-saveole-projects-xposedwework	glm-4.7	25	5	42019	773	137216	0	main
+3387df1d-f19b-4a98-b053-b51441c401e6	2026-05-20T21:59:34+08:00	-Users-saveole-blog-saveole-github-io	glm-4.7	747	8	59460	2966	281408	0	main

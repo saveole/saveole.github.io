@@ -1,0 +1,11 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+29a221ca-7312-4767-8f06-d9429a2a17f2	2026-05-27T09:19:14+08:00	-home-ant-projects-app-usage	glm-5.1	61781	170	513212	57870	21266752	0	master
+1e35791f-a7f8-4d4a-8e70-d374791eea40	2026-05-27T09:30:36+08:00	-home-ant-projects-app-usage	glm-5.1	183	3	31419	1561	108608	0	main
+62f91d81-8f90-467b-9e63-577ef2500fb4	2026-05-27T10:25:46+08:00	-home-ant-code-java-gw-admin	glm-5.1	253	17	65643	2402	852800	0	feature/NFQX-12062-video-sort
+7a46b575-6e4d-4cba-bbe5-6a9ede1c5858	2026-05-27T01:52:40.076Z	projects	deepseek-v4-pro	1553	86	131222	18478	2085504	0	main
+2ec8e6ad-bfb6-4bb9-a793-38321f3d2ccd	2026-05-27T10:57:30+08:00	-home-ant-projects-app-usage	glm-5.1	1161	36	59432	8028	2144640	0	main
+1107df3e-928d-49ad-bff7-f48b0e79b1af	2026-05-27T14:29:10+08:00	-home-ant-projects-app-usage	glm-5.1	1539	52	168813	28017	4522176	0	main
+edded3a1-3775-4dc7-90bc-60b055b3e223	2026-05-27T15:52:18+08:00	-home-ant-projects-xposedwework	glm-5.1	3013	44	632432	30465	3971456	0	main
+20260527_172302_c81a71	2026-05-27T17:37:23+08:00	saveole.github.io	glm-5.1	793	77	54214	5055	1163136	0	main
+20260527_174258_10a27d	2026-05-27T17:50:41+08:00	Java Docker 镜像构建 PPT 审查	glm-5.1	386	53	38715	4481	493952	0	main
+20260527_175958_40460e	2026-05-27T18:06:04+08:00	java_app_build_docker_image	glm-5.1	332	74	20643	3313	911296	0	main

@@ -1,0 +1,15 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+8071415a-ae18-4063-984a-b514d7a53f91	2026-05-25T08:06:02+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-4c84c007-workdir	glm-5.1	196	5	23495	735	129664	0	HEAD
+b0a4e8a1-2e1a-46b6-bc67-8d76f3cf1798	2026-05-25T08:59:40+08:00	-home-ant-blog-saveole-github-io	glm-5.1	684	24	96966	3964	1219072	0	main
+cd323d93-d8db-42dd-8938-c0d09663cd14	2026-05-25T09:31:08+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-cddc2468-workdir	glm-5.1	232	5	16719	718	137728	0	HEAD
+0ad5d0db-b8d2-446f-8e2f-61df3c799565	2026-05-25T09:32:35+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-15333eea-workdir	glm-5.1	81	5	32175	1061	173760	0	HEAD
+93b1a453-973d-4bc8-ac40-1bbe303ba5cf	2026-05-25T09:51:20+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-f1abd0b9-workdir	glm-5.1	555	40	66177	16086	2161792	0	HEAD
+c09e5f9d-dab7-456e-9541-9d213c2de43a	2026-05-25T01:38:34.737Z	unknown	glm-5.1	136	16	33471	1487	135808	0	HEAD
+6beb00a4-a38a-4939-8d04-61152b67fde6	2026-05-25T10:22:44+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-15333eea-workdir	glm-5.1	41	6	45545	1302	231744	0	HEAD
+46edf359-02bd-4de7-a5fc-bb77b12abb5d	2026-05-25T14:26:31+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	17	3	27122	196	109824	0	main
+20260525_171154_2736ec	2026-05-25T17:18:19+08:00	projects	glm-5.1	321	8	15377	990	54784	0	unknown
+20260525_171314_5779d0	2026-05-25T17:13:14+08:00	unknown	glm-5.1	0	2	485	63	128	0	unknown
+20260525_171332_1e3932	2026-05-25T17:13:32+08:00	unknown	glm-5.1	0	2	445	103	256	0	unknown
+20260525_171352_cd854f	2026-05-25T17:13:52+08:00	unknown	glm-5.1	0	2	491	3751	256	0	unknown
+0d313302-073f-4d5f-b830-4136c1f1b590	2026-05-25T18:00:24+08:00	-home-ant-code-java-scrm-api	glm-5.1	888	14	56152	3355	827584	0	dev
+9b4a1eb2-5078-47ee-b04f-59bcbe497d5e	2026-05-25T18:06:51+08:00	-home-ant-code-java-scrm-api	glm-5.1	275	15	66608	3740	881856	0	dev

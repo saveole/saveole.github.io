@@ -1,0 +1,12 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+96189eb4-583f-4b32-81f5-0138796e81b3	2026-05-28T08:02:10+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1760108f-workdir	glm-5.1	48	2	29208	333	31296	0	HEAD
+21dcf3b2-816c-4ac8-89d6-0ef1c3e97ef0	2026-05-28T10:17:12+08:00	-home-ant-blog-saveole-github-io	glm-5.1	70	4	50841	942	141376	0	main
+c6372e3e-e14f-47c9-ba2c-1859a729ec1c	2026-05-28T10:59:56+08:00	-home-ant-blog-saveole-github-io	glm-5.1	1928	40	68689	9688	2298816	0	main
+3d4cdc9c-bf30-4a5a-b92b-2b0d2cff24f1	2026-05-28T11:09:51+08:00	-home-ant-blog-saveole-github-io	glm-5.1	410	7	47543	720	280512	0	main
+22b78b7d-4f7f-46c9-9f17-2fb63355d86b	2026-05-28T15:29:40+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-591f1032-workdir	glm-5.1	478	25	55227	10432	1298048	0	HEAD
+b9647a2e-bab6-4ccb-b342-bd99026db8b4	2026-05-28T15:35:14+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-591f1032-workdir	glm-5.1	54	5	32987	1299	134016	0	HEAD
+6e3c1b87-ce0d-4aaa-bc4c-c9d37e290d79	2026-05-28T15:39:32+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-591f1032-workdir	glm-5.1	144	8	24074	5839	295552	0	HEAD
+b81c735f-6ea6-4ea4-8876-2e745bd65e28	2026-05-28T16:41:13+08:00	-home-ant-blog-saveole-github-io	glm-5.1	3403	85	145941	13463	5142400	0	main
+129e90a9-3747-4c5f-9e3e-22d609c9a4a4	2026-05-28T16:42:51+08:00	-home-ant-blog-saveole-github-io	glm-5.1	10	2	48547	192	45632	0	main
+fe6d1421-1867-4809-bc8c-1d1a38b30c8e	2026-05-28T17:21:53+08:00	-home-ant-blog-saveole-github-io	glm-5.1	1640	66	88690	11564	4924672	0	main
+099db28d-3dc8-4c31-81b3-79a904d679ed	2026-05-28T17:51:25+08:00	-home-ant-blog-saveole-github-io	glm-5.1	579	18	53643	1727	865728	0	main

@@ -1,0 +1,5 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+63e6e968-a7e4-4243-a479-23771cd51299	2026-03-26T09:45:23.638Z	scrm-api	glm-4.7	61307	266	776465	40380	12466176	0	feature/saveole/NFQX-11665
+b3dd6422-6daf-4fdf-9804-79664cba524e	2026-03-26T09:40:42.275Z	scrm-api	glm-4.7	76	17	129626	795	308864	0	feature/saveole/NFQX-11665
+fbe9c43c-fab7-48e3-8e31-9c9009f0d7fd	2026-03-26T01:50:40.780Z	scrm-api	glm-4.7	3193	363	472600	37470	15688704	0	xxljob
+9d261883-94a3-46d7-861f-0a2dd0fb43e7	2026-03-26T02:26:44.862Z	ssh	glm-4.7	239	7	18320	948	70400	0	HEAD
