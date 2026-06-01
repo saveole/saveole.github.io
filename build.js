@@ -1,11 +1,11 @@
-const fs = require('fs-extra'); // 如果没安装可以 npm i fs-extra，或者用原生的 fs
+const fs = require('fs');
 const hljs = require('highlight.js'); // 确保这一行存在且在 markdown-it 配置之前
 const taskLists = require('markdown-it-task-lists');
 const path = require('path');
 const matter = require('gray-matter');
 
 const md = require('markdown-it')({
-    hhtml: true,       // 允许 MD 中的 HTML
+    html: true,         // 允许 MD 中的 HTML
     linkify: true,    // 自动转换链接
     typographer: true, // 启用一些排版优化
     highlight: function (str, lang) {
@@ -27,6 +27,9 @@ const POSTS_DIR = path.join(__dirname, 'posts');
 const DIST_DIR = path.join(__dirname, 'dist');
 const THEME_DIR = path.join(__dirname, 'theme');
 
+// EJS render options (shared across all templates for include support)
+const ejsOpts = { root: THEME_DIR, views: [THEME_DIR] };
+
 // 1. 清理并准备输出目录
 if (fs.existsSync(DIST_DIR)) fs.rmSync(DIST_DIR, { recursive: true });
 fs.mkdirSync(DIST_DIR);
@@ -36,7 +39,7 @@ fs.copyFileSync(path.join(THEME_DIR, 'style.css'), path.join(DIST_DIR, 'style.cs
 
 // 拷贝 assets 目录到 dist
 if (fs.existsSync(path.join(__dirname, 'assets'))) {
-    fs.copySync(path.join(__dirname, 'assets'), path.join(DIST_DIR, 'assets'));
+    fs.cpSync(path.join(__dirname, 'assets'), path.join(DIST_DIR, 'assets'), { recursive: true });
 }
 
 // 3. 读取所有文章
@@ -119,7 +122,7 @@ postList.forEach(postData => {
     const postHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'layout.ejs'), 'utf-8'), {
         ...postData,
         tagIndex: JSON.stringify(allTags)
-    });
+    }, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, postData.url), postHtml);
 });
 
@@ -183,7 +186,7 @@ tokenUsageData.days.sort((a, b) => a.date.localeCompare(b.date));
 const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 'utf-8'), {
     posts: postList,
     dailyData: JSON.stringify(tokenUsageData)
-});
+}, ejsOpts);
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
 // --- Running page data processing ---
@@ -244,7 +247,7 @@ if (fs.existsSync(RUNNING_DATA_DIR)) {
 }
 
 if (runningPageData) {
-    const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData);
+    const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
 }
 
@@ -274,7 +277,8 @@ if (fs.existsSync(READING_DATA_DIR)) {
 if (readingPageData) {
     const readingHtml = ejs.render(
         fs.readFileSync(path.join(THEME_DIR, 'reading.ejs'), 'utf-8'),
-        readingPageData
+        readingPageData,
+        ejsOpts
     );
     fs.writeFileSync(path.join(DIST_DIR, 'reading.html'), readingHtml);
     console.log('Reading page generated.');
@@ -285,6 +289,6 @@ console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个
 // 复制独立页面（如 token-usage）
 const PAGES_DIR = path.join(__dirname, 'pages');
 if (fs.existsSync(PAGES_DIR)) {
-    fs.copySync(PAGES_DIR, DIST_DIR);
+    fs.cpSync(PAGES_DIR, DIST_DIR, { recursive: true });
     console.log('已复制 pages/ 目录到 dist/。');
 }

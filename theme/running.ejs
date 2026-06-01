@@ -1,29 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running | saveole's land</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<%- include('_head', { title: 'Running | saveole\'s land', extraPreconnect: '<link rel="preconnect" href="https://cdn.jsdelivr.net">', extraHead: '<script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>' }) %>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container navbar-inner">
-            <nav class="nav-links">
-                <a href="index.html" class="nav-link">Blog</a>
-                <a href="running.html" class="nav-link active">Running</a>
-                <a href="reading.html" class="nav-link">Reading</a>
-            </nav>
-        </div>
-    </nav>
+<%- include('_nav', { activeNav: 'running' }) %>
 
-    <main class="container">
+    <main id="main" class="container">
         <header class="running-header">
             <div class="running-header-row">
                 <div class="chart-tabs" id="chartTabs">
@@ -69,12 +52,15 @@
         </div>
     </main>
 
-    <footer class="container">
-        <p>&copy; 2026 saveole.</p>
-    </footer>
-
+<%- include('_footer') %>
     <script>
     (function() {
+        function esc(s) {
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
         var timeline = <%- timelineJSON %>;
         var bodyRecords = <%- bodyJSON %>;
         var activityRecords = <%- activitiesJSON %>;
@@ -225,12 +211,14 @@
 
             var panel = document.createElement('div');
             panel.className = 'similar-panel';
+            panel.setAttribute('role', 'dialog');
+            panel.setAttribute('aria-modal', 'true');
 
             // Header
             var header = document.createElement('div');
             header.className = 'similar-panel-header';
             header.innerHTML =
-                '<span class="similar-panel-title">' + track.date + ' · ' + track.distance_km.toFixed(1) + ' km</span>' +
+                '<span class="similar-panel-title">' + esc(track.date) + ' · ' + track.distance_km.toFixed(1) + ' km</span>' +
                 '<button class="similar-panel-close">关闭</button>';
             panel.appendChild(header);
 
@@ -239,8 +227,8 @@
             selectedWrap.className = 'similar-panel-selected';
             selectedWrap.innerHTML = buildTrackSVG(track, 400, 180) +
                 '<div class="track-info">' +
-                    '<span class="track-date">' + track.date + '</span>' +
-                    '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + track.pace + '</span>' +
+                    '<span class="track-date">' + esc(track.date) + '</span>' +
+                    '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + esc(track.pace) + '</span>' +
                 '</div>';
             panel.appendChild(selectedWrap);
 
@@ -256,7 +244,7 @@
                     thumb.className = 'similar-track-thumb';
                     thumb.innerHTML = buildTrackSVG(t, 130, 90) +
                         '<div class="track-info">' +
-                            '<span class="track-date">' + t.date + '</span>' +
+                            '<span class="track-date">' + esc(t.date) + '</span>' +
                             '<span class="track-stat">' + pct + '% 相似</span>' +
                         '</div>';
                     matchesWrap.appendChild(thumb);
@@ -304,8 +292,8 @@
                         svgHtml +
                     '</div>' +
                     '<div class="track-info">' +
-                        '<span class="track-date">' + track.date + '</span>' +
-                        '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + track.pace + '</span>' +
+                        '<span class="track-date">' + esc(track.date) + '</span>' +
+                        '<span class="track-stat">' + track.distance_km.toFixed(1) + ' km · ' + esc(track.pace) + '</span>' +
                     '</div>';
                 grid.appendChild(card);
                 cards.push({ el: card, idx: idx });
@@ -391,12 +379,12 @@
                 var dateDisplay = a.date + ' ' + (a.start_time || '00:00:00');
 
                 html += '<tr>' +
-                    '<td class="text-left run-title">' + label + '</td>' +
+                    '<td class="text-left run-title">' + esc(label) + '</td>' +
                     '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
-                    '<td class="text-right">' + a.pace + '</td>' +
-                    '<td class="text-right">' + a.avg_hr + '</td>' +
-                    '<td class="text-right">' + a.duration + '</td>' +
-                    '<td class="text-right">' + dateDisplay + '</td>' +
+                    '<td class="text-right">' + esc(a.pace) + '</td>' +
+                    '<td class="text-right">' + (a.avg_hr != null ? a.avg_hr : '') + '</td>' +
+                    '<td class="text-right">' + esc(a.duration) + '</td>' +
+                    '<td class="text-right">' + esc(dateDisplay) + '</td>' +
                     '</tr>';
             });
             listBody.innerHTML = html;
@@ -404,7 +392,13 @@
 
         renderList(activeYear);
 
-        var commonScalesX = {
+        // Wait for Chart.js to load (async script), then initialize charts
+        function initCharts() {
+            if (typeof Chart === 'undefined') {
+                setTimeout(initCharts, 50);
+                return;
+            }
+            var commonScalesX = {
             grid: { display: false },
             ticks: { color: muted, font: { size: 10, family: 'Inter', weight: '300' }, maxTicksLimit: 8, maxRotation: 0 },
             border: { display: false }
@@ -424,8 +418,8 @@
                 plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 10, family: 'Inter' } } } },
                 scales: {
                     x: Object.assign({}, commonScalesX, { ticks: Object.assign({}, commonScalesX.ticks, { display: false }) }),
-                    yW: { type: 'linear', position: 'left', min: 70, max: 85, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' kg'; } }, grid: { color: borderClr }, border: { display: false } },
-                    yF: { type: 'linear', position: 'right', min: 15, max: 35, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' %'; } }, grid: { display: false }, border: { display: false } }
+                    yW: { type: 'linear', position: 'left', suggestedMin: 70, suggestedMax: 85, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' kg'; } }, grid: { color: borderClr }, border: { display: false } },
+                    yF: { type: 'linear', position: 'right', suggestedMin: 15, suggestedMax: 35, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' %'; } }, grid: { display: false }, border: { display: false } }
                 }
             }
         });
@@ -443,8 +437,8 @@
                 plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, font: { size: 10, family: 'Inter' } } }, tooltip: { usePointStyle: true } },
                 scales: {
                     x: commonScalesX,
-                    yDistance: { type: 'linear', position: 'left', min: 0, max: 20, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' km'; } }, grid: { color: borderClr }, border: { display: false } },
-                    yH: { type: 'linear', position: 'right', min: 100, max: 180, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' bpm'; } }, grid: { display: false }, border: { display: false } }
+                    yDistance: { type: 'linear', position: 'left', suggestedMin: 0, suggestedMax: 20, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' km'; } }, grid: { color: borderClr }, border: { display: false } },
+                    yH: { type: 'linear', position: 'right', suggestedMin: 100, suggestedMax: 180, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' bpm'; } }, grid: { display: false }, border: { display: false } }
                 }
             }
         });
@@ -465,6 +459,9 @@
         document.getElementById('runningChart').addEventListener('mousemove', function(e) {
             triggerHover(chartBody, Chart.helpers.getRelativePosition(e, chartRunning));
         });
+        } // end initCharts
+
+        initCharts();
     })();
     </script>
 </body>

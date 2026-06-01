@@ -1,28 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>saveole's land</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
-    <link rel="stylesheet" href="style.css">
+<%- include('_head', { title: 'saveole\'s land' }) %>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container navbar-inner">
-            <nav class="nav-links">
-                <a href="index.html" class="nav-link">Blog</a>
-                <a href="running.html" class="nav-link">Running</a>
-                <a href="reading.html" class="nav-link">Reading</a>
-            </nav>
-        </div>
-    </nav>
+<%- include('_nav', { activeNav: 'blog' }) %>
 
-    <main class="container">
+    <main id="main" class="container">
+        <h1 class="sr-only">saveole's land</h1>
         <header class="home-header">
             <p class="contrib-title">Token 不够？<a href="running_page">跑步</a>来凑！ <span class="contrib-summary" id="contrib-summary"></span></p>
             <div class="contrib-wrapper">
@@ -86,12 +71,15 @@
         </section>
     </main>
 
-    <footer class="container">
-        <p>&copy; 2026 saveole.</p>
-    </footer>
-
+<%- include('_footer') %>
     <script>
     (function() {
+        function esc(s) {
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
         var data = <%- dailyData %>;
         if (!data || !data.days || data.days.length === 0) return;
 
@@ -242,8 +230,9 @@
                 var runStr = (hasRun ? formatRunning(day.running) : '0') + ' km';
                 var tokStr = hasTok ? formatTokens(day.tokens) : '0 M';
                 var tooltip = day.date + '\n🏃 ' + runStr + '\n💻 ' + tokStr;
+                var ariaLabel = day.date + ', ' + runStr + ' running, ' + tokStr + ' tokens';
 
-                gridHtml += '<span class="' + cls + '" data-date="' + day.date + '" data-tooltip="' + tooltip + '" style="' + bg + ';grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '"></span>';
+                gridHtml += '<span class="' + cls + '" data-date="' + day.date + '" data-tooltip="' + esc(tooltip) + '" role="button" tabindex="0" aria-label="' + esc(ariaLabel) + '" style="' + bg + ';grid-column:' + (wi + 1) + ';grid-row:' + (di + 1) + '"></span>';
             });
         });
         gridEl.innerHTML = gridHtml;
@@ -274,6 +263,12 @@
             infoBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 infoPanel.classList.toggle('active');
+            });
+            infoBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    infoPanel.classList.toggle('active');
+                }
             });
             document.addEventListener('click', function(e) {
                 if (!infoPanel.contains(e.target) && e.target !== infoBtn) {

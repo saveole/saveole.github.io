@@ -1,29 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> | saveole's land</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
-    <link rel="stylesheet" href="style.css">
-    <!-- highlight.js 主题由 style.css 统一管理，不再引入外部主题 -->
+<%- include('_head', { title: title + ' | saveole\'s land' }) %>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container navbar-inner">
-            <nav class="nav-links">
-                <a href="index.html" class="nav-link">Blog</a>
-                <a href="running.html" class="nav-link">Running</a>
-                <a href="reading.html" class="nav-link">Reading</a>
-            </nav>
-        </div>
-    </nav>
+<%- include('_nav') %>
 
-    <main class="container">
+    <main id="main" class="container">
         <article class="post">
             <header class="post-header">
                 <time><%= date %></time>
@@ -55,12 +38,10 @@
         </article>
     </main>
 
-    <footer class="container">
-        <p>&copy; 2026 saveole.</p>
-    </footer>
+<%- include('_footer') %>
 
     <div class="tag-popup-overlay" id="tagPopupOverlay"></div>
-    <div class="tag-popup" id="tagPopup">
+    <div class="tag-popup" id="tagPopup" role="dialog" aria-modal="true" aria-labelledby="tagPopupName">
         <div class="tag-popup-header">
             <h3><span class="tag-popup-tag-name" id="tagPopupName"></span></h3>
             <button class="tag-popup-close" id="tagPopupClose">&times;</button>
@@ -87,19 +68,47 @@
 
     <script>
     (function() {
+        function esc(s) {
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
         var tagIndex = <%- tagIndex %>;
         var popup = document.getElementById('tagPopup');
         var overlay = document.getElementById('tagPopupOverlay');
         var popupName = document.getElementById('tagPopupName');
         var popupList = document.getElementById('tagPopupList');
         var popupClose = document.getElementById('tagPopupClose');
+        var lastFocused = null;
+
+        function getFocusable() {
+            return popup.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+        }
+
+        function trapFocus(e) {
+            var focusable = getFocusable();
+            if (focusable.length === 0) return;
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+                } else {
+                    if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+                }
+            }
+        }
 
         function closePopup() {
             popup.classList.remove('active');
             overlay.classList.remove('active');
+            document.removeEventListener('keydown', trapFocus);
+            if (lastFocused) lastFocused.focus();
         }
 
         function openPopup(tag) {
+            lastFocused = document.activeElement;
             var posts = tagIndex[tag] || [];
             popupName.textContent = '#' + tag;
             popupList.innerHTML = '';
@@ -111,19 +120,21 @@
                     var li = document.createElement('li');
                     var a = document.createElement('a');
                     a.href = p.url;
-                    a.innerHTML = '<span class="popup-post-title">' + p.title + '</span><span class="popup-post-date">' + p.date + '</span>';
+                    a.innerHTML = '<span class="popup-post-title">' + esc(p.title) + '</span><span class="popup-post-date">' + esc(p.date) + '</span>';
                     li.appendChild(a);
                     popupList.appendChild(li);
                 });
             }
             popup.classList.add('active');
             overlay.classList.add('active');
+            popupClose.focus();
+            document.addEventListener('keydown', trapFocus);
         }
 
         overlay.addEventListener('click', closePopup);
         popupClose.addEventListener('click', closePopup);
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closePopup();
+            if (e.key === 'Escape' && popup.classList.contains('active')) closePopup();
         });
 
         document.addEventListener('click', function(e) {

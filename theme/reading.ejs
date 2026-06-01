@@ -1,30 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading | saveole's land</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicons/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicons/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400&display=swap">
-    <link rel="stylesheet" href="style.css">
+<%- include('_head', { title: 'Reading | saveole\'s land' }) %>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container navbar-inner">
-            <nav class="nav-links">
-                <a href="index.html" class="nav-link">Blog</a>
-                <a href="running.html" class="nav-link">Running</a>
-                <a href="reading.html" class="nav-link active">Reading</a>
-            </nav>
-        </div>
-    </nav>
+<%- include('_nav', { activeNav: 'reading' }) %>
 
-    <main class="container">
+    <main id="main" class="container">
         <header class="running-header">
-            <h1>📚 阅读</h1>
+            <h1><span aria-hidden="true">📚</span> 阅读</h1>
         </header>
 
         <!-- Stats card -->
@@ -79,12 +63,15 @@
         </div>
     </main>
 
-    <footer class="container">
-        <p>&copy; 2026 saveole.</p>
-    </footer>
-
+<%- include('_footer') %>
     <script>
     (function() {
+        function esc(s) {
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
         var books = <%- booksJSON %>;
         var quotes = <%- quotesJSON %>;
 
@@ -154,9 +141,9 @@
                 count++;
                 var coverHtml;
                 if (b.cover) {
-                    coverHtml = '<img class="reading-book-cover" src="./assets/img/reading/' + b.cover + '" alt="' + b.title + '" loading="lazy">';
+                    coverHtml = '<img class="reading-book-cover" src="./assets/img/reading/' + esc(b.cover) + '" alt="' + esc(b.title) + '" loading="lazy">';
                 } else {
-                    var initial = b.title ? b.title.charAt(0) : '?';
+                    var initial = b.title ? esc(b.title.charAt(0)) : '?';
                     coverHtml = '<div class="reading-book-cover-placeholder">' + initial + '</div>';
                 }
 
@@ -177,7 +164,7 @@
                 var tagsHtml = '';
                 if (b.tags && b.tags.length) {
                     tagsHtml = '<div class="reading-tags">' + b.tags.map(function(t) {
-                        return '<span class="reading-tag">' + t + '</span>';
+                        return '<span class="reading-tag">' + esc(t) + '</span>';
                     }).join('') + '</div>';
                 }
 
@@ -186,8 +173,8 @@
                     notesHtml = '<div class="reading-book-notes">';
                     b.notes.forEach(function(n) {
                         notesHtml += '<div class="reading-note-item">';
-                        if (n.date) notesHtml += '<span class="reading-note-date">' + n.date + '</span>';
-                        notesHtml += '<span class="reading-note-text">' + n.text + '</span></div>';
+                        if (n.date) notesHtml += '<span class="reading-note-date">' + esc(n.date) + '</span>';
+                        notesHtml += '<span class="reading-note-text">' + esc(n.text) + '</span></div>';
                     });
                     notesHtml += '</div>';
                 }
@@ -195,10 +182,10 @@
                 html += '<div class="reading-book-item">' +
                     '<div class="reading-book-cover-wrap">' + coverHtml + '</div>' +
                     '<div class="reading-book-info">' +
-                        '<div class="reading-book-title">' + b.title + ' ' + statusLabel + '</div>' +
-                        '<div class="reading-book-author">' + (b.author || '') + '</div>' +
-                        (b.started_at ? '<div class="reading-book-date">开始: ' + b.started_at + '</div>' : '') +
-                        (b.finished_at ? '<div class="reading-book-date">读完: ' + b.finished_at + '</div>' : '') +
+                        '<div class="reading-book-title">' + esc(b.title) + ' ' + statusLabel + '</div>' +
+                        '<div class="reading-book-author">' + esc(b.author || '') + '</div>' +
+                        (b.started_at ? '<div class="reading-book-date">开始: ' + esc(b.started_at) + '</div>' : '') +
+                        (b.finished_at ? '<div class="reading-book-date">读完: ' + esc(b.finished_at) + '</div>' : '') +
                         ratingHtml +
                         notesHtml +
                         tagsHtml +
@@ -218,9 +205,9 @@
             var html = '';
             quotes.forEach(function(q) {
                 html += '<div class="reading-quote-item">' +
-                    '<blockquote class="reading-quote-text">"' + q.content + '"</blockquote>' +
-                    '<div class="reading-quote-source">— ' + (q.book_title || '') + (q.book_author ? ' · ' + q.book_author : '') + (q.page ? ' · p.' + q.page : '') + '</div>' +
-                    (q.highlighted_at ? '<div class="reading-quote-date">' + q.highlighted_at + '</div>' : '') +
+                    '<blockquote class="reading-quote-text">"' + esc(q.content) + '"</blockquote>' +
+                    '<div class="reading-quote-source">— ' + esc(q.book_title || '') + (q.book_author ? ' · ' + esc(q.book_author) : '') + (q.page ? ' · p.' + esc(String(q.page)) : '') + '</div>' +
+                    (q.highlighted_at ? '<div class="reading-quote-date">' + esc(q.highlighted_at) + '</div>' : '') +
                 '</div>';
             });
             document.getElementById('quoteList').innerHTML = html;
