@@ -4,4 +4,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 6b997d21-44ea-4095-8445-357944169971	2026-06-02T11:16:38+08:00	-home-ant-blog-saveole-github-io	glm-5.1	68	6	43172	489	214400	0	main
 f5122cf1-684d-4bc9-8902-703bbcd70102	2026-06-02T14:59:31+08:00	-home-ant-code-java-scrm-api	glm-5.1	3320	81	348932	46933	9394432	0	master
 d62d1ee3-ff31-41c5-aaa5-bda359c257a4	2026-06-02T17:29:31+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	93	2	22853	690	61248	0	9.4
-8041fb38-9f92-4b07-8bfb-2d9c51dbfb4c	2026-06-02T09:16:39.620Z	scrm-api	glm-5.1	575	62	82577	7148	1257216	0	refactor/ut
+8041fb38-9f92-4b07-8bfb-2d9c51dbfb4c	2026-06-02T17:29:42+08:00	-home-ant-code-java-scrm-api	glm-5.1	561	22	82577	7148	1257216	0	refactor/ut
