@@ -21,7 +21,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install Python deps
-        run: pip install garth
+        run: pip install garth fitparse
 
       - name: Sync Garmin running data
         env:
