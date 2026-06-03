@@ -2,7 +2,7 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 e0ffdf1a-5793-4365-9882-ba71a5041495	2026-06-03T08:01:57+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-cb0b2c98-workdir	glm-5.1	47	2	26872	250	26240	0	HEAD
 f57eaa3c-0cf0-4f9a-9b6b-518148f9d00a	2026-06-03T10:15:50+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-aee064f6-workdir	glm-5.1	70	2	27129	271	26112	0	HEAD
 b07d45d8-41b8-407a-a138-0740dced979d	2026-06-03T13:55:32+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	109	2	24354	1093	61056	0	master
-5be48a8e-ed47-4e38-a34b-fd47da204d93	2026-06-03T02:27:34.691Z	scrm-api	glm-5.1	21789	100	1006457	44188	4180992	0	refactor/ut
+5be48a8e-ed47-4e38-a34b-fd47da204d93	2026-06-03T02:27:34.691Z	scrm-api	glm-5.1	22129	101	1007770	44350	4298176	0	refactor/ut
 aa2afc2a-2774-49d7-a8d8-ce1740d8456d	2026-06-03T16:33:57+08:00	-home-ant-code-web-company-manage	glm-5.1	325	2	22750	617	60800	0	tanglang-1106
 a44819f8-2bd6-4b33-be45-b2f548e59de6	2026-06-03T07:51:57.241Z	scrmgo	glm-5.1	299	7	24598	1479	193600	0	master
 42a121ec-f42d-472d-9bc5-fa0660ede5a1	2026-06-03T16:47:44+08:00	-home-ant-code-web-scrm	glm-5.1	1959	9	30456	4633	392896	0	beta_dev
