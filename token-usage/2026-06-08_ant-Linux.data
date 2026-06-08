@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+20260608_141447_d7652f	2026-06-08T15:24:40+08:00	ssh	glm-5.1	4154	22	37749	5185	232704	0	unknown
