@@ -8,3 +8,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 20260608_162804_52356a	2026-06-08T17:06:35+08:00	saveole.github.io	glm-5.1	2234	64	121019	7355	1194944	0	main
 6cf9a9c9-6b1e-46c1-b73d-ce45ede588a1	2026-06-08T17:25:39+08:00	-home-ant-blog-saveole-github-io	glm-5.1	709	19	132706	1333	637184	0	main
 4ff03481-6965-472e-875d-0c4aff34b063	2026-06-08T17:44:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	61	6	26944	971	233088	0	main
+06d856db-94fd-442e-8b2e-d45fd8cdba3a	2026-06-08T09:29:06.722Z	xueqiu-crawler	glm-5.1	870	46	161562	12565	1106368	0	main
