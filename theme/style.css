@@ -27,7 +27,6 @@
   --chart-hr: #db8a75;
   --chart-distance: rgba(92, 118, 141, 0.4);
   --chart-distance-hover: rgba(92, 118, 141, 0.7);
-  --chart-hrv: #8b5cf6;
   --track-stroke: #5c768d;
 }
 
@@ -324,7 +323,6 @@ pre code {
     --chart-hr: #e8a594;
     --chart-distance: rgba(122, 154, 181, 0.4);
     --chart-distance-hover: rgba(122, 154, 181, 0.7);
-    --chart-hrv: #a78bfa;
     --track-stroke: #7a9ab5;
   }
 

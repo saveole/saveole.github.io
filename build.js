@@ -206,14 +206,11 @@ let runningPageData = null;
 if (fs.existsSync(RUNNING_DATA_DIR)) {
     const activitiesRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'activities.json'), 'utf-8'));
     const bodyRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'body.json'), 'utf-8'));
-    const hrvPath = path.join(RUNNING_DATA_DIR, 'hrv.json');
-    const hrvRaw = fs.existsSync(hrvPath) ? JSON.parse(fs.readFileSync(hrvPath, 'utf-8')) : [];
 
-    // Build unified timeline from all dates in all data sources
+    // Build unified timeline from all dates in both data sources
     const dateSet = new Set();
     activitiesRaw.forEach(a => dateSet.add(a.date));
     bodyRaw.forEach(b => dateSet.add(b.date));
-    hrvRaw.forEach(h => dateSet.add(h.date));
     const timeline = Array.from(dateSet).sort();
 
     // Format activities for template
@@ -244,7 +241,6 @@ if (fs.existsSync(RUNNING_DATA_DIR)) {
     runningPageData = {
         timelineJSON: JSON.stringify(timeline),
         bodyJSON: JSON.stringify(bodyRaw),
-        hrvJSON: JSON.stringify(hrvRaw),
         activitiesJSON: JSON.stringify(activities),
         tracksJSON: JSON.stringify(tracks)
     };
