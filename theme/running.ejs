@@ -63,6 +63,7 @@
 
         var timeline = <%- timelineJSON %>;
         var bodyRecords = <%- bodyJSON %>;
+        var hrvRecords = <%- hrvJSON %>;
         var activityRecords = <%- activitiesJSON %>;
         var trackRecords = <%- tracksJSON %>;
 
@@ -75,6 +76,7 @@
         var hrClr = cs.getPropertyValue('--chart-hr').trim();
         var distClr = cs.getPropertyValue('--chart-distance').trim();
         var distHoverClr = cs.getPropertyValue('--chart-distance-hover').trim();
+        var hrvClr = cs.getPropertyValue('--chart-hrv').trim();
         var trackClr = cs.getPropertyValue('--track-stroke').trim();
 
         // ---- Chart/Tracks tab switching ----
@@ -325,6 +327,7 @@
         var fatData = Array(timeline.length).fill(null);
         var distanceData = Array(timeline.length).fill(null);
         var hrData = Array(timeline.length).fill(null);
+        var hrvData = Array(timeline.length).fill(null);
 
         bodyRecords.forEach(function(d) {
             var idx = timeline.indexOf(d.date);
@@ -334,6 +337,11 @@
         activityRecords.forEach(function(a) {
             var idx = timeline.indexOf(a.date);
             if (idx !== -1) { distanceData[idx] = a.distance_km; hrData[idx] = a.avg_hr; }
+        });
+
+        hrvRecords.forEach(function(h) {
+            var idx = timeline.indexOf(h.date);
+            if (idx !== -1) { hrvData[idx] = h.last_night_avg; }
         });
 
         // Render activity list
@@ -429,7 +437,8 @@
                 labels: timeline,
                 datasets: [
                     { type: 'bar', label: '距离', data: distanceData, backgroundColor: distClr, hoverBackgroundColor: distHoverClr, barThickness: 6, yAxisID: 'yDistance' },
-                    { type: 'line', label: '心率', data: hrData, borderColor: hrClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' }
+                    { type: 'line', label: '心率', data: hrData, borderColor: hrClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yH' },
+                    { type: 'line', label: 'HRV', data: hrvData, borderColor: hrvClr, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 1.5, spanGaps: true, tension: 0.4, yAxisID: 'yHRV', borderDash: [4, 2] }
                 ]
             },
             options: {
@@ -438,7 +447,8 @@
                 scales: {
                     x: commonScalesX,
                     yDistance: { type: 'linear', position: 'left', suggestedMin: 0, suggestedMax: 20, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 5, callback: function(v) { return v + ' km'; } }, grid: { color: borderClr }, border: { display: false } },
-                    yH: { type: 'linear', position: 'right', suggestedMin: 100, suggestedMax: 180, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' bpm'; } }, grid: { display: false }, border: { display: false } }
+                    yH: { type: 'linear', position: 'right', suggestedMin: 100, suggestedMax: 180, ticks: { color: muted, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' bpm'; } }, grid: { display: false }, border: { display: false } },
+                    yHRV: { type: 'linear', display: 'auto', position: 'right', suggestedMin: 20, suggestedMax: 80, ticks: { color: hrvClr, font: { size: 10, family: 'Inter' }, stepSize: 20, callback: function(v) { return v + ' ms'; } }, grid: { display: false }, border: { display: false } }
                 }
             }
         });

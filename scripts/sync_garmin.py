@@ -16,6 +16,7 @@ from fitparse import FitFile
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(SCRIPT_DIR)
 OUTPUT_FILE = os.path.join(REPO_DIR, "running-data", "activities.json")
+HRV_OUTPUT_FILE = os.path.join(REPO_DIR, "running-data", "hrv.json")
 FIT_DIR = os.path.join(REPO_DIR, "running-data", "fit")
 
 
@@ -161,6 +162,65 @@ def _encode_signed(value):
         value >>= 5
     chunks.append(chr(value + 63))
     return "".join(chunks)
+
+
+def sync_hrv(existing_activities):
+    """Fetch daily HRV summaries from Garmin CN and save to running-data/hrv.json.
+
+    Uses garth's DailyHRV.list() which paginates in 28-day batches.
+    Only syncs from the earliest activity date to today.
+    """
+    from garth import DailyHRV
+
+    today = datetime.utcnow().date()
+
+    # Determine start date: earliest activity, or 1 year ago if no activities
+    if existing_activities:
+        dates = [a["date"] for a in existing_activities if "date" in a]
+        start_date = datetime.strptime(min(dates), "%Y-%m-%d").date() if dates else today - timedelta(days=365)
+    else:
+        start_date = today - timedelta(days=365)
+
+    print(f"Syncing HRV data from {start_date} to {today}...")
+
+    all_hrv = {}  # date -> dict (dedup by date)
+    current_end = today
+
+    while current_end >= start_date:
+        try:
+            batch = DailyHRV.list(end=current_end.isoformat(), period=28)
+        except Exception as e:
+            print(f"  HRV fetch error for period ending {current_end}: {e}")
+            break
+
+        if not batch:
+            break
+
+        for d in batch:
+            cal_date = d.calendar_date
+            if cal_date < start_date.isoformat():
+                continue
+            all_hrv[cal_date] = {
+                "date": cal_date,
+                "last_night_avg": d.last_night_avg,
+                "weekly_avg": d.weekly_avg,
+                "last_night_5min_high": getattr(d, "last_night_5min_high", None),
+                "status": d.status,
+                "feedback": getattr(d, "feedback_phrase", None),
+            }
+
+        # Move to the period before the oldest date in this batch
+        oldest_in_batch = min(d.calendar_date for d in batch)
+        new_end = datetime.strptime(oldest_in_batch, "%Y-%m-%d").date() - timedelta(days=1)
+        if new_end >= current_end:
+            break  # safety: avoid infinite loop
+        current_end = new_end
+
+    result = sorted(all_hrv.values(), key=lambda x: x["date"])
+    os.makedirs(os.path.dirname(HRV_OUTPUT_FILE), exist_ok=True)
+    with open(HRV_OUTPUT_FILE, "w") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+    print(f"Saved {len(result)} days of HRV data to {HRV_OUTPUT_FILE}")
 
 
 def main():
@@ -346,6 +406,10 @@ def main():
     merged = dict(existing)
     merged.update(day_map)
     save_output(merged)
+
+    # Sync HRV data
+    merged_list = sorted(merged.values(), key=lambda x: x["date"])
+    sync_hrv(merged_list)
 
 
 if __name__ == "__main__":
