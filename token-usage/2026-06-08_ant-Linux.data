@@ -10,3 +10,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 4ff03481-6965-472e-875d-0c4aff34b063	2026-06-08T17:44:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	61	6	26944	971	233088	0	main
 06d856db-94fd-442e-8b2e-d45fd8cdba3a	2026-06-08T17:47:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	1008	18	166743	12907	1304576	0	main
 7e1d9cfe-dc05-4b67-b69d-271a47fcf1d9	2026-06-08T17:45:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	26	5	30500	473	148096	0	main
+7b20eb94-11f0-42bb-a3dc-72f9a450e127	2026-06-08T21:23:05+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-dcd891f7-workdir	glm-5.1	1494386	10	55352	2876	337600	0	HEAD
