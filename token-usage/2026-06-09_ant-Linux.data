@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 578c0ee7-95c7-4de4-84fd-cf39ecef885b	2026-06-09T08:04:13+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-5f5d8141-workdir	glm-5.1	62	2	28243	301	26368	0	HEAD
 3da9a28a-f8f4-4d9f-b7cc-d53fcb47310b	2026-06-09T10:54:45+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	4868	111	194019	19844	9681600	0	main
+cd93d783-2dfb-4568-a19f-e8a60b48a612	2026-06-09T11:07:41+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	659	17	30241	3405	761728	0	main
