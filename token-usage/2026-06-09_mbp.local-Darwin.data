@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
+3e2618df-5ab9-4237-bb72-8f7202960cb1	2026-06-09T15:48:59+08:00	-Users-saveole-blog	glm-4.7	3310	35	63518	3427	996800	0	HEAD
