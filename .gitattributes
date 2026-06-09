@@ -1,0 +1,6 @@
+# Encrypt personal health data files in git history
+# These files remain plaintext locally (when unlocked) but are encrypted in the repo
+
+running-data/activities.json filter=git-crypt diff=git-crypt
+running-data/body.json filter=git-crypt diff=git-crypt
+running-data/fit/*.fit filter=git-crypt diff=git-crypt
