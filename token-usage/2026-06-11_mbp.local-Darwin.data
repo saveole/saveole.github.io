@@ -1,2 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 5e6e4850-f9be-4051-9cc7-71ba9bd50b8e	2026-06-11T10:42:59.647Z	xueqiu-crawler	glm-4.7	13025	731	470581	91971	31329984	0	main	0	claude
+ses_148f166a8ffe5eJxHECeudo170	2026-06-11T22:20:47+08:00	xueqiu-crawler	deepseek-v4-flash	57	12	82562	5377	420608	0	main	446	opencode
+ses_148f17acfffeuMyH5WCS5Ryid9	2026-06-11T22:20:42+08:00	xueqiu-crawler	deepseek-v4-flash	4136	122	107333	36124	11434752	0	main	39811	opencode
