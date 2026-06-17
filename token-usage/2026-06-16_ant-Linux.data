@@ -3,7 +3,7 @@ a237eef2-0aa2-4f06-ac52-17002ae2fba4	2026-06-16T08:01:59+08:00	-home-ant-multica
 ed8f61c6-0869-4272-843f-8debcb92ffc5	2026-06-16T09:15:20+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	7197	94	197054	76633	11672384	0	fix/review-analyzing-stuck	0	claude
 01467664-c76d-4bee-a408-95b26ef5daca	2026-06-16T09:50:18+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	1248	2	78030	2636	23552	0	main	0	claude
 ea47f9db-95c7-490e-8b05-fad0b73c6326	2026-06-16T13:59:59+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	2849	16	83203	41409	1252288	0	master	0	claude
-8101b286-54a0-4738-97ca-4dad9a2de5f6	2026-06-16T06:56:12.645Z	inherit	glm-5.2	93714	567	1140801	164553	65988736	0	master	0	claude
+8101b286-54a0-4738-97ca-4dad9a2de5f6	2026-06-16T06:56:12.645Z	inherit	glm-5.2	105528	666	2141262	191435	84505536	0	master	0	claude
 ses_130954dd1ffeAg4hMdtrDvUFbW	2026-06-16T15:52:16+08:00	xueqiu-crawler	deepseek-v4-pro	114	9	47345	6170	169472	0	main	1296	opencode
 ses_13095652affebIrtpzIkRhpylI	2026-06-16T15:52:10+08:00	xueqiu-crawler	deepseek-v4-pro	15201	35	68955	9644	1976832	0	main	6541	opencode
 ses_130f5cb20ffejzqCG0PI6xSvHU	2026-06-16T14:06:53+08:00	inherit	deepseek-v4-pro	41	6	16534	2963	52608	0	master	200	opencode
