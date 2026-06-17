@@ -1,60 +1,60 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-bbe25957-67a5-4b97-a23b-16235105321f	2026-04-29T00:09:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	793	26	46280	18648	1513472	0	main
-be3ff9aa-4144-4485-9a9a-9dadc19ceb9a	2026-04-29T00:44:24+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	22004	48	340349	24647	3628736	0	feat/NFQX-11896
-58143295-ac57-41f4-9180-0a2e7efd30f7	2026-04-29T00:52:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	528	39	68105	13955	2147904	0	main
-72af62be-ee37-4eb3-b7a2-627970d3bcaf	2026-04-29T01:01:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	150	7	24240	2573	198016	0	main
-d31318a2-f83a-47bb-93a4-9622459fb753	2026-04-29T01:05:25+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	225	23	32580	5697	1118336	0	main
-5b122560-929b-4324-a4a3-8aac908e1087	2026-04-29T01:08:26+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	172	8	25890	4386	242112	0	main
-d1106ee1-244f-49df-8939-5e012dd9f110	2026-04-29T01:16:16+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	460	44	42818	10139	1918720	0	main
-5ec2e22a-85b5-4991-8758-79b8299c1b0c	2026-04-29T01:19:55+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	207	10	18077	5679	342656	0	main
-d594cefb-c07d-4780-8fd3-5a772cfe37f9	2026-04-29T01:22:40+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	157	12	14636	3932	426304	0	main
-281b6451-9d05-4a0f-960d-88d40c097e24	2026-04-29T07:47:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	590	20	25876	6465	602752	0	main
-f94dbcc5-a7c8-4369-9ff0-49f092375ea8	2026-04-29T08:16:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	516	26	60516	10842	1546432	0	main
-01b146f7-f345-41cc-a242-5d177a7844e1	2026-04-29T08:46:46+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	32	6	17896	452	149952	0	main
-ee9546b6-97ba-4de9-adc2-7166eb5341ee	2026-04-29T00:21:34.961Z	xueqiu-crawler	glm-5.1	1530	37	43011	6392	534848	0	main
-c2cd2518-c8d6-4a34-809f-4c9affa0a778	2026-04-29T08:52:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	123	6	23433	3108	164352	0	main
-028e13fc-cd31-482d-89fd-8f1344034cf9	2026-04-29T08:58:48+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	367	33	47005	10184	1541568	0	main
-5ec7848a-e326-42c4-be14-fbc2d20f3468	2026-04-29T09:08:21+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	261	12	36201	5773	430400	0	main
-634586bb-2df7-4aad-93e3-70c9117fff1c	2026-04-29T00:59:03.782Z	xueqiu-crawler	glm-5.1	284	25	26940	6755	391296	0	main
-db723c57-f285-4645-8276-3b3594c17664	2026-04-29T09:17:44+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	553	49	45338	14772	2679936	0	main
-83beb017-0977-40af-bf7e-907e99446206	2026-04-29T09:21:30+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	210	9	34785	4054	309696	0	main
-fd8f2a85-b781-456d-97d5-da5b771c053e	2026-04-29T09:32:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	623	30	44995	16580	1735040	0	main
-7c2c82d1-b131-434a-8edd-0806fe0175a4	2026-04-29T09:35:05+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	163	7	11377	3393	213632	0	main
-85f05e87-ba08-4793-9f99-d0b5f023d81a	2026-04-29T09:44:10+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	534	39	32152	11499	1790464	0	main
-bcfec1b6-445d-48bf-a560-192778b06a00	2026-04-29T11:23:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	3852	55	68140	6877	2302464	0	main
-159aa5f5-78c6-435a-a4d4-db4ed8c3b431	2026-04-29T11:41:35+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	916	37	129287	15859	2609664	0	main
-42f060f5-f3ff-4b3c-854e-d454c66cc713	2026-04-29T12:27:51+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2692	11	85666	8343	488000	0	main
-57d45f19-82ae-4426-81d5-73a8dde37946	2026-04-29T12:31:53+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	203	9	31118	3291	282688	0	main
-3eda8759-5566-41a7-8cc2-77b3d3c63517	2026-04-29T12:40:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	514	34	57726	6697	1592128	0	main
-633407ed-8342-4edc-b1e7-e76872526ee0	2026-04-29T12:45:30+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	268	14	33476	7732	473408	0	main
-0d5033a4-f8c0-4dbd-a9f1-c50f33a3f0e9	2026-04-29T12:48:50+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	189	13	26565	4536	433024	0	main
-a8f9e0ed-78b5-4fff-847e-e01eb2d72238	2026-04-29T13:08:27+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	254	7	19720	9184	238016	0	main
-139de450-f890-496b-9416-e8627f23c0d6	2026-04-29T04:54:42.867Z	xueqiu-crawler	glm-5.1	68	9	5819	607	81088	0	main
-a2a5a3d8-66b4-4aca-a6d2-d3ca262014b1	2026-04-29T04:49:07.623Z	xueqiu-crawler	glm-5.1	289	23	24878	8688	256896	0	main
-d00a969c-db4b-4f8b-a55f-00267db7d486	2026-04-29T04:59:08.464Z	xueqiu-crawler	glm-5.1	288	16	29583	8621	134848	0	main
-51c255a2-ddd7-4937-b6ed-fa64065a11af	2026-04-29T13:16:21+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	465	34	33907	9252	1622912	0	main
-5dae6888-1caa-4748-b2bf-c99c8e7a73a8	2026-04-29T13:21:22+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	263	8	27992	5186	250624	0	main
-7ae6cbea-bac1-4e2a-b7c1-77a6a7e4c6d8	2026-04-29T13:29:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	494	36	47729	10910	1647936	0	main
-f958d49e-f408-4328-89cb-43a2c91aaa35	2026-04-29T14:33:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2020	34	94776	4163	1669824	0	main
-886f6464-f2ca-436e-b3ab-2f0d20a95c3f	2026-04-29T15:05:05+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	306	10	25647	2881	276672	0	main
-bb828100-b81d-4300-b3c7-e1bb4aa4565d	2026-04-29T16:07:14+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2898	73	79058	19191	4989504	0	main
-dcd268af-5df9-48a3-b80c-75096feac5a8	2026-04-29T18:04:58+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	6868	254	208663	14118	19897600	0	main
-86b5c1ff-5286-412b-bd4e-9c5b9f183381	2026-04-29T08:58:40.747Z	inherit	glm-5.1	233	5	27525	501	106880	0	master
-e0b148f0-a66d-4afa-a174-c543fc1b54d8	2026-04-29T18:18:54+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	551	8	48067	4870	327040	0	main
-fca21e0c-0c3c-4a73-bb01-2be56d13edc2	2026-04-29T18:22:04+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	167	10	28193	3008	328000	0	main
-cba054c4-4cd5-4dc0-8e8a-75bc1e885221	2026-04-29T18:27:40+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	323	23	48223	4924	910080	0	main
-4c500297-0265-4da0-846e-8ddd3a6a04d5	2026-04-29T18:31:14+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	199	12	31861	3583	403904	0	main
-e3f9e5a4-0c16-4e7c-bfc0-a873a8e63d3f	2026-04-29T18:33:26+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	113	8	37433	2965	233216	0	main
-140e635b-3a2e-4ad1-902f-99c46376a6b8	2026-04-29T18:43:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	277	8	40321	6294	326208	0	main
-ff9a839c-26a5-4d8d-92e4-71d4e9de231e	2026-04-29T10:33:38.614Z	xueqiu-crawler	glm-5.1	286	29	55981	8454	437120	0	main
-1c46f74f-b039-44aa-ba55-7d32d9bc17f9	2026-04-29T18:55:55+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	748	42	55005	14604	2675840	0	main
-d337229a-0530-4a22-a423-7cfaded20458	2026-04-29T19:14:31+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	194	11	15088	4788	375808	0	main
-11ccd380-538d-4531-adee-e025f2c9ca06	2026-04-29T10:56:08.506Z	xueqiu-crawler	glm-5.1	255	19	12948	4292	253824	0	main
-68a2b4f8-39c5-467d-8cb9-9ab1773098f0	2026-04-29T11:01:13.702Z	xueqiu-crawler	glm-5.1	263	24	19599	8531	325184	0	main
-c421ce50-f8e7-49ef-88c6-6348e8df0dbe	2026-04-29T11:06:17.104Z	xueqiu-crawler	glm-5.1	243	31	37148	5759	468992	0	main
-054d96e0-d702-4c99-806b-6ec6088a31a0	2026-04-29T19:23:03+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	500	30	28987	11803	1348992	0	main
-7ed36316-6379-41f7-8669-494f2d2cf1f7	2026-04-29T19:32:06+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	229	12	36971	5887	420864	0	main
-8089639f-33d0-428a-b504-91961705c3c7	2026-04-29T11:23:19.084Z	xueqiu-crawler	glm-5.1	238	13	33626	5491	138304	0	main
-dcd3461e-98a2-4e6a-9014-630f9e4106bb	2026-04-29T19:33:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	51	6	8780	1135	186880	0	main
-7cf57fa7-0aa9-4a7a-a1ea-c2d5abfc3295	2026-04-29T11:38:27.016Z	xueqiu-crawler	glm-5.1	214	23	18943	5365	351488	0	main
-eb10b9fb-7954-46c2-88b3-1156ede64679	2026-04-29T11:33:22.190Z	xueqiu-crawler	glm-5.1	144	27	35519	1915	475392	0	main
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+bbe25957-67a5-4b97-a23b-16235105321f	2026-04-29T00:09:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	793	26	46280	18648	1513472	0	main	0	claude
+be3ff9aa-4144-4485-9a9a-9dadc19ceb9a	2026-04-29T00:44:24+08:00	-home-ant-code-java-java-server-inherit	glm-5.1	22004	48	340349	24647	3628736	0	feat/NFQX-11896	0	claude
+58143295-ac57-41f4-9180-0a2e7efd30f7	2026-04-29T00:52:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	528	39	68105	13955	2147904	0	main	0	claude
+72af62be-ee37-4eb3-b7a2-627970d3bcaf	2026-04-29T01:01:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	150	7	24240	2573	198016	0	main	0	claude
+d31318a2-f83a-47bb-93a4-9622459fb753	2026-04-29T01:05:25+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	225	23	32580	5697	1118336	0	main	0	claude
+5b122560-929b-4324-a4a3-8aac908e1087	2026-04-29T01:08:26+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	172	8	25890	4386	242112	0	main	0	claude
+d1106ee1-244f-49df-8939-5e012dd9f110	2026-04-29T01:16:16+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	460	44	42818	10139	1918720	0	main	0	claude
+5ec2e22a-85b5-4991-8758-79b8299c1b0c	2026-04-29T01:19:55+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	207	10	18077	5679	342656	0	main	0	claude
+d594cefb-c07d-4780-8fd3-5a772cfe37f9	2026-04-29T01:22:40+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	157	12	14636	3932	426304	0	main	0	claude
+281b6451-9d05-4a0f-960d-88d40c097e24	2026-04-29T07:47:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	590	20	25876	6465	602752	0	main	0	claude
+f94dbcc5-a7c8-4369-9ff0-49f092375ea8	2026-04-29T08:16:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	516	26	60516	10842	1546432	0	main	0	claude
+01b146f7-f345-41cc-a242-5d177a7844e1	2026-04-29T08:46:46+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	32	6	17896	452	149952	0	main	0	claude
+ee9546b6-97ba-4de9-adc2-7166eb5341ee	2026-04-29T00:21:34.961Z	xueqiu-crawler	glm-5.1	1530	37	43011	6392	534848	0	main	0	claude
+c2cd2518-c8d6-4a34-809f-4c9affa0a778	2026-04-29T08:52:28+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	123	6	23433	3108	164352	0	main	0	claude
+028e13fc-cd31-482d-89fd-8f1344034cf9	2026-04-29T08:58:48+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	367	33	47005	10184	1541568	0	main	0	claude
+5ec7848a-e326-42c4-be14-fbc2d20f3468	2026-04-29T09:08:21+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	261	12	36201	5773	430400	0	main	0	claude
+634586bb-2df7-4aad-93e3-70c9117fff1c	2026-04-29T00:59:03.782Z	xueqiu-crawler	glm-5.1	284	25	26940	6755	391296	0	main	0	claude
+db723c57-f285-4645-8276-3b3594c17664	2026-04-29T09:17:44+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	553	49	45338	14772	2679936	0	main	0	claude
+83beb017-0977-40af-bf7e-907e99446206	2026-04-29T09:21:30+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	210	9	34785	4054	309696	0	main	0	claude
+fd8f2a85-b781-456d-97d5-da5b771c053e	2026-04-29T09:32:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	623	30	44995	16580	1735040	0	main	0	claude
+7c2c82d1-b131-434a-8edd-0806fe0175a4	2026-04-29T09:35:05+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	163	7	11377	3393	213632	0	main	0	claude
+85f05e87-ba08-4793-9f99-d0b5f023d81a	2026-04-29T09:44:10+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	534	39	32152	11499	1790464	0	main	0	claude
+bcfec1b6-445d-48bf-a560-192778b06a00	2026-04-29T11:23:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	3852	55	68140	6877	2302464	0	main	0	claude
+159aa5f5-78c6-435a-a4d4-db4ed8c3b431	2026-04-29T11:41:35+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	916	37	129287	15859	2609664	0	main	0	claude
+42f060f5-f3ff-4b3c-854e-d454c66cc713	2026-04-29T12:27:51+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2692	11	85666	8343	488000	0	main	0	claude
+57d45f19-82ae-4426-81d5-73a8dde37946	2026-04-29T12:31:53+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	203	9	31118	3291	282688	0	main	0	claude
+3eda8759-5566-41a7-8cc2-77b3d3c63517	2026-04-29T12:40:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	514	34	57726	6697	1592128	0	main	0	claude
+633407ed-8342-4edc-b1e7-e76872526ee0	2026-04-29T12:45:30+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	268	14	33476	7732	473408	0	main	0	claude
+0d5033a4-f8c0-4dbd-a9f1-c50f33a3f0e9	2026-04-29T12:48:50+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	189	13	26565	4536	433024	0	main	0	claude
+a8f9e0ed-78b5-4fff-847e-e01eb2d72238	2026-04-29T13:08:27+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	254	7	19720	9184	238016	0	main	0	claude
+139de450-f890-496b-9416-e8627f23c0d6	2026-04-29T04:54:42.867Z	xueqiu-crawler	glm-5.1	68	9	5819	607	81088	0	main	0	claude
+a2a5a3d8-66b4-4aca-a6d2-d3ca262014b1	2026-04-29T04:49:07.623Z	xueqiu-crawler	glm-5.1	289	23	24878	8688	256896	0	main	0	claude
+d00a969c-db4b-4f8b-a55f-00267db7d486	2026-04-29T04:59:08.464Z	xueqiu-crawler	glm-5.1	288	16	29583	8621	134848	0	main	0	claude
+51c255a2-ddd7-4937-b6ed-fa64065a11af	2026-04-29T13:16:21+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	465	34	33907	9252	1622912	0	main	0	claude
+5dae6888-1caa-4748-b2bf-c99c8e7a73a8	2026-04-29T13:21:22+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	263	8	27992	5186	250624	0	main	0	claude
+7ae6cbea-bac1-4e2a-b7c1-77a6a7e4c6d8	2026-04-29T13:29:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	494	36	47729	10910	1647936	0	main	0	claude
+f958d49e-f408-4328-89cb-43a2c91aaa35	2026-04-29T14:33:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2020	34	94776	4163	1669824	0	main	0	claude
+886f6464-f2ca-436e-b3ab-2f0d20a95c3f	2026-04-29T15:05:05+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	306	10	25647	2881	276672	0	main	0	claude
+bb828100-b81d-4300-b3c7-e1bb4aa4565d	2026-04-29T16:07:14+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2898	73	79058	19191	4989504	0	main	0	claude
+dcd268af-5df9-48a3-b80c-75096feac5a8	2026-04-29T18:04:58+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	6868	254	208663	14118	19897600	0	main	0	claude
+86b5c1ff-5286-412b-bd4e-9c5b9f183381	2026-04-29T08:58:40.747Z	inherit	glm-5.1	233	5	27525	501	106880	0	master	0	claude
+e0b148f0-a66d-4afa-a174-c543fc1b54d8	2026-04-29T18:18:54+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	551	8	48067	4870	327040	0	main	0	claude
+fca21e0c-0c3c-4a73-bb01-2be56d13edc2	2026-04-29T18:22:04+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	167	10	28193	3008	328000	0	main	0	claude
+cba054c4-4cd5-4dc0-8e8a-75bc1e885221	2026-04-29T18:27:40+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	323	23	48223	4924	910080	0	main	0	claude
+4c500297-0265-4da0-846e-8ddd3a6a04d5	2026-04-29T18:31:14+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	199	12	31861	3583	403904	0	main	0	claude
+e3f9e5a4-0c16-4e7c-bfc0-a873a8e63d3f	2026-04-29T18:33:26+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	113	8	37433	2965	233216	0	main	0	claude
+140e635b-3a2e-4ad1-902f-99c46376a6b8	2026-04-29T18:43:15+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	277	8	40321	6294	326208	0	main	0	claude
+ff9a839c-26a5-4d8d-92e4-71d4e9de231e	2026-04-29T10:33:38.614Z	xueqiu-crawler	glm-5.1	286	29	55981	8454	437120	0	main	0	claude
+1c46f74f-b039-44aa-ba55-7d32d9bc17f9	2026-04-29T18:55:55+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	748	42	55005	14604	2675840	0	main	0	claude
+d337229a-0530-4a22-a423-7cfaded20458	2026-04-29T19:14:31+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	194	11	15088	4788	375808	0	main	0	claude
+11ccd380-538d-4531-adee-e025f2c9ca06	2026-04-29T10:56:08.506Z	xueqiu-crawler	glm-5.1	255	19	12948	4292	253824	0	main	0	claude
+68a2b4f8-39c5-467d-8cb9-9ab1773098f0	2026-04-29T11:01:13.702Z	xueqiu-crawler	glm-5.1	263	24	19599	8531	325184	0	main	0	claude
+c421ce50-f8e7-49ef-88c6-6348e8df0dbe	2026-04-29T11:06:17.104Z	xueqiu-crawler	glm-5.1	243	31	37148	5759	468992	0	main	0	claude
+054d96e0-d702-4c99-806b-6ec6088a31a0	2026-04-29T19:23:03+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	500	30	28987	11803	1348992	0	main	0	claude
+7ed36316-6379-41f7-8669-494f2d2cf1f7	2026-04-29T19:32:06+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	229	12	36971	5887	420864	0	main	0	claude
+8089639f-33d0-428a-b504-91961705c3c7	2026-04-29T11:23:19.084Z	xueqiu-crawler	glm-5.1	238	13	33626	5491	138304	0	main	0	claude
+dcd3461e-98a2-4e6a-9014-630f9e4106bb	2026-04-29T19:33:08+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	51	6	8780	1135	186880	0	main	0	claude
+7cf57fa7-0aa9-4a7a-a1ea-c2d5abfc3295	2026-04-29T11:38:27.016Z	xueqiu-crawler	glm-5.1	214	23	18943	5365	351488	0	main	0	claude
+eb10b9fb-7954-46c2-88b3-1156ede64679	2026-04-29T11:33:22.190Z	xueqiu-crawler	glm-5.1	144	27	35519	1915	475392	0	main	0	claude

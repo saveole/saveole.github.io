@@ -88,7 +88,7 @@
         data.days.forEach(function(d) {
             if (d.total_tokens) {
                 var t = d.total_tokens;
-                tokenMap[d.date] = t.input + t.output + t.cache_read + t.cache_creation;
+                tokenMap[d.date] = t.input + t.output + t.cache_read + t.cache_creation + (t.reasoning || 0);
             }
             if (d.running_km) runningMap[d.date] = d.running_km;
         });

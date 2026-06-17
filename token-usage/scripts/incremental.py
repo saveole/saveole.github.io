@@ -25,7 +25,7 @@ DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TSV_HEADER = (
     "session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count"
     "\ttokens_input\ttokens_output\ttokens_cache_read"
-    "\ttokens_cache_creation\tgit_branch"
+    "\ttokens_cache_creation\tgit_branch\ttokens_reasoning\tsource"
 )
 
 
@@ -207,7 +207,7 @@ def format_row(record):
         f"\t{record['model']}\t{record['duration_seconds']}\t{record['message_count']}"
         f"\t{record['tokens']['input']}\t{record['tokens']['output']}"
         f"\t{record['tokens']['cache_read']}\t{record['tokens']['cache_creation']}"
-        f"\t{record['git_branch']}"
+        f"\t{record['git_branch']}\t0\tclaude"
     )
 
 

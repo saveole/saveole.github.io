@@ -26,7 +26,7 @@ def fmt(n):
 def main():
     days_data = defaultdict(lambda: {
         "sessions": [],
-        "total_tokens": {"input": 0, "output": 0, "cache_read": 0, "cache_creation": 0},
+        "total_tokens": {"input": 0, "output": 0, "cache_read": 0, "cache_creation": 0, "reasoning": 0},
     })
 
     data_files = sorted(glob.glob(os.path.join(DATA_DIR, "*.data")))
@@ -48,6 +48,7 @@ def main():
                             "output": int(row.get("tokens_output", 0)),
                             "cache_read": int(row.get("tokens_cache_read", 0)),
                             "cache_creation": int(row.get("tokens_cache_creation", 0)),
+                            "reasoning": int(row.get("tokens_reasoning", 0)),
                         }
                     except (ValueError, TypeError):
                         continue
@@ -65,7 +66,7 @@ def main():
                         "duration_seconds": int(row.get("duration_seconds", 0) or 0),
                         "message_count": int(row.get("message_count", 0) or 0),
                     })
-                    for key in ("input", "output", "cache_read", "cache_creation"):
+                    for key in ("input", "output", "cache_read", "cache_creation", "reasoning"):
                         day["total_tokens"][key] += tokens.get(key, 0)
         except (OSError, IOError):
             continue
@@ -81,16 +82,17 @@ def main():
         })
 
     total_sessions = sum(d["session_count"] for d in days_list)
-    total_tokens = {"input": 0, "output": 0, "cache_read": 0, "cache_creation": 0}
+    total_tokens = {"input": 0, "output": 0, "cache_read": 0, "cache_creation": 0, "reasoning": 0}
     for d in days_list:
         for k in total_tokens:
             total_tokens[k] += d["total_tokens"][k]
 
     print(f"Aggregated {len(days_list)} days, {total_sessions} sessions")
-    print(f"  Input:  {fmt(total_tokens['input'])}")
-    print(f"  Output: {fmt(total_tokens['output'])}")
-    print(f"  Cache:  {fmt(total_tokens['cache_read'])} read / {fmt(total_tokens['cache_creation'])} creation")
-    print(f"  Total:  {fmt(sum(total_tokens.values()))}")
+    print(f"  Input:     {fmt(total_tokens['input'])}")
+    print(f"  Output:    {fmt(total_tokens['output'])}")
+    print(f"  Reasoning: {fmt(total_tokens['reasoning'])}")
+    print(f"  Cache:     {fmt(total_tokens['cache_read'])} read / {fmt(total_tokens['cache_creation'])} creation")
+    print(f"  Total:     {fmt(sum(total_tokens.values()))}")
 
 
 if __name__ == "__main__":

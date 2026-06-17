@@ -49,7 +49,7 @@ TSV_HEADER = "\t".join([
     "session_id", "timestamp", "project", "model",
     "duration_seconds", "message_count",
     "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch",
+    "git_branch", "tokens_reasoning", "source",
 ])
 
 
@@ -262,6 +262,8 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
         str(data["input"]), str(data["output"]),
         str(data["cache_read"]), str(data["cache_creation"]),
         data["git_branch"],
+        "0",
+        "claude",
     ])
 
     # ── Deduplicate / update by session_id ──
@@ -270,6 +272,15 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
 
     if data_file.is_file():
         lines = data_file.read_text().splitlines(keepends=True)
+        # Upgrade old 11-column header to 13-column if needed
+        if lines and lines[0].count("\t") == 10:
+            lines[0] = TSV_HEADER + "\n"
+            for idx in range(1, len(lines)):
+                if lines[idx].strip():
+                    cols = lines[idx].rstrip("\n").split("\t")
+                    while len(cols) < 13:
+                        cols.append("0" if len(cols) < 12 else "claude")
+                    lines[idx] = "\t".join(cols) + "\n"
         replaced = False
         new_lines: list[str] = []
         for line in lines:

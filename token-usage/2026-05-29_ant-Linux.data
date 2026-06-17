@@ -1,14 +1,14 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-b2308bbc-7aff-443d-884a-b0ba8ed67fb9	2026-05-29T12:52:00+08:00	-home-ant-blog-saveole-github-io	glm-5.1	550	9	50581	1764	375808	0	main
-43b47882-aeb4-41a8-9ca3-8b9fd94ee299	2026-05-29T02:08:57.393Z	blog	glm-5.1	728	98	180274	4903	2763968	0	main
-cfa9d899-8827-4cc6-9b46-7933efaf710f	2026-05-29T01:52:11.313Z	blog	glm-5.1	294	15	47611	1140	367552	0	main
-da550d08-1f76-43d5-81b0-5524df88b8a5	2026-05-29T03:32:50.967Z	blog	glm-5.1	4017	100	184356	19943	4354944	0	main
-c4837a67-c722-4a18-9bc2-4a28f72ee288	2026-05-29T03:32:18.534Z	scrmgo	glm-5.1	0	1	25488	51	19200	0	9.4
-04562496-6829-4497-aa50-39c2adc0e77e	2026-05-29T12:57:09+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-0da4e163-workdir	glm-5.1	389	34	68486	10721	1757248	0	HEAD
-9c20dcdb-591a-4633-817f-e9a40377f3e8	2026-05-29T04:40:46.588Z	unknown	glm-5.1	220	46	48473	4689	323968	0	HEAD
-155d4372-ef3f-49a5-8551-1b2464e32ade	2026-05-29T00:01:30.926Z	unknown	glm-5.1	50	4	27326	263	31808	0	HEAD
-8297e991-fde2-4ef2-962a-7248053bf693	2026-05-29T04:34:51.353Z	unknown	glm-5.1	81	3	27804	361	25088	0	HEAD
-e26fa5e2-2d0b-48fd-a1c3-adef4c41264a	2026-05-29T03:18:41.680Z	2026	glm-5.1	192	25	43828	2000	445440	0	main
-ce7c096e-4990-4dfd-bc77-eb887d49abd7	2026-05-29T00:53:23.085Z	unknown	glm-5.1	1	2	27301	149	17280	0	HEAD
-ddd73b96-9875-4b2c-a73f-1d7d2c7d8e4f	2026-05-29T13:02:34+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-0da4e163-workdir	glm-5.1	160	7	32451	1589	177984	0	HEAD
-8035f030-a5b5-430f-b01a-c0d7ac9e31f4	2026-05-29T13:06:02+08:00	-home-ant-blog-saveole-github-io	glm-5.1	785	8	85768	6004	335488	0	main
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+b2308bbc-7aff-443d-884a-b0ba8ed67fb9	2026-05-29T12:52:00+08:00	-home-ant-blog-saveole-github-io	glm-5.1	550	9	50581	1764	375808	0	main	0	claude
+43b47882-aeb4-41a8-9ca3-8b9fd94ee299	2026-05-29T02:08:57.393Z	blog	glm-5.1	728	98	180274	4903	2763968	0	main	0	claude
+cfa9d899-8827-4cc6-9b46-7933efaf710f	2026-05-29T01:52:11.313Z	blog	glm-5.1	294	15	47611	1140	367552	0	main	0	claude
+da550d08-1f76-43d5-81b0-5524df88b8a5	2026-05-29T03:32:50.967Z	blog	glm-5.1	4017	100	184356	19943	4354944	0	main	0	claude
+c4837a67-c722-4a18-9bc2-4a28f72ee288	2026-05-29T03:32:18.534Z	scrmgo	glm-5.1	0	1	25488	51	19200	0	9.4	0	claude
+04562496-6829-4497-aa50-39c2adc0e77e	2026-05-29T12:57:09+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-0da4e163-workdir	glm-5.1	389	34	68486	10721	1757248	0	HEAD	0	claude
+9c20dcdb-591a-4633-817f-e9a40377f3e8	2026-05-29T04:40:46.588Z	unknown	glm-5.1	220	46	48473	4689	323968	0	HEAD	0	claude
+155d4372-ef3f-49a5-8551-1b2464e32ade	2026-05-29T00:01:30.926Z	unknown	glm-5.1	50	4	27326	263	31808	0	HEAD	0	claude
+8297e991-fde2-4ef2-962a-7248053bf693	2026-05-29T04:34:51.353Z	unknown	glm-5.1	81	3	27804	361	25088	0	HEAD	0	claude
+e26fa5e2-2d0b-48fd-a1c3-adef4c41264a	2026-05-29T03:18:41.680Z	2026	glm-5.1	192	25	43828	2000	445440	0	main	0	claude
+ce7c096e-4990-4dfd-bc77-eb887d49abd7	2026-05-29T00:53:23.085Z	unknown	glm-5.1	1	2	27301	149	17280	0	HEAD	0	claude
+ddd73b96-9875-4b2c-a73f-1d7d2c7d8e4f	2026-05-29T13:02:34+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-0da4e163-workdir	glm-5.1	160	7	32451	1589	177984	0	HEAD	0	claude
+8035f030-a5b5-430f-b01a-c0d7ac9e31f4	2026-05-29T13:06:02+08:00	-home-ant-blog-saveole-github-io	glm-5.1	785	8	85768	6004	335488	0	main	0	claude

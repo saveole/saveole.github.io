@@ -1,2 +1,2 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-4652d731-aed6-453c-bf9f-e3217448e476	2026-05-31T08:04:05+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1026e2c4-workdir	glm-5.1	53	2	27139	326	26048	0	HEAD
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+4652d731-aed6-453c-bf9f-e3217448e476	2026-05-31T08:04:05+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1026e2c4-workdir	glm-5.1	53	2	27139	326	26048	0	HEAD	0	claude

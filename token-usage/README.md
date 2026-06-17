@@ -1,8 +1,8 @@
 # token-usage
 
-> Claude Code & Hermes Agent 会话 token 用量追踪
+> Claude Code & OpenCode 会话 token 用量追踪
 
-自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code** 和 **Hermes Agent** 两个来源，写入统一的 TSV 文件。
+自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code** 和 **OpenCode** 两个来源，写入统一的 TSV 文件。
 
 ## 工作原理
 
@@ -17,12 +17,12 @@ Claude Code 退出（SessionEnd Hook）
     ↓ 扫描全部 JSONL，补录缺失的历史 session（仅 append，不碰 git）
     ↓ 补录的数据在下次 hook 触发时随 git add/commit/push 一起提交
 ────────────────────────────
-    ↓ notify.cjs 触发（tokentracker 通知脚本）
-    ↓ 写入信号文件，节流触发远程同步（最多 20 秒一次）
-────────────────────────────
-Hermes Agent 会话结束
-    ↓ on_session_finalize Plugin hook 触发
-    ↓ 从 state.db 读取 session token 统计
+OpenCode session.updated（Plugin）
+    ↓ tokentracker.js 触发
+    ↓ 调用 log-usage-opencode.py
+    ↓ 从 ~/.local/share/opencode/opencode.db (SQLite) 读取 session 表
+    ↓ 已预聚合 token，直接映射到 TSV 格式
+    ↓ 按 session_id 去重
     ↓ 追加到同一天的 YYYY-MM-DD_{hostname}-{os}.data（同一 TSV 文件）
     ↓ 自动 git commit + push
 ────────────────────────────
@@ -124,6 +124,87 @@ cat ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d)_*.data
 
 如果 `.data` 文件存在且包含 TSV header + 数据行，说明配置成功。
 
+## 安装 OpenCode 插件
+
+### 前提条件
+
+- [OpenCode](https://opencode.ai) 已安装
+- 上述 Claude Code 安装步骤已完成（共用同一个仓库）
+- OpenCode 配置文件目录 `~/.config/opencode/plugin/` 已存在（首次安装 OpenCode 后自动创建）
+
+### 第 1 步：检查脚本文件
+
+确认 `log-usage-opencode.py` 在仓库中（克隆时已包含）：
+
+```bash
+ls ~/blog/saveole.github.io/token-usage/scripts/log-usage-opencode.py
+```
+
+### 第 2 步：注册 OpenCode 插件
+
+OpenCode 自动加载 `~/.config/opencode/plugin/` 目录下的 `.js` 文件作为插件。插件文件 `tokentracker.js` 已经存在，需要确认其中路径配置正确。
+
+打开 `~/.config/opencode/plugin/tokentracker.js`，确认脚本路径指向正确位置：
+
+```js
+const logScript = "/home/ant/blog/saveole.github.io/token-usage/scripts/log-usage-opencode.py";
+```
+
+如果你的仓库在其他位置，修改此路径即可。
+
+### 第 3 步：验证插件已注册
+
+```bash
+opencode debug config | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('plugin',[]))"
+```
+
+应看到输出中包含 `file:///home/ant/.config/opencode/plugin/tokentracker.js`，表示插件已加载。
+
+### 触发器机制
+
+```
+opencode TUI 会话更新
+    ↓
+session.updated event 触发
+    ↓
+tokentracker.js 插件（30s 节流防抖）
+    ↓
+python3 log-usage-opencode.py --since 30
+    ↓
+查询 ~/.local/share/opencode/opencode.db (SQLite)
+    ↓ session 表已预聚合 token，直接映射
+写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
+    ↓
+git add → commit → pull --rebase → push
+```
+
+- **触发时机**：每次 opencode 会话中 token 数据更新时（如 assistant 回复后），opencode 内部触发 `session.updated` 事件
+- **节流**：插件通过 `fired` 标志实现 30 秒节流，避免短时间内重复触发
+- **去重**：`log-usage-opencode.py` 会按 `session_id` + token 数量判断是否已有记录，相同数据不重复写入
+- **SQLite 优势**：OpenCode 的 `session` 表已预先聚合 token 统计（`tokens_input`, `tokens_output`, `tokens_reasoning`, `tokens_cache_read`, `tokens_cache_write`），无需像 Claude Code 那样逐行解析 JSONL
+
+### 第 4 步：验证
+
+开始一次 OpenCode 会话，和 AI 对话几轮后，检查：
+
+```bash
+# 查看日志
+tail -20 ~/.claude/hooks/tracker.log | grep opencode
+
+# 查看当天记录（应能看到 source=opencode 的行）
+grep "opencode" ~/blog/saveole.github.io/token-usage/$(date +%Y-%m-%d)_*.data
+```
+
+### 手动补录历史数据
+
+如果需要一次性导入所有已有 OpenCode 会话数据（首次安装后），直接运行脚本即可（不带 `--since` 参数会扫描全部 session）：
+
+```bash
+python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-opencode.py
+```
+
+脚本去重逻辑会跳过已记录的 session，只写入新增和变动的数据。
+
 ## 安装 Hermes Agent 插件
 
 ### 前提条件
@@ -165,6 +246,7 @@ token-usage/
 │       └── README.md         # Hermes 插件文档
 ├── scripts/
 │   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
+│   ├── log-usage-opencode.py # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
@@ -175,35 +257,40 @@ token-usage/
 
 ## 数据格式
 
-每条 TSV 记录（11 列，tab 分隔）：
+每条 TSV 记录（13 列，tab 分隔）：
 
 ```
-session_id   timestamp   project   model   duration_seconds   message_count   tokens_input   tokens_output   tokens_cache_read   tokens_cache_creation   git_branch
+session_id   timestamp   project   model   duration_seconds   message_count   tokens_input   tokens_output   tokens_cache_read   tokens_cache_creation   git_branch   tokens_reasoning   source
 ```
 
 **示例数据行：**
 
 ```
-426a4a26-94ba-401f-be63-96aa17803446	2026-04-15T09:48:23Z	skills	glm-5.1	1844	17	112264	19600	2632000	0	main
+426a4a26-94ba-401f-be63-96aa17803446	2026-04-15T09:48:23Z	skills	glm-5.1	1844	17	112264	19600	2632000	0	main	0	claude
+ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	540	18	34412	1746	241280	0	main	220	opencode
 ```
 
 | 字段 | 说明 |
 |------|------|
 | `session_id` | 会话唯一标识 |
 | `timestamp` | 记录时间（CST +08:00） |
-| `project` | 从 `~/.claude/projects/` 路径提取的项目目录名 |
-| `model` | 使用的模型（按使用频率取最多的；fast 模式追加 `-fast`） |
-| `duration_seconds` | 首条 assistant 消息到末条的时间跨度 |
-| `message_count` | 去重后的 assistant 消息数 |
+| `project` | 项目名 |
+| `model` | 使用的模型 |
+| `duration_seconds` | 会话时间跨度 |
+| `message_count` | 消息数 |
 | `tokens_input` | 输入 token 数 |
 | `tokens_output` | 输出 token 数 |
 | `tokens_cache_read` | 缓存读取 token 数 |
 | `tokens_cache_creation` | 缓存写入 token 数 |
 | `git_branch` | 会话时的 git 分支 |
+| `tokens_reasoning` | 推理（thinking）token 数（OpenCode 特有） |
+| `source` | 数据来源：claude / opencode |
 
 完整规范见 [SCHEMA.md](./SCHEMA.md)。
 
 ## 数据保留说明
+
+### Claude Code
 
 本工具的数据来源依赖于 Claude Code 本地存储的会话 JSONL 文件（`~/.claude/projects/<project>/<session>.jsonl`）。Claude Code 默认保留 **30 天**的本地数据，到期后自动清理。
 
@@ -213,18 +300,19 @@ session_id   timestamp   project   model   duration_seconds   message_count   to
 | 工具结果缓存 | 30 天 | 随 JSONL 一起清理 |
 
 可通过 `~/.claude/settings.json` 中的 `cleanupPeriodDays` 调整保留期限：
-
 ```json
-{
-  "cleanupPeriodDays": 90
-}
+{ "cleanupPeriodDays": 90 }
 ```
 
-**对本工具的影响：**
+### OpenCode
 
-- **Hook 实时记录**：不受影响。hook 在会话结束时立即从 `~/.claude/projects/` 提取数据写入 TSV，不依赖历史 JSONL。
-- **回填历史数据**：只能回填保留期内未被清理的 JSONL。如果希望保留更长的回填窗口，建议增大 `cleanupPeriodDays`。
-- **仓库的 .data 文件**：不受 Claude Code 清理机制影响，除非你手动删除，否则永久保留在 git 历史中。
+数据来源为 OpenCode 本地 SQLite 数据库（`~/.local/share/opencode/opencode.db`）。**OpenCode 不做自动清理**，`session` 和 `message` 表会持续累积。`log-usage-opencode.py` 直接查询预聚合的 token 统计，其历史数据范围与 SQLite DB 一致。
+
+对本工具的影响：
+
+- **Hook / Plugin 实时记录**：不受影响。hook/plugin 立即从本地数据提取 token 写入 TSV，不依赖历史数据。
+- **回填历史数据**：Claude Code 只能回填保留期内未被清理的 JSONL；OpenCode 可回填 SQLite 中所有历史 session。
+- **仓库的 .data 文件**：不受任何工具清理机制影响，除非你手动删除，否则永久保留在 git 历史中。
 
 ## 查看统计
 
@@ -255,6 +343,17 @@ session_id   timestamp   project   model   duration_seconds   message_count   to
 | settings.json 不生效 | 确认 JSON 格式正确：`python3 -m json.tool ~/.claude/settings.json` |
 | 同一会话记录了两条 | 正常不会出现。hook 脚本按 `session_id` 去重 |
 | 找不到 JSONL 文件 | 确认 `~/.claude/projects/` 目录存在且有 `.jsonl` 文件；或设置 `CLAUDE_CONFIG_DIR` 环境变量指定数据目录 |
+
+### OpenCode
+
+| 现象 | 检查 |
+|------|------|
+| 会话结束后没有记录 | 确认插件已注册：`opencode debug config \| python3 -c "import sys,json; print(json.load(sys.stdin).get('plugin',[]))"` |
+| 插件注册了但没有 .data 文件 | 查看 `~/.claude/hooks/tracker.log` 中 `START` / `SKIP` 开头的行，确认脚本是否被触发 |
+| .data 文件存在但没有 push | 查看日志中 `GIT:` 开头的行；检查仓库 git remote 配置 |
+| project 列显示 `unknown` | DB 中 session 未关联 project，fallback 到了目录 basename，正常 |
+| 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的 session |
+| reasoning 列为 0 | 部分模型不支持 reasoning / thinking，该列为 0 是正常的 |
 
 ### Hermes Agent
 

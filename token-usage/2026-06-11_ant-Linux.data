@@ -1,14 +1,14 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-d693e64e-221e-47fe-a404-385078b1ba8e	2026-06-11T08:03:06+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-90cafd45-workdir	glm-5.1	56	2	27833	305	26368	0	HEAD
-8763dd1c-1f01-477d-a081-1e176a03b9ed	2026-06-11T10:20:27+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	4667	32	130108	9709	2166656	0	main
-cf4ea5b9-1c32-4e3c-9c71-aa55615e68e0	2026-06-11T10:32:20+08:00	-home-ant-projects-fireport	glm-5.1	63945	24	156736	16629	1380608	0	HEAD
-2a8f36ca-d709-49da-860e-4513229192ac	2026-06-11T11:07:26+08:00	-home-ant-projects-breathe-app	glm-5.1	1073	8	42524	5053	322944	0	main
-730f3da0-581f-427a-8c6a-34798942fefd	2026-06-11T14:11:23+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	137	3	44957	1396	93056	0	master
-023792f6-d0a5-4e6d-a7f0-66c4acfb4b7f	2026-06-11T14:31:49+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	920	23	49445	4656	1234816	0	master
-9b94b632-a438-4dcb-af75-c2ca38731de0	2026-06-11T15:34:11+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	95	2	23286	1653	61568	0	master
-249e92e7-bdf7-4c9e-943c-0ab4a7e104e8	2026-06-11T15:47:00+08:00	-home-ant-projects-ohmy-stock	glm-5.1	70	9	32459	1193	379776	0	HEAD
-fa7f80fa-110e-4b1d-a8da-a9b5026a1370	2026-06-11T16:12:09+08:00	-home-ant-projects-ohmy-stock	glm-5.1	81	4	38619	2498	212608	0	HEAD
-685ed85c-ef34-4214-93ae-f56061d74b43	2026-06-11T18:01:32+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2870	45	176618	19682	3725824	0	main
-1a7cf64b-6608-466b-b067-567bfad2a1f6	2026-06-11T18:14:25+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	242	7	25841	1097	282496	0	main
-20260611_180453_9318b223	2026-06-11T18:04:53+08:00	unknown	glm-5.1	0	3	14102	45	2304	0	unknown
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+d693e64e-221e-47fe-a404-385078b1ba8e	2026-06-11T08:03:06+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-90cafd45-workdir	glm-5.1	56	2	27833	305	26368	0	HEAD	0	claude
+8763dd1c-1f01-477d-a081-1e176a03b9ed	2026-06-11T10:20:27+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	4667	32	130108	9709	2166656	0	main	0	claude
+cf4ea5b9-1c32-4e3c-9c71-aa55615e68e0	2026-06-11T10:32:20+08:00	-home-ant-projects-fireport	glm-5.1	63945	24	156736	16629	1380608	0	HEAD	0	claude
+2a8f36ca-d709-49da-860e-4513229192ac	2026-06-11T11:07:26+08:00	-home-ant-projects-breathe-app	glm-5.1	1073	8	42524	5053	322944	0	main	0	claude
+730f3da0-581f-427a-8c6a-34798942fefd	2026-06-11T14:11:23+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	137	3	44957	1396	93056	0	master	0	claude
+023792f6-d0a5-4e6d-a7f0-66c4acfb4b7f	2026-06-11T14:31:49+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	920	23	49445	4656	1234816	0	master	0	claude
+9b94b632-a438-4dcb-af75-c2ca38731de0	2026-06-11T15:34:11+08:00	-home-ant-code-golang-src-scrmgo	glm-5.1	95	2	23286	1653	61568	0	master	0	claude
+249e92e7-bdf7-4c9e-943c-0ab4a7e104e8	2026-06-11T15:47:00+08:00	-home-ant-projects-ohmy-stock	glm-5.1	70	9	32459	1193	379776	0	HEAD	0	claude
+fa7f80fa-110e-4b1d-a8da-a9b5026a1370	2026-06-11T16:12:09+08:00	-home-ant-projects-ohmy-stock	glm-5.1	81	4	38619	2498	212608	0	HEAD	0	claude
+685ed85c-ef34-4214-93ae-f56061d74b43	2026-06-11T18:01:32+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	2870	45	176618	19682	3725824	0	main	0	claude
+1a7cf64b-6608-466b-b067-567bfad2a1f6	2026-06-11T18:14:25+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	242	7	25841	1097	282496	0	main	0	claude
+20260611_180453_9318b223	2026-06-11T18:04:53+08:00	unknown	glm-5.1	0	3	14102	45	2304	0	unknown	0	claude
 ses_14a0fe599ffeRqSMI24ZRA8gv2	2026-06-11T17:07:52+08:00	xueqiu-crawler	deepseek-v4-pro	244	18	45421	4236	400896	0	main	3683	opencode

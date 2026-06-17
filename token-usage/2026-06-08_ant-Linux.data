@@ -1,15 +1,15 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-20260608_141447_d7652f	2026-06-08T15:24:40+08:00	ssh	glm-5.1	4154	22	37749	5185	232704	0	unknown
-20260608_141540_e4cb3c	2026-06-08T14:15:40+08:00	unknown	glm-5.1	0	20	34232	2502	80192	0	unknown
-20260608_143032_498e23	2026-06-08T14:30:33+08:00	unknown	glm-5.1	0	8	18998	1405	23680	0	unknown
-20260608_144020_9027df	2026-06-08T14:40:20+08:00	unknown	glm-5.1	0	8	16996	1652	17344	0	unknown
-20260608_145705_e1a16d	2026-06-08T14:57:05+08:00	unknown	glm-5.1	0	9	12605	236	7680	0	unknown
-20260608_150710_62dd11	2026-06-08T15:07:10+08:00	unknown	glm-5.1	0	2	610	56	0	0	unknown
-20260608_162804_52356a	2026-06-08T17:06:35+08:00	saveole.github.io	glm-5.1	2234	64	121019	7355	1194944	0	main
-6cf9a9c9-6b1e-46c1-b73d-ce45ede588a1	2026-06-08T17:25:39+08:00	-home-ant-blog-saveole-github-io	glm-5.1	709	19	132706	1333	637184	0	main
-4ff03481-6965-472e-875d-0c4aff34b063	2026-06-08T17:44:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	61	6	26944	971	233088	0	main
-06d856db-94fd-442e-8b2e-d45fd8cdba3a	2026-06-08T17:47:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	1008	18	166743	12907	1304576	0	main
-7e1d9cfe-dc05-4b67-b69d-271a47fcf1d9	2026-06-08T17:45:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	26	5	30500	473	148096	0	main
-7b20eb94-11f0-42bb-a3dc-72f9a450e127	2026-06-08T21:25:14+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-dcd891f7-workdir	glm-5.1	1494515	15	76854	3491	547904	0	HEAD
-20260608_162935_af9217	2026-06-08T16:29:35+08:00	unknown	glm-5.1	0	34	35091	2131	172992	0	unknown
-20260608_163118_c062a7	2026-06-08T16:31:18+08:00	unknown	glm-5.1	0	47	23436	2733	243328	0	unknown
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+20260608_141447_d7652f	2026-06-08T15:24:40+08:00	ssh	glm-5.1	4154	22	37749	5185	232704	0	unknown	0	claude
+20260608_141540_e4cb3c	2026-06-08T14:15:40+08:00	unknown	glm-5.1	0	20	34232	2502	80192	0	unknown	0	claude
+20260608_143032_498e23	2026-06-08T14:30:33+08:00	unknown	glm-5.1	0	8	18998	1405	23680	0	unknown	0	claude
+20260608_144020_9027df	2026-06-08T14:40:20+08:00	unknown	glm-5.1	0	8	16996	1652	17344	0	unknown	0	claude
+20260608_145705_e1a16d	2026-06-08T14:57:05+08:00	unknown	glm-5.1	0	9	12605	236	7680	0	unknown	0	claude
+20260608_150710_62dd11	2026-06-08T15:07:10+08:00	unknown	glm-5.1	0	2	610	56	0	0	unknown	0	claude
+20260608_162804_52356a	2026-06-08T17:06:35+08:00	saveole.github.io	glm-5.1	2234	64	121019	7355	1194944	0	main	0	claude
+6cf9a9c9-6b1e-46c1-b73d-ce45ede588a1	2026-06-08T17:25:39+08:00	-home-ant-blog-saveole-github-io	glm-5.1	709	19	132706	1333	637184	0	main	0	claude
+4ff03481-6965-472e-875d-0c4aff34b063	2026-06-08T17:44:49+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	61	6	26944	971	233088	0	main	0	claude
+06d856db-94fd-442e-8b2e-d45fd8cdba3a	2026-06-08T17:47:47+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	1008	18	166743	12907	1304576	0	main	0	claude
+7e1d9cfe-dc05-4b67-b69d-271a47fcf1d9	2026-06-08T17:45:33+08:00	-home-ant-projects-xueqiu-crawler	glm-5.1	26	5	30500	473	148096	0	main	0	claude
+7b20eb94-11f0-42bb-a3dc-72f9a450e127	2026-06-08T21:25:14+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-dcd891f7-workdir	glm-5.1	1494515	15	76854	3491	547904	0	HEAD	0	claude
+20260608_162935_af9217	2026-06-08T16:29:35+08:00	unknown	glm-5.1	0	34	35091	2131	172992	0	unknown	0	claude
+20260608_163118_c062a7	2026-06-08T16:31:18+08:00	unknown	glm-5.1	0	47	23436	2733	243328	0	unknown	0	claude

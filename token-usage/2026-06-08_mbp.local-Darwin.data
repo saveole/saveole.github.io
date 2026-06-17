@@ -1,9 +1,9 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-ff7336ad-eb54-4c52-a20b-c1b85e2d791e	2026-06-08T17:54:28+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	90	15	54935	4311	455040	0	main
-95dc7138-21b6-470e-9798-b54f04831dd4	2026-06-08T17:59:44+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	288	46	34489	8367	1995840	0	main
-bf12fcf7-4a04-4310-a469-636e8ff4be11	2026-06-08T19:04:25+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	101	13	40639	5073	384576	0	main
-1ae5dbe8-1aa4-45b9-9850-2e900eb03a24	2026-06-08T19:06:52+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	135	22	47507	8855	767872	0	main
-7e895a21-3882-4d41-8ca2-d103b98b1b32	2026-06-08T19:08:38+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	94	20	47683	3315	611392	0	main
-ceeba116-e063-4e76-8aa9-cf0d77636085	2026-06-08T19:10:29+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	69	11	47493	3946	333632	0	main
-9cb4bf91-d08f-4f25-953b-43770722b62f	2026-06-08T19:13:19+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	149	30	54745	4854	1259840	0	main
-a4978c91-d8e3-4ad8-8f7b-c6e646ea7e30	2026-06-08T11:18:17.041Z	breathe-cli	glm-4.7	9366	423	108145	57447	16484032	0	master
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+ff7336ad-eb54-4c52-a20b-c1b85e2d791e	2026-06-08T17:54:28+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	90	15	54935	4311	455040	0	main	0	claude
+95dc7138-21b6-470e-9798-b54f04831dd4	2026-06-08T17:59:44+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	288	46	34489	8367	1995840	0	main	0	claude
+bf12fcf7-4a04-4310-a469-636e8ff4be11	2026-06-08T19:04:25+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	101	13	40639	5073	384576	0	main	0	claude
+1ae5dbe8-1aa4-45b9-9850-2e900eb03a24	2026-06-08T19:06:52+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	135	22	47507	8855	767872	0	main	0	claude
+7e895a21-3882-4d41-8ca2-d103b98b1b32	2026-06-08T19:08:38+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	94	20	47683	3315	611392	0	main	0	claude
+ceeba116-e063-4e76-8aa9-cf0d77636085	2026-06-08T19:10:29+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	69	11	47493	3946	333632	0	main	0	claude
+9cb4bf91-d08f-4f25-953b-43770722b62f	2026-06-08T19:13:19+08:00	-Users-saveole-projects-xueqiu-crawler	glm-4.7	149	30	54745	4854	1259840	0	main	0	claude
+a4978c91-d8e3-4ad8-8f7b-c6e646ea7e30	2026-06-08T11:18:17.041Z	breathe-cli	glm-4.7	9366	423	108145	57447	16484032	0	master	0	claude

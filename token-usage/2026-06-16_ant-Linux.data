@@ -1,9 +1,9 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-a237eef2-0aa2-4f06-ac52-17002ae2fba4	2026-06-16T08:01:59+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-85dfcfce-workdir	glm-5.2	35	2	29155	686	28608	0	HEAD
-ed8f61c6-0869-4272-843f-8debcb92ffc5	2026-06-16T09:15:20+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	7197	94	197054	76633	11672384	0	fix/review-analyzing-stuck
-01467664-c76d-4bee-a408-95b26ef5daca	2026-06-16T09:50:18+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	1248	2	78030	2636	23552	0	main
-ea47f9db-95c7-490e-8b05-fad0b73c6326	2026-06-16T13:59:59+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	2849	16	83203	41409	1252288	0	master
-8101b286-54a0-4738-97ca-4dad9a2de5f6	2026-06-16T06:56:12.645Z	inherit	glm-5.2	89296	370	1069338	122077	31465472	0	master
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+a237eef2-0aa2-4f06-ac52-17002ae2fba4	2026-06-16T08:01:59+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-85dfcfce-workdir	glm-5.2	35	2	29155	686	28608	0	HEAD	0	claude
+ed8f61c6-0869-4272-843f-8debcb92ffc5	2026-06-16T09:15:20+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	7197	94	197054	76633	11672384	0	fix/review-analyzing-stuck	0	claude
+01467664-c76d-4bee-a408-95b26ef5daca	2026-06-16T09:50:18+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	1248	2	78030	2636	23552	0	main	0	claude
+ea47f9db-95c7-490e-8b05-fad0b73c6326	2026-06-16T13:59:59+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	2849	16	83203	41409	1252288	0	master	0	claude
+8101b286-54a0-4738-97ca-4dad9a2de5f6	2026-06-16T06:56:12.645Z	inherit	glm-5.2	89296	370	1069338	122077	31465472	0	master	0	claude
 ses_130954dd1ffeAg4hMdtrDvUFbW	2026-06-16T15:52:16+08:00	xueqiu-crawler	deepseek-v4-pro	114	9	47345	6170	169472	0	main	1296	opencode
 ses_13095652affebIrtpzIkRhpylI	2026-06-16T15:52:10+08:00	xueqiu-crawler	deepseek-v4-pro	15201	35	68955	9644	1976832	0	main	6541	opencode
 ses_130f5cb20ffejzqCG0PI6xSvHU	2026-06-16T14:06:53+08:00	inherit	deepseek-v4-pro	41	6	16534	2963	52608	0	master	200	opencode

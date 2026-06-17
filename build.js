@@ -141,7 +141,7 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
         const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
         if (lines.length < 2) continue; // header only
         const header = lines[0].split('\t');
-        const tokens = { input: 0, output: 0, cache_read: 0, cache_creation: 0 };
+        const tokens = { input: 0, output: 0, cache_read: 0, cache_creation: 0, reasoning: 0 };
         for (let i = 1; i < lines.length; i++) {
             const cols = lines[i].split('\t');
             const get = (name) => parseInt(cols[header.indexOf(name)] || '0', 10) || 0;
@@ -149,12 +149,14 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
             tokens.output += get('tokens_output');
             tokens.cache_read += get('tokens_cache_read');
             tokens.cache_creation += get('tokens_cache_creation');
+            tokens.reasoning += get('tokens_reasoning');
         }
-        if (!dayMap[date]) dayMap[date] = { input: 0, output: 0, cache_read: 0, cache_creation: 0 };
+        if (!dayMap[date]) dayMap[date] = { input: 0, output: 0, cache_read: 0, cache_creation: 0, reasoning: 0 };
         dayMap[date].input += tokens.input;
         dayMap[date].output += tokens.output;
         dayMap[date].cache_read += tokens.cache_read;
         dayMap[date].cache_creation += tokens.cache_creation;
+        dayMap[date].reasoning += tokens.reasoning;
     }
     tokenUsageData.days = Object.keys(dayMap).sort().map(date => ({
         date,

@@ -1,5 +1,5 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-4c72ae65-bd94-4310-9e57-cd784063e736	2026-06-01T08:02:20+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-cae4a33e-workdir	glm-5.1	56	2	27258	311	25920	0	HEAD
-d8025d03-9d77-40bd-b24e-86754f765577	2026-06-01T10:55:36+08:00	-home-ant-code-java-scrm-api	glm-5.1	258	2	41489	539	46080	0	feature/NFQX-12117
-4970ca41-daf0-43fd-96ca-b5e4e02b1501	2026-06-01T16:18:40+08:00	-home-ant-blog-saveole-github-io	glm-5.1	6324	254	622282	44850	33321088	0	main
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+4c72ae65-bd94-4310-9e57-cd784063e736	2026-06-01T08:02:20+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-cae4a33e-workdir	glm-5.1	56	2	27258	311	25920	0	HEAD	0	claude
+d8025d03-9d77-40bd-b24e-86754f765577	2026-06-01T10:55:36+08:00	-home-ant-code-java-scrm-api	glm-5.1	258	2	41489	539	46080	0	feature/NFQX-12117	0	claude
+4970ca41-daf0-43fd-96ca-b5e4e02b1501	2026-06-01T16:18:40+08:00	-home-ant-blog-saveole-github-io	glm-5.1	6324	254	622282	44850	33321088	0	main	0	claude
 ses_17f1b5af4ffe4vmEjO9G6JpPLL	2026-06-01T09:55:28+08:00	ssh	nvidia/nemotron-3-nano-30b-a3b:free	3	2	17297	0	0	0	unknown	353	opencode

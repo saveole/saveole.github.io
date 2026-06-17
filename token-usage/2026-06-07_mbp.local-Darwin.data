@@ -1,24 +1,24 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-84604c9d-d965-4157-b31d-66acb5604c66	2026-06-07T07:34:53+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	104	20	41792	9361	658944	0	master
-c87815de-502b-4396-af91-3bc6431f26f8	2026-06-07T07:38:56+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	228	47	51859	20370	3147584	0	master
-d857ede9-ab0a-4329-b494-8934dad6f4ab	2026-06-07T07:40:47+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	85	12	45083	16669	597888	0	master
-e5bc8ba7-1be4-46a8-bf77-c39c8c65808b	2026-06-07T07:45:57+08:00	-Users-saveole-blog-saveole-github-io	glm-4.7	245	34	67964	11005	2163328	0	main
-b01cee82-3941-48d3-a33f-5d6777979cb1	2026-06-07T07:53:31+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	748	219	111797	27792	19332224	0	master
-4afc9afb-4dac-445b-b0af-b6193f41b000	2026-06-07T07:54:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	26	6	58092	3815	187712	0	master
-55256c17-b9af-4566-837c-c0e2951ba701	2026-06-07T07:57:18+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	165	52	28191	12200	2353856	0	master
-52cfb5bb-f5ca-423e-b01e-ce3fbc5b30db	2026-06-07T07:58:21+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	42	11	15756	6854	363264	0	master
-1e729485-465f-4d5a-9d52-e8b1ae2ba757	2026-06-07T08:15:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	999	94	70887	30875	6992448	0	master
-67e888a5-7055-4f4d-b7a0-edb83a1e77f6	2026-06-07T08:16:17+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	41	11	45366	5155	343680	0	master
-a5d0a91b-3b1c-4d59-97f5-9dd7e6fb20a0	2026-06-07T08:17:25+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	51	14	29740	3672	590080	0	master
-81a12e69-eead-49b8-bae9-ccfb653643a9	2026-06-07T08:18:37+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	56	12	21712	7430	411904	0	master
-b971280a-3584-4f48-b629-b60780be7d6e	2026-06-07T08:23:39+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	283	55	48060	15404	3339456	0	master
-a05a5c4a-e9ca-46fe-806c-0b546c6539f2	2026-06-07T08:24:12+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	14	4	32124	2260	70848	0	master
-a13ebbc8-009d-4980-afd3-cbb2fcca51ed	2026-06-07T08:59:54+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	2125	110	83245	25665	9374272	0	master
-2430822d-1d3f-4223-ad06-24487493db3d	2026-06-07T09:04:03+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	57	17	36629	4993	500224	0	master
-4543f475-7686-459e-8ab0-6d10156ab57e	2026-06-07T09:06:02+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	101	20	41581	5818	1002112	0	master
-43019a3a-7656-4609-9f83-432badba5107	2026-06-07T09:07:04+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	45	8	12683	4683	236544	0	master
-62cdb0c9-c9a0-42f6-bf4d-1b7e4c27cb49	2026-06-07T09:19:05+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	704	91	89272	29386	7516736	0	master
-d77173bc-d06e-4595-ac82-e29e047197bb	2026-06-07T09:20:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	46	11	15797	5792	350976	0	master
-f5991699-a049-45df-8db1-aba4f8a28fc8	2026-06-07T09:23:34+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	172	37	41932	12316	2140672	0	master
-31620432-0cb0-4b4d-abd3-a735f0075eba	2026-06-07T09:24:46+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	55	16	40431	5562	478144	0	master
-036d396d-a2e6-457c-83bb-b239dcb199c1	2026-06-07T09:27:17+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	133	36	42651	8564	1861888	0	master
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+84604c9d-d965-4157-b31d-66acb5604c66	2026-06-07T07:34:53+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	104	20	41792	9361	658944	0	master	0	claude
+c87815de-502b-4396-af91-3bc6431f26f8	2026-06-07T07:38:56+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	228	47	51859	20370	3147584	0	master	0	claude
+d857ede9-ab0a-4329-b494-8934dad6f4ab	2026-06-07T07:40:47+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	85	12	45083	16669	597888	0	master	0	claude
+e5bc8ba7-1be4-46a8-bf77-c39c8c65808b	2026-06-07T07:45:57+08:00	-Users-saveole-blog-saveole-github-io	glm-4.7	245	34	67964	11005	2163328	0	main	0	claude
+b01cee82-3941-48d3-a33f-5d6777979cb1	2026-06-07T07:53:31+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	748	219	111797	27792	19332224	0	master	0	claude
+4afc9afb-4dac-445b-b0af-b6193f41b000	2026-06-07T07:54:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	26	6	58092	3815	187712	0	master	0	claude
+55256c17-b9af-4566-837c-c0e2951ba701	2026-06-07T07:57:18+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	165	52	28191	12200	2353856	0	master	0	claude
+52cfb5bb-f5ca-423e-b01e-ce3fbc5b30db	2026-06-07T07:58:21+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	42	11	15756	6854	363264	0	master	0	claude
+1e729485-465f-4d5a-9d52-e8b1ae2ba757	2026-06-07T08:15:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	999	94	70887	30875	6992448	0	master	0	claude
+67e888a5-7055-4f4d-b7a0-edb83a1e77f6	2026-06-07T08:16:17+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	41	11	45366	5155	343680	0	master	0	claude
+a5d0a91b-3b1c-4d59-97f5-9dd7e6fb20a0	2026-06-07T08:17:25+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	51	14	29740	3672	590080	0	master	0	claude
+81a12e69-eead-49b8-bae9-ccfb653643a9	2026-06-07T08:18:37+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	56	12	21712	7430	411904	0	master	0	claude
+b971280a-3584-4f48-b629-b60780be7d6e	2026-06-07T08:23:39+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	283	55	48060	15404	3339456	0	master	0	claude
+a05a5c4a-e9ca-46fe-806c-0b546c6539f2	2026-06-07T08:24:12+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	14	4	32124	2260	70848	0	master	0	claude
+a13ebbc8-009d-4980-afd3-cbb2fcca51ed	2026-06-07T08:59:54+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	2125	110	83245	25665	9374272	0	master	0	claude
+2430822d-1d3f-4223-ad06-24487493db3d	2026-06-07T09:04:03+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	57	17	36629	4993	500224	0	master	0	claude
+4543f475-7686-459e-8ab0-6d10156ab57e	2026-06-07T09:06:02+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	101	20	41581	5818	1002112	0	master	0	claude
+43019a3a-7656-4609-9f83-432badba5107	2026-06-07T09:07:04+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	45	8	12683	4683	236544	0	master	0	claude
+62cdb0c9-c9a0-42f6-bf4d-1b7e4c27cb49	2026-06-07T09:19:05+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	704	91	89272	29386	7516736	0	master	0	claude
+d77173bc-d06e-4595-ac82-e29e047197bb	2026-06-07T09:20:16+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	46	11	15797	5792	350976	0	master	0	claude
+f5991699-a049-45df-8db1-aba4f8a28fc8	2026-06-07T09:23:34+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	172	37	41932	12316	2140672	0	master	0	claude
+31620432-0cb0-4b4d-abd3-a735f0075eba	2026-06-07T09:24:46+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	55	16	40431	5562	478144	0	master	0	claude
+036d396d-a2e6-457c-83bb-b239dcb199c1	2026-06-07T09:27:17+08:00	-Users-saveole-code-web-scrm-x	glm-4.7	133	36	42651	8564	1861888	0	master	0	claude
