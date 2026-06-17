@@ -2,3 +2,6 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 359106fb-4a23-4ee2-abb6-44f30e92437a	2026-06-17T08:03:29+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-513d4ecf-workdir	glm-5.2	35	3	9539	751	76672	0	HEAD
 ce4dbcd2-1030-42b1-b385-b3047bfd22b6	2026-06-17T09:48:51+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	2015	39	286341	24847	3776704	0	main
 a3b08353-a9c6-46a2-a73e-a7a23f40e572	2026-06-17T15:44:33+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	15775	75	623609	89026	7226752	0	HEAD
+ses_12b7a5982ffevCYoD08oiBLEbz	2026-06-17T15:39:49+08:00	saveole.github.io	deepseek-v4-pro	72	6	39805	5069	80256	0	main	175	opencode
+ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:39:42+08:00	saveole.github.io	deepseek-v4-pro	481	42	91830	17030	1845632	0	main	3798	opencode
+ses_12b82f067ffeyixS3KRB3Nrz2T	2026-06-17T15:30:26+08:00	xiaoyuzhoufm	deepseek-v4-pro	230	17	57818	1731	450432	0	main	1999	opencode
