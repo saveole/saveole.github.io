@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_127b9281effewZ4BSG3wuefJgV	2026-06-18T09:09:41+08:00	xiaoyuzhoufm	deepseek-v4-flash	858	40	40770	28276	1840768	0	main	11523	opencode
 ses_1278cb246fferY54cXuNVKRGWZ	2026-06-18T09:58:15+08:00	ssh	deepseek-v4-flash	4	3	13620	76	17280	0	unknown	75	opencode
 ses_1277c7cb0ffe14VSPM3YPTGrzD	2026-06-18T10:15:58+08:00	mcp-gateway	deepseek-v4-flash	2367	35	18826	5868	585984	0	master	4039	opencode
+801fdf32-941c-4310-9df1-7d737017c05c	2026-06-18T11:01:33+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	4950	95	327047	83156	11279808	0	master	0	claude
