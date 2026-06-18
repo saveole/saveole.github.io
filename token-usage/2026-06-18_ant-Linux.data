@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 15de41b7-ae7a-49b5-8deb-58bb4b71eb00	2026-06-18T08:01:38+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-e7b4ba14-workdir	glm-5.2	44	3	28275	583	54976	0	HEAD	0	claude
 ses_127b9281effewZ4BSG3wuefJgV	2026-06-18T09:09:41+08:00	xiaoyuzhoufm	deepseek-v4-flash	858	40	40770	28276	1840768	0	main	11523	opencode
 ses_1278cb246fferY54cXuNVKRGWZ	2026-06-18T09:58:15+08:00	ssh	deepseek-v4-flash	4	3	13620	76	17280	0	unknown	75	opencode
-ses_1277c7cb0ffe14VSPM3YPTGrzD	2026-06-18T10:15:58+08:00	mcp-gateway	deepseek-v4-flash	2240	33	18665	5669	528768	0	master	3898	opencode
+ses_1277c7cb0ffe14VSPM3YPTGrzD	2026-06-18T10:15:58+08:00	mcp-gateway	deepseek-v4-flash	2304	34	18717	5737	557312	0	master	3993	opencode
