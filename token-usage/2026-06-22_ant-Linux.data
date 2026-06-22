@@ -6,4 +6,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 390ffb92-27ea-4b22-9b12-38c07bedb5ac	2026-06-22T15:01:29+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	16386	103	941603	77446	12761408	0	master	0	claude
 ses_111dc8152ffeWUf3LUXMvH0BPY	2026-06-22T15:02:44+08:00	mcp-gateway	deepseek-v4-flash	46	5	15481	143	15232	0	master	397	opencode
 aedc29a2-1681-47da-a308-aba1a59896fe	2026-06-22T18:46:57+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	12374	114	591365	151910	12673600	0	master	0	claude
-ses_1110db7f5ffebDOaHw4t3VTeGl	2026-06-22T18:48:36+08:00	mcp-gateway	glm-5.2	1138	77	103367	13862	6080896	0	master	21686	opencode
+ses_1110db7f5ffebDOaHw4t3VTeGl	2026-06-22T18:48:36+08:00	mcp-gateway	glm-5.2	1184	79	195578	15042	6192960	0	master	21859	opencode
