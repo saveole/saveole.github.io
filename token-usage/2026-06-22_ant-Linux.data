@@ -8,7 +8,7 @@ ses_111dc8152ffeWUf3LUXMvH0BPY	2026-06-22T15:02:44+08:00	mcp-gateway	deepseek-v4
 aedc29a2-1681-47da-a308-aba1a59896fe	2026-06-22T18:46:57+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	12374	114	591365	151910	12673600	0	master	0	claude
 ses_1110db7f5ffebDOaHw4t3VTeGl	2026-06-22T18:48:36+08:00	mcp-gateway	glm-5.2	1410	92	210848	16687	7614208	0	master	24250	opencode
 ses_110f3c7d8ffeyoAGpe9fTCFXLo	2026-06-22T19:16:55+08:00	mcp-gateway	deepseek-v4-flash	56	17	22091	5823	240000	0	master	591	opencode
-ses_110f3d60effej0uDiUVFHMxCZk	2026-06-22T19:16:52+08:00	mcp-gateway	deepseek-v4-flash	2379	131	177314	32865	16595328	0	master	28126	opencode
+ses_110f3d60effej0uDiUVFHMxCZk	2026-06-22T19:16:52+08:00	mcp-gateway	deepseek-v4-flash	2411	134	178754	33408	17475456	0	master	28501	opencode
 550c5dbe-fb1d-4ed1-b0b7-7e661b673e8f	2026-06-22T19:36:08+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	400	4	78911	20368	159040	0	master	0	claude
 ses_110df750cffex05hJo3hVVX1fS	2026-06-22T19:39:07+08:00	mcp-gateway	deepseek-v4-flash	153	4	43269	4268	72704	0	master	9034	opencode
 ses_110db4924ffesL6UKYWWWY9bOG	2026-06-22T19:43:41+08:00	mcp-gateway	deepseek-v4-flash	83	6	20095	3798	116480	0	master	4846	opencode
