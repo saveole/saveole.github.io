@@ -5,3 +5,5 @@ ses_12997c3f9ffeF47JD0MC3boe3P	2026-06-18T00:26:55+08:00	inherit-mcp-server	deep
 ses_12989247cffene1rM8Moh51DO8	2026-06-18T00:42:54+08:00	inherit-mcp-server	deepseek-v4-flash	16	6	289	78	40960	0	master	106	opencode
 ses_129873dcaffeD6UE0wfvCDYCyF	2026-06-18T00:44:58+08:00	inherit-mcp-server	deepseek-v4-flash	252	15	2140	1051	104064	0	master	552	opencode
 ses_129819232ffeFa2L3hfWGbgUN0	2026-06-18T00:51:10+08:00	inherit-mcp-server	deepseek-v4-flash	83	6	192	205	30848	0	master	142	opencode
+05558c65-4ea6-44ae-a617-f087aa36ca03	2026-06-17T16:55:08.642Z	inherit-mcp-server	glm-5.2	152	17	38473	5624	263872	0	master	0	claude
+5ef98442-06ad-4df8-9bd4-eb7e5a4c3468	2026-06-17T15:12:39.177Z	xueqiu-crawler	glm-5.2	4720	398	258332	132291	26437568	0	main	0	claude

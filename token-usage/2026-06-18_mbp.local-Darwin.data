@@ -2,3 +2,5 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_1273f94f0ffeYLAIAem3w0Qk6p	2026-06-18T11:22:29+08:00	inherit-mcp-server	deepseek-v4-flash	13	3	1291	414	20480	0	master	894	opencode
 ses_126972b64ffewauJljNlxge3OH	2026-06-18T14:26:26+08:00	inherit-mcp-server	deepseek-v4-flash	939	72	63535	13292	3994752	0	master	12194	opencode
 ses_126888a95ffepzgOqsHhHZtWWU	2026-06-18T14:42:25+08:00	inherit-mcp-server	deepseek-v4-flash	1366	48	23794	5276	1340032	0	master	5808	opencode
+c5d25d65-b587-49ff-ac78-35935739e36c	2026-06-18T07:16:38.436Z	inherit-mcp-server	glm-5.2	126	10	23771	1053	76864	0	master	0	claude
+de92d984-a4ae-4c60-9913-32ee9c6852e5	2026-06-18T07:20:24.718Z	inherit-mcp-server	glm-5.2	753	33	16608	5661	377856	0	master	0	claude

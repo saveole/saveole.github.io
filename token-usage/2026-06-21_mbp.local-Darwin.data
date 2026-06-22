@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+42c4894f-429d-4e1b-a54a-ce060e520433	2026-06-21T01:35:58.556Z	inherit-mcp-server	glm-5.2	2365	155	235960	59873	2815808	0	master	0	claude
