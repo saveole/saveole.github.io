@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+956c57ee-e18b-4c79-b6ad-43ec9e68e409	2026-06-22T08:03:26+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-89109e44-workdir	glm-5.2	36	3	28205	318	54912	0	HEAD	0	claude
