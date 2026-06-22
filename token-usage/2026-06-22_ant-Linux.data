@@ -7,4 +7,5 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_111dc8152ffeWUf3LUXMvH0BPY	2026-06-22T15:02:44+08:00	mcp-gateway	deepseek-v4-flash	46	5	15481	143	15232	0	master	397	opencode
 aedc29a2-1681-47da-a308-aba1a59896fe	2026-06-22T18:46:57+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	12374	114	591365	151910	12673600	0	master	0	claude
 ses_1110db7f5ffebDOaHw4t3VTeGl	2026-06-22T18:48:36+08:00	mcp-gateway	glm-5.2	1410	92	210848	16687	7614208	0	master	24250	opencode
-ses_110f3c7d8ffeyoAGpe9fTCFXLo	2026-06-22T19:16:55+08:00	mcp-gateway	deepseek-v4-flash	26	13	19431	2279	125696	0	master	501	opencode
+ses_110f3c7d8ffeyoAGpe9fTCFXLo	2026-06-22T19:16:55+08:00	mcp-gateway	deepseek-v4-flash	56	17	22091	5823	240000	0	master	591	opencode
+ses_110f3d60effej0uDiUVFHMxCZk	2026-06-22T19:16:52+08:00	mcp-gateway	deepseek-v4-flash	62	4	18090	412	18816	0	master	207	opencode
