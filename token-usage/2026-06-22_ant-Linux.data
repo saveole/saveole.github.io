@@ -1,5 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 956c57ee-e18b-4c79-b6ad-43ec9e68e409	2026-06-22T08:03:26+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-89109e44-workdir	glm-5.2	36	3	28205	318	54912	0	HEAD	0	claude
 8099e3f3-37e6-448e-ade2-0a493647f78e	2026-06-22T10:19:14+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	1043	28	38131	12426	1431680	0	master	0	claude
-1ea5bff3-f117-4e50-ab97-39460cb33055	2026-06-22T01:25:18.570Z	mcp-gateway	glm-5.2	23	6	22321	487	110976	0	master	0	claude
+1ea5bff3-f117-4e50-ab97-39460cb33055	2026-06-22T11:03:39+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	22	3	22321	487	110976	0	master	0	claude
 336bbdc8-738f-4197-9c84-5d75c375de0b	2026-06-22T10:25:44+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	61	5	40372	2720	209856	0	master	0	claude
