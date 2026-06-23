@@ -67,7 +67,9 @@ REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" 
 
 ### 第 4 步：注册 SessionEnd Hook
 
-打开 `~/.claude/settings.json`（如不存在则创建），在 `hooks` 中添加 `SessionEnd` 配置：
+打开 `~/.claude/settings.local.json`（如不存在则创建），在 `hooks` 中添加 `SessionEnd` 配置：
+
+> ⚠️ **务必注册到 `settings.local.json`，不要写到 `settings.json`。** 若你使用 GLM / 第三方代理（如 bigmodel），那套代理配置工具会**整段重写 `~/.claude/settings.json`**，每次重写都会把 `hooks` 段冲掉，导致 token 追踪悄悄失效（此问题已多次复现）。`settings.local.json` 是 Claude Code 的本地个人设置文件，会与 `settings.json` 合并生效，且代理工具通常不碰它——把 hook 放在这里才能持久。
 
 ```json
 {
@@ -94,7 +96,16 @@ REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" 
 - **log-usage.py**：Claude Code 退出时触发，从 JSONL 读取会话数据，记录 token 用量并 git 同步。
 - **notify.cjs**：tokentracker 通知脚本，写入信号文件并节流触发远程同步（最多 20 秒一次）。
 
-如果 `settings.json` 中已有其他 hooks 配置（如 `PreToolUse`），只需将 `SessionEnd` 数组追加到 `hooks` 对象中即可，不要覆盖已有配置。
+如果 `settings.local.json` 中已有其他配置（如 `permissions`），只需把 `hooks` 键合并进去即可，不要覆盖已有内容：
+
+```json
+{
+  "permissions": { "...已有内容保持不变..." },
+  "hooks": {
+    "SessionEnd": [ /* 同上 */ ]
+  }
+}
+```
 
 ### 第 5 步：回填历史数据（可选）
 
@@ -340,7 +351,8 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 |------|------|
 | 会话结束后没有 .data 文件 | 确认 Python 3.10+ 已安装：`python3 --version` |
 | .data 文件存在但没有 push | 查看 `~/.claude/hooks/tracker-errors.log` 中的错误日志 |
-| settings.json 不生效 | 确认 JSON 格式正确：`python3 -m json.tool ~/.claude/settings.json` |
+| settings 不生效 | 确认 JSON 格式正确：`python3 -m json.tool ~/.claude/settings.local.json` |
+| hook 又不工作了（曾正常过） | 多半是 `settings.json` 被代理配置工具整段重写、`hooks` 段被冲掉。确认 hook 在 `settings.local.json` 而非 `settings.json`（详见「第 4 步」） |
 | 同一会话记录了两条 | 正常不会出现。hook 脚本按 `session_id` 去重 |
 | 找不到 JSONL 文件 | 确认 `~/.claude/projects/` 目录存在且有 `.jsonl` 文件；或设置 `CLAUDE_CONFIG_DIR` 环境变量指定数据目录 |
 

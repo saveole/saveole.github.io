@@ -4,7 +4,7 @@
 # │                                                             │
 # │  参考 ccusage (github.com/ryoppippi/ccusage) 的数据读取方式  │
 # │  直接从 ~/.claude/projects/ 读取 JSONL，不依赖 transcript   │
-# │  在 ~/.claude/settings.json 中注册为 SessionEnd hook        │
+# │  在 ~/.claude/settings.local.json 中注册为 SessionEnd hook  │
 # │  详见 saveole.github.io/token-usage/README.md               │
 # └─────────────────────────────────────────────────────────────┘
 from __future__ import annotations
