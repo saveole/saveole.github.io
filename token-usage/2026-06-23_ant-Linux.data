@@ -4,5 +4,5 @@ ses_10e0c244affebRNrza1xPrqci5	2026-06-23T08:49:11+08:00	mcp-gateway	deepseek-v4
 ses_10e0c31d0ffeTQzrR0ZPhMuHDZ	2026-06-23T08:49:07+08:00	mcp-gateway	deepseek-v4-flash	273	21	30780	3295	499328	0	master	3597	opencode
 bb579b14-9b2a-410c-8520-ac8697fbb384	2026-06-23T08:57:57+08:00	-home-ant-code-java-scrm-api	glm-5.2	198	2	26361	1620	68480	0	dev	0	claude
 20260623_085822_06a92a	2026-06-23T09:00:16+08:00	切换 Hermes 模型至 glm-5.2	glm-5.1	0	16	47476	472	146240	0	dev
-ses_10dfe3614ffeAek65NgPoc2pBx	2026-06-23T09:04:24+08:00	mcp-gateway	deepseek-v4-flash	364	17	4310	1279	197248	0	master	449	opencode
+ses_10dfe3614ffeAek65NgPoc2pBx	2026-06-23T09:04:24+08:00	mcp-gateway	deepseek-v4-flash	381	20	6082	1714	275712	0	master	738	opencode
 543c22cc-e111-49e7-9b07-0f80f7712e8d	2026-06-23T09:17:00+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	244	14	33850	4024	698944	0	master	0	claude
