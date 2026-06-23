@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_10e0c244affebRNrza1xPrqci5	2026-06-23T08:49:11+08:00	mcp-gateway	deepseek-v4-flash	38	9	23775	3901	94464	0	master	295	opencode
 ses_10e0c31d0ffeTQzrR0ZPhMuHDZ	2026-06-23T08:49:07+08:00	mcp-gateway	deepseek-v4-flash	266	20	30616	3013	425216	0	master	3395	opencode
 bb579b14-9b2a-410c-8520-ac8697fbb384	2026-06-23T08:57:57+08:00	-home-ant-code-java-scrm-api	glm-5.2	198	2	26361	1620	68480	0	dev	0	claude
+20260623_085822_06a92a	2026-06-23T09:00:16+08:00	切换 Hermes 模型至 glm-5.2	glm-5.1	0	16	47476	472	146240	0	dev
