@@ -3,4 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_1086e2d9dffebBqRnRToNPuUzs	2026-06-24T10:59:49+08:00	workdir	deepseek-v4-flash	514	13	49132	1945	230912	0	unknown	1179	opencode
 ses_1085b8211ffebRc1U5U27wikal	2026-06-24T11:20:13+08:00	scrm-api	deepseek-v4-flash	521	38	137665	5599	1460736	0	feat/scrm/9.6/NFQX-12259	4401	opencode
 ses_108543eedffezypeI0AHgEMh6C	2026-06-24T11:28:08+08:00	scrm-api	deepseek-v4-flash	17	5	15003	1935	35072	0	feat/scrm/9.6/NFQX-12259	208	opencode
-ses_108484e66ffeQIPEqidiXX9C8C	2026-06-24T11:41:11+08:00	scrm-api	deepseek-v4-flash	621	20	68588	4095	1169664	0	feat/scrm/9.6/NFQX-12259	13399	opencode
+ses_108484e66ffeQIPEqidiXX9C8C	2026-06-24T11:41:11+08:00	scrm-api	deepseek-v4-flash	652	24	166890	4900	1464064	0	feat/scrm/9.6/NFQX-12259	14596	opencode
