@@ -3,7 +3,7 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_1086e2d9dffebBqRnRToNPuUzs	2026-06-24T10:59:49+08:00	workdir	deepseek-v4-flash	514	13	49132	1945	230912	0	unknown	1179	opencode
 ses_1085b8211ffebRc1U5U27wikal	2026-06-24T11:20:13+08:00	scrm-api	deepseek-v4-flash	521	38	137665	5599	1460736	0	feat/scrm/9.6/NFQX-12259	4401	opencode
 ses_108543eedffezypeI0AHgEMh6C	2026-06-24T11:28:08+08:00	scrm-api	deepseek-v4-flash	17	5	15003	1935	35072	0	feat/scrm/9.6/NFQX-12259	208	opencode
-ses_108484e66ffeQIPEqidiXX9C8C	2026-06-24T11:41:11+08:00	scrm-api	deepseek-v4-flash	9641	50	447816	11237	4490240	0	feat/9.6/NFQX-12253	17835	opencode
+ses_108484e66ffeQIPEqidiXX9C8C	2026-06-24T11:41:11+08:00	scrm-api	deepseek-v4-flash	9674	56	454060	12468	5451264	0	feat/9.6/NFQX-12253	18167	opencode
 23ded723-65d5-4c99-ba9d-5b0ce64fd0f4	2026-06-24T12:01:08+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-b91df8ca-workdir	glm-5.2	141	3	33286	823	54016	0	HEAD	0	claude
 ses_107cec295ffeA2PCthGq39tNGT	2026-06-24T13:53:57+08:00	scrm-api	deepseek-v4-flash	105	17	120726	9755	1119488	0	master	746	opencode
 ses_107cefd93ffepNGx5eHTaVaAH3	2026-06-24T13:53:41+08:00	scrm-api	deepseek-v4-flash	748	66	214643	12095	6146688	0	feat/9.6/NFQX-12253	18365	opencode
