@@ -6,7 +6,7 @@ ses_1036f9f71ffeEA7uvl5lKFdB0j	2026-06-25T10:16:20+08:00	scrm-api	deepseek-v4-pr
 912d4119-775c-4924-a4db-5c4f69e0859c	2026-06-25T17:30:09+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	12459	127	508991	104190	15100992	0	main	0	claude
 ae5fde09-436d-460a-bbde-66eef355e6bf	2026-06-25T18:59:29+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	3334	46	231725	33033	2980992	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
 7696245e-1371-4e7d-a961-7deb48388fe6	2026-06-25T19:23:44+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	525	27	71238	15513	1148224	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
-db55d1fa-537b-4217-8cc6-f2f14aaaee07	2026-06-25T19:49:07+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	652	19	122419	13676	841984	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
+db55d1fa-537b-4217-8cc6-f2f14aaaee07	2026-06-25T19:59:59+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	1305	33	216140	29053	2143680	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
 ses_1015cd861ffer6zxpGSAJbZJ8s	2026-06-25T19:56:05+08:00	workdir	deepseek-v4-flash	75	12	79502	7780	447744	0	unknown	1103	opencode
 ses_1015d1387ffe1bTNgHQRZm9wQ7	2026-06-25T19:55:50+08:00	workdir	deepseek-v4-flash	175	8	23062	3092	111232	0	unknown	1701	opencode
 ses_1015b9273ffefutftFLpqYaDUl	2026-06-25T19:57:29+08:00	workdir	deepseek-v4-flash	39	6	35946	4079	120192	0	unknown	579	opencode
