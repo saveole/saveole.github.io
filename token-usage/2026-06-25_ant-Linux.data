@@ -4,3 +4,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_10385443fffeZEyh1yi77WjvpG	2026-06-25T09:52:42+08:00	scrm-api	deepseek-v4-pro	139	14	56798	7523	457856	0	dev	3854	opencode
 ses_1036f9f71ffeEA7uvl5lKFdB0j	2026-06-25T10:16:20+08:00	scrm-api	deepseek-v4-pro	103	18	48446	5495	478720	0	dev	2457	opencode
 912d4119-775c-4924-a4db-5c4f69e0859c	2026-06-25T17:30:09+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	12459	127	508991	104190	15100992	0	main	0	claude
+ae5fde09-436d-460a-bbde-66eef355e6bf	2026-06-25T18:14:17+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	623	28	138068	19946	1473280	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
