@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 38cc5675-b364-4409-a337-8a338670bc1f	2026-06-25T08:04:06+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-c1349a32-workdir	glm-5.2	103	3	14767	966	73408	0	HEAD	0	claude
 3386ec0c-e470-46bd-b5ab-35b666263649	2026-06-25T09:51:40+08:00	-home-ant-code-java-scrm-api	glm-5.2	842	13	42018	6086	404352	0	dev	0	claude
+ses_10385443fffeZEyh1yi77WjvpG	2026-06-25T09:52:42+08:00	scrm-api	deepseek-v4-pro	10	4	13530	563	9216	0	dev	176	opencode
