@@ -10,7 +10,7 @@ ses_107cefd93ffepNGx5eHTaVaAH3	2026-06-24T13:53:41+08:00	scrm-api	deepseek-v4-fl
 ses_107aea1e2ffeyr4WlK2gRZGIMJ	2026-06-24T14:29:02+08:00	scrm-api	deepseek-v4-flash	7	4	17020	282	21376	0	feat/9.6/NFQX-12253	283	opencode
 839f06da-233f-4142-bd45-cdb7cfcfe8bc	2026-06-24T14:38:46+08:00	-home-ant--agents-skills-scrm-dev	glm-5.2	9	2	42668	238	46336	0	HEAD	0	claude
 ses_107a549acffe4DP4HzlgC2Bszz	2026-06-24T14:39:15+08:00	scrm-dev	deepseek-v4-pro	28	5	15303	635	42880	0	unknown	1064	opencode
-ses_107a16058ffeh2I2CENP2WDozG	2026-06-24T14:43:31+08:00	scrm-api	deepseek-v4-pro	70359	87	335769	14082	5290496	0	dev	14484	opencode
+ses_107a16058ffeh2I2CENP2WDozG	2026-06-24T14:43:31+08:00	scrm-api	deepseek-v4-pro	70502	93	340158	15302	6140672	0	dev	15372	opencode
 ses_107a0e388ffehOR2eKU0HTQdPU	2026-06-24T14:44:03+08:00	scrm-api	deepseek-v4-pro	136	15	74688	8963	663424	0	feat/9.6/NFQX-12253	989	opencode
 ses_107951313ffe5jsU5MdkUEOvC9	2026-06-24T14:56:57+08:00	scrm-api	deepseek-v4-pro	1008	39	147537	9158	1503232	0	dev	5417	opencode
 ses_107948968ffeNyn0dKFTza2o3i	2026-06-24T14:57:32+08:00	scrm-api	deepseek-v4-pro	118	8	103402	9154	305024	0	dev	255	opencode
