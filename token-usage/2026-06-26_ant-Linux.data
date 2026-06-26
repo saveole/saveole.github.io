@@ -1,5 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 a46b0012-4ad8-4cfa-8294-e048ada301d6	2026-06-26T08:02:26+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-780be17d-workdir	glm-5.2	95	3	30945	1187	61120	0	HEAD	0	claude
 2438a040-4451-42b5-8618-beb0cc362d17	2026-06-26T08:31:54+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-566f3153-workdir	glm-5.2	37	4	21484	888	93696	0	HEAD	0	claude
-ses_0fe638386ffeTYmKFU3Nt3NS6T	2026-06-26T09:47:40+08:00	mcp-gateway	deepseek-v4-flash	18	10	83343	1374	259968	0	master	221	opencode
-ses_0fe63b708ffeHRJKYFihbn5juX	2026-06-26T09:47:27+08:00	mcp-gateway	deepseek-v4-flash	9	3	17145	228	1920	0	master	13	opencode
+ses_0fe638386ffeTYmKFU3Nt3NS6T	2026-06-26T09:47:40+08:00	mcp-gateway	deepseek-v4-flash	47	10	88598	5107	344832	0	master	237	opencode
+ses_0fe63b708ffeHRJKYFihbn5juX	2026-06-26T09:47:27+08:00	mcp-gateway	deepseek-v4-flash	64	5	21700	748	41344	0	master	363	opencode
