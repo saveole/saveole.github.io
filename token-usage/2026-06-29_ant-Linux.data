@@ -1,5 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 a487382e-5941-4c62-a746-9dd623b831bb	2026-06-29T14:40:45+08:00	-home-ant-code-golang-src-scrmgo	glm-5.2	2506	11	64157	17699	503424	0	master	0	claude
 ses_0ede3d5ccffehtJd5pkYTKHoe7	2026-06-29T14:41:03+08:00	scrmgo	deepseek-v4-flash	53	12	30786	5877	183680	0	master	414	opencode
-ses_0ede3efa5ffe9fshGAtTBd1s1Y	2026-06-29T14:40:56+08:00	scrmgo	deepseek-v4-flash	4058	98	63363	16705	4821632	0	release/delivery-list	15249	opencode
-ses_0eda5e87fffeLlWUhc5I0TQLdc	2026-06-29T15:48:41+08:00	scrmgo	deepseek-v4-flash	288	9	31049	1914	57472	0	release/delivery-list	271	opencode
+ses_0ede3efa5ffe9fshGAtTBd1s1Y	2026-06-29T14:40:56+08:00	scrmgo	deepseek-v4-flash	4396	100	70748	17058	4994560	0	release/delivery-list	18061	opencode
+ses_0eda5e87fffeLlWUhc5I0TQLdc	2026-06-29T15:48:41+08:00	scrmgo	deepseek-v4-flash	309	10	48344	4089	138752	0	release/delivery-list	484	opencode
