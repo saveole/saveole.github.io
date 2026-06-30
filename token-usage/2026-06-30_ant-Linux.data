@@ -7,3 +7,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 0c798bdc-f296-43a3-aecc-4350ba835620	2026-06-30T18:54:52+08:00	-home-ant-code-java-scrm-api	glm-5.2	187	11	29591	2560	534592	0	feat/9.6/NFQX-12253	0	claude
 16a8ae98-b531-4dfa-a44a-4da6428b2e35	2026-06-30T19:02:34+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	346	12	139800	10713	811648	0	feat/prompt-mgmt-and-sentiment-indicators	0	claude
 54f66591-85c6-4063-9003-e7fc05464723	2026-06-30T19:45:53+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	2325	21	130351	23626	1453696	0	main	0	claude
+1848225c-13e2-4082-8aff-026a8c22300c	2026-06-30T19:51:59+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	174	7	58528	7214	219968	0	main	0	claude
