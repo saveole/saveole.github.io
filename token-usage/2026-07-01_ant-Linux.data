@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 a54782eb-93ed-4ab1-ad68-7c0a829ca40a	2026-07-01T08:33:42+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-89e81185-workdir	glm-5.2	21	3	9411	486	78912	0	HEAD	0	claude
 906faccf-24ed-45ca-a2aa-c16f55239352	2026-07-01T14:54:19+08:00	-home-ant-code-java-scrm-api	glm-5.2	3155	57	145494	27531	4474176	0	feat/9.6/NFQX-12366	0	claude
 0c9bd34a-f2bb-4332-8a69-2d0a2c9ea56d	2026-07-01T16:00:00+08:00	-home-ant-code-java-scrm-api	glm-5.2	837	33	51747	12768	2092736	0	feat/9.6/NFQX-12253	0	claude
+d00ec2c2-6222-42a2-9771-fd084bf7938b	2026-07-01T16:48:23+08:00	-home-ant-code-golang-src-scrmgo	glm-5.2	2753	21	232128	30433	1407872	0	master	0	claude
