@@ -4,4 +4,4 @@ a9ae47f9-a2c9-4b27-b18c-e84e97c1a9f8	2026-07-03T08:32:12+08:00	-home-ant-multica
 2add598b-1201-49e5-885d-ae01e8e1669c	2026-07-03T10:53:01+08:00	-home-ant-code-golang-src-xingzhi	glm-5.2	33	4	29886	1607	164416	0	HEAD	0	claude
 893fa961-7d2d-401b-a738-a04c8d8a9963	2026-07-03T11:26:03+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	91	6	31638	2621	273792	0	master	0	claude
 a6b6ddfe-3f59-4dad-ab77-6cfba29abf38	2026-07-03T03:21:29.126Z	inherit	glm-5.2	217	18	30792	3156	262848	0	test	0	claude
-ses_0d9240080ffeLkCDONpoN5IrY3	2026-07-03T15:22:59+08:00	workdir	deepseek-v4-flash	165	17	22946	1672	301568	0	unknown	1849	opencode
+ses_0d9240080ffeLkCDONpoN5IrY3	2026-07-03T15:22:59+08:00	workdir	deepseek-v4-flash	300	21	25192	2026	408192	0	unknown	2686	opencode
