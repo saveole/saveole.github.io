@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+c5d4a517-200a-460b-bf50-91e98ed2120b	2026-07-06T07:46:43+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	1370	29	51290	33410	2257984	0	master	0	claude
