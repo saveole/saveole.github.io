@@ -2,3 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 c5d4a517-200a-460b-bf50-91e98ed2120b	2026-07-06T07:46:43+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	1370	29	51290	33410	2257984	0	master	0	claude
 a38b959a-318e-4cd6-b485-21b685f3fa9c	2026-07-06T08:03:48+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-a88ae785-workdir	glm-5.2	89	2	19192	489	42880	0	HEAD	0	claude
 2a0e970f-cdb2-4caf-81bf-b3614c84736e	2026-07-06T08:33:24+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-5ad27213-workdir	glm-5.2	31	3	17195	599	69440	0	HEAD	0	claude
+a6b6ddfe-3f59-4dad-ab77-6cfba29abf38	2026-07-06T09:57:41+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	957	9	32855	4845	431040	0	test	0	claude
