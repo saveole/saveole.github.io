@@ -2,5 +2,5 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 42aa5c03-fad5-4e44-a535-c15752c174c6	2026-07-07T08:04:35+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1c69ba15-workdir	glm-5.2	99	2	22231	930	40256	0	HEAD	0	claude
 f764dbd5-ad96-460b-858e-685395274d3f	2026-07-07T08:34:00+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-6efe3858-workdir	glm-5.2	29	3	18364	402	70592	0	HEAD	0	claude
 3437197c-7c03-4519-bbb0-8529a9ddb31b	2026-07-07T11:06:32+08:00	-home-ant-blog-saveole-github-io	glm-5.2	808	10	30261	5351	495936	0	main	0	claude
-61e722f8-5b76-4e56-a578-0fe2478250c2	2026-07-07T02:44:26.300Z	mcp-gateway	glm-5.2	3086	34	62910	5386	613696	0	master	0	claude
+61e722f8-5b76-4e56-a578-0fe2478250c2	2026-07-07T15:50:32+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	3811	18	66126	7566	803008	0	master	0	claude
 35f10b26-de3f-41b7-ac93-5d9a919012d7	2026-07-07T11:42:32+08:00	-home-ant-code-golang-src-oauth2-server	glm-5.2	116	7	24262	1103	304320	0	main	0	claude
