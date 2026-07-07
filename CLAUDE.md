@@ -45,10 +45,15 @@ categories: [Category]
 tags: [tag1, tag2]
 description: Optional description
 subtitle: Optional subtitle
+published: true   # set to false to mark as draft (skips build entirely)
 ---
 ```
 
 Post filenames should follow the pattern: `YYYY-MM-DD-title.md`
+
+### Draft Posts
+
+A post is excluded from the build (no detail page, no homepage listing, no tag index) when its frontmatter has `published: false`. The field defaults to true when omitted, so existing and new posts publish normally unless explicitly marked. This is the only supported draft convention — see the `data.published === false` check in `build.js`.
 
 ### Tag System
 

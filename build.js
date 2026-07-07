@@ -81,6 +81,10 @@ function replaceInlineTags(html, tags) {
 files.forEach(file => {
     const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
     const { data, content } = matter(rawContent);
+
+    // 草稿跳过：frontmatter 中 published: false 的文章不构建、不出现在首页和标签页
+    if (data.published === false) return;
+
     // 修正图片路径：将 ../assets/ 替换为 ./assets/
     const fixedContent = content.replace(/\.\.\/assets\//g, './assets/');
 
