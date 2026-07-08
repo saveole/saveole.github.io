@@ -4,3 +4,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 f1431615-512f-485b-8172-b02b42a2f258	2026-07-08T09:42:14+08:00	-home-ant-code-java-scrm-api	glm-5.2	0	1	53632	80	256	0	master	0	claude
 5c598496-d832-4fdb-a21e-8d63c6889f67	2026-07-08T13:42:13+08:00	-home-ant-code-java-scrm-api	glm-5.2	3413	36	133851	39287	3318272	0	feat/9.6/NFQX-12253	0	claude
 3478d636-250e-4e3f-be86-a509d06f6c04	2026-07-08T13:48:41+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	3806	34	174666	66885	4310144	0	main	0	claude
+82244206-a53d-4865-9762-2b67c36eb2b3	2026-07-08T16:46:02+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	69	4	35537	2906	175488	0	master	0	claude
