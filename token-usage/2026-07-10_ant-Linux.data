@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 1568937a-4c08-4dbf-9f5e-a0379de48a9c	2026-07-10T08:02:06+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-d55f5fb3-workdir	glm-5.2	77	4	20853	965	111808	0	HEAD	0	claude
 117dbb1f-259c-4db1-a269-0d2826d4f55a	2026-07-10T08:31:46+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-3ae6d331-workdir	glm-5.2	27	3	21827	262	62592	0	HEAD	0	claude
 bba09722-d0db-423e-994e-30579351c1f3	2026-07-10T10:24:30+08:00	-home-ant-projects-myprotoshow-apps-my-app	glm-5.2	242	9	32963	7272	430400	0	main	0	claude
+f10b4079-e212-4eda-b681-2dac6d95d4bd	2026-07-10T10:37:47+08:00	-home-ant-projects-myprotoshow-apps-my-app-bi-report	glm-5.2	425	10	14049	6627	512000	0	main	0	claude
