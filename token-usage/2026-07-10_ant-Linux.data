@@ -5,3 +5,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 bba09722-d0db-423e-994e-30579351c1f3	2026-07-10T10:24:30+08:00	-home-ant-projects-myprotoshow-apps-my-app	glm-5.2	242	9	32963	7272	430400	0	main	0	claude
 f10b4079-e212-4eda-b681-2dac6d95d4bd	2026-07-10T10:37:47+08:00	-home-ant-projects-myprotoshow-apps-my-app-bi-report	glm-5.2	425	10	14049	6627	512000	0	main	0	claude
 4c472362-4cca-4fad-a99b-c757b5ad0094	2026-07-10T10:56:48+08:00	-home-ant-projects-myprotoshow-apps-my-app	glm-5.2	180	10	31566	3420	478720	0	main	0	claude
+4fb614ed-d71c-42d0-a5d2-25c955e8fbd7	2026-07-10T11:01:23+08:00	-home-ant-projects-myprotoshow-apps-my-app-bi-report	glm-5.2	199	8	38286	1880	315008	0	main	0	claude
