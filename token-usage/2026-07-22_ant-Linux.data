@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+a3be67b0-f519-4e76-b029-8e9871766e0b	2026-07-22T09:26:37+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	96	8	53738	3586	352704	0	test	0	claude
