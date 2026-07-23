@@ -1,4 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 0b862f95-956e-4a24-bfd6-77048f1cd576	2026-07-23T10:52:49+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	709	18	85285	13451	1040960	0	master	0	claude
-ses_0730cf0dfffeBcQa5qwpIXEzY9	2026-07-23T11:09:27+08:00	mcp-gateway	deepseek-v4-flash	163	21	31303	2176	415104	0	master	2594	opencode
-ses_0730a62c3ffe6k57Bnbbo1A4vB	2026-07-23T11:12:14+08:00	mcp-gateway	deepseek-v4-flash	29	16	31021	2454	241920	0	master	491	opencode
+ses_0730cf0dfffeBcQa5qwpIXEzY9	2026-07-23T11:09:27+08:00	mcp-gateway	deepseek-v4-flash	230	22	31360	2426	450048	0	master	2659	opencode
+ses_0730a62c3ffe6k57Bnbbo1A4vB	2026-07-23T11:12:14+08:00	mcp-gateway	deepseek-v4-flash	62	20	50907	6608	473600	0	master	650	opencode
