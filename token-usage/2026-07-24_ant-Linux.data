@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 1514c3a1-6d84-4c0a-b585-54caab6479c0	2026-07-24T10:00:11+08:00	-home-ant-projects-2026	glm-5.2	298	19	33000	7041	946624	0	main	0	claude
 8f895d87-2124-473e-b8cd-f18ecb8ab5fb	2026-07-24T13:55:34+08:00	-home-ant-code-java-scrm-api	glm-5.2	7434	16	98920	28022	954432	0	master	0	claude
+a0d01c85-42f3-413f-908a-7374a72de986	2026-07-24T15:43:08+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	2373	11	106823	10984	529024	0	master	0	claude
