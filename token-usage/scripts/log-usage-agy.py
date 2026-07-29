@@ -291,17 +291,34 @@ def main() -> None:
         log(f"SKIP: agy brain dir not found at {brain_base}")
         return
 
+    hook_data = None
+    if not sys.stdin.isatty():
+        try:
+            raw = sys.stdin.read().strip()
+            if raw:
+                hook_data = json.loads(raw)
+        except Exception:
+            pass
+
     recorded = get_recorded_sessions()
     workspace_map = get_workspace_map()
 
-    cids = [d.name for d in brain_base.iterdir() if d.is_dir()]
-    if args.since:
-        now_ts = time.time()
-        cutoff = now_ts - (args.since * 60)
-        cids = [
-            cid for cid in cids
-            if (brain_base / cid).stat().st_mtime >= cutoff
-        ]
+    cids = []
+    if hook_data and isinstance(hook_data, dict):
+        cid = hook_data.get("conversationId") or hook_data.get("session_id")
+        if cid:
+            cids = [cid]
+            log(f"Hook payload received for conversationId={cid[:8]}")
+
+    if not cids:
+        cids = [d.name for d in brain_base.iterdir() if d.is_dir()]
+        if args.since:
+            now_ts = time.time()
+            cutoff = now_ts - (args.since * 60)
+            cids = [
+                cid for cid in cids
+                if (brain_base / cid).stat().st_mtime >= cutoff
+            ]
 
     log(f"START scanning {len(cids)} agy sessions...")
 

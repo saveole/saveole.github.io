@@ -1,0 +1,11 @@
+{
+  "token-usage-tracker": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-agy.py",
+        "timeout": 30
+      }
+    ]
+  }
+}
