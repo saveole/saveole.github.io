@@ -2,3 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 69f1b819-73ab-4a42-bc75-3b6cc3719781	2026-07-29T08:04:23+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-f3afcd39-workdir	glm-5.2	110	3	59273	1420	100160	0	HEAD	0	claude
 94670ff2-9a32-47c5-9058-148691e72d24	2026-07-29T08:33:24+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-7aa83bca-workdir	glm-5.2	21	2	12516	605	42496	0	HEAD	0	claude
 773b7e31-1da7-4cc4-aa6d-9c5a4edcdfee	2026-07-29T15:16:22+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	4974	13	142394	34472	881408	0	feat/ops-dashboard-promotion	0	claude
+9400e92e-66e6-48fc-b068-6fc4bd5e7949	2026-07-29T16:30:26+08:00	saveole.github.io	gemini-3.6-flash-high	1226	37	51490	13783	0	0	main	1029	agy
