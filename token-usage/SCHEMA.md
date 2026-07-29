@@ -20,7 +20,7 @@ Token usage data is stored as TSV (Tab-Separated Values) files with a single hea
 | 10| tokens_cache_creation   | integer | Tokens written to prompt cache (creation)       | 0                                    |
 | 11| git_branch              | string  | Git branch name at session time                | main                                 |
 | 12| tokens_reasoning        | integer | Tokens consumed for reasoning (thinking)        | 175                                  |
-| 13| source                  | string  | Data source identifier (claude / opencode)     | opencode                             |
+| 13| source                  | string  | Data source identifier (claude / opencode / hermes / agy) | agy                                  |
 
 **Total: 13 columns, tab-delimited.**
 

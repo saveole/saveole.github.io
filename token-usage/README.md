@@ -258,6 +258,7 @@ token-usage/
 ├── scripts/
 │   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
 │   ├── log-usage-opencode.py # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
+│   ├── log-usage-agy.py      # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
