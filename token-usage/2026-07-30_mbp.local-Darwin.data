@@ -1,0 +1,2 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+3c143ce8-43a2-4fd0-90eb-00126042faac	2026-07-30T16:33:39+08:00	saveole.github.io	gemini-3.6-flash	284	40	47293	3951	0	0	main	0	agy
