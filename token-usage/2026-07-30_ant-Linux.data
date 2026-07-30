@@ -3,3 +3,5 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 a4178c89-0215-4b64-afc2-4253ad732756	2026-07-30T08:31:55+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-e257cd1b-workdir	glm-5.2	35	3	37385	523	63936	0	HEAD	0	claude
 6ae72751-e304-4b8d-a49c-db9eb98fe9dc	2026-07-30T09:48:43+08:00	-home-ant-code-java-scrm-api	glm-5.2	124	13	30563	2655	652608	0	feat/9.7/NFQX-12446	0	claude
 80eb96fc-8ce2-4f6d-a4e0-e4300445ac7c	2026-07-30T10:27:01+08:00	-home-ant-code-java-scrm-api	glm-5.2	40	4	47578	2026	193472	0	master	0	claude
+584ebd6d-e264-4a93-adff-3ed75aef0abe	2026-07-30T16:27:49+08:00	saveole.github.io	gemini-3.6-flash	15	13	30126	747	0	0	main	0	agy
+a0d2bc0f-e19e-433b-a372-bddb9f06a265	2026-07-30T15:30:21+08:00	mcp-gateway	gemini-3.6-flash-high	2661	48	48387	5878	0	0	master	2266	agy
