@@ -245,6 +245,32 @@ tail -1 ~/blog/saveole.github.io/token-usage/$(date -u +%Y-%m-%d)_*.data
 
 详细说明见 [plugins/hermes/README.md](./plugins/hermes/README.md)。
 
+## 安装 Antigravity CLI (agy) 追踪
+
+### 工作原理
+
+Antigravity CLI 会将会话转录保存在 `~/.gemini/antigravity-cli/brain/<cid>/.system_generated/logs/` 中。通过在 Shell (`~/.bashrc` / `~/.zshrc`) 中配置 `agy` Wrapper 函数，可以在每次 `agy` 退出时自动后台触发 `log-usage-agy.py` 统计并同步 Token 用量。
+
+### 配置步骤
+
+在 `~/.bashrc` 和 `~/.zshrc` 末尾添加如下 Wrapper 函数：
+
+```bash
+# Antigravity CLI (agy) token usage auto tracker
+agy() {
+    command agy "$@"
+    local ret=$?
+    (python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-agy.py --since 60 >/dev/null 2>&1 &)
+    return $ret
+}
+```
+
+添加后运行 `source ~/.bashrc` 或重新打开终端即可生效。手动补录或扫描所有历史 `agy` 会话可直接运行：
+
+```bash
+python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-agy.py
+```
+
 ## 目录结构
 
 ```
