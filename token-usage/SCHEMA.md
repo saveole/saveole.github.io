@@ -93,6 +93,26 @@ session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count\ttokens_i
 | `session.tokens_reasoning` | tokens_reasoning       | Direct copy                            |
 | `"opencode"`               | source                 | 固定为 `opencode`                      |
 
+### Antigravity CLI (agy)
+
+数据来源为 Antigravity CLI 本地会话记录（`~/.gemini/antigravity-cli/brain/<cid>/.system_generated/logs/transcript_full.jsonl`），以及 `history.jsonl` / `conversations/<cid>.db` 数据库。
+
+| Source / Field                           | TSV Column             | Transformation                         |
+|------------------------------------------|------------------------|----------------------------------------|
+| `conversationId` (`cid`)                | session_id             | Direct copy                            |
+| `created_at` (first entry)               | timestamp              | 首条记录 timestamp (ISO CST)            |
+| `history.jsonl` -> `workspace`          | project                | workspace 目录 basename                 |
+| `conversations/<cid>.db` -> metadata     | model                  | 正则匹配模型名 (如 gemini-3.6-flash)    |
+| *(computed from timestamps)*            | duration_seconds       | 首末条 created_at 之差                 |
+| *(count messages)*                       | message_count          | USER_INPUT + PLANNER_RESPONSE 消息数   |
+| USER_INPUT + tool result chars           | tokens_input           | 字符数 * 0.35 估算                      |
+| PLANNER_RESPONSE + tool call json chars  | tokens_output          | 字符数 * 0.35 估算                      |
+| *(N/A — agy)*                            | tokens_cache_read      | 固定为 0                               |
+| *(N/A — agy)*                            | tokens_cache_creation | 固定为 0                               |
+| `git branch --show-current`              | git_branch             | 从 workspace 目录执行 git 命令          |
+| PLANNER_RESPONSE `thinking` chars        | tokens_reasoning       | thinking 字符数 * 0.35 估算            |
+| `"agy"`                                  | source                 | 固定为 `agy`                           |
+
 ## Example
 
 **JSONL assistant entry (input)** — `~/.claude/projects/-home-ant-blog/74fae944-...jsonl` 中的一行：

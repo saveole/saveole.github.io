@@ -1,8 +1,8 @@
 # token-usage
 
-> Claude Code & OpenCode 会话 token 用量追踪
+> Claude Code, OpenCode, Hermes Agent & Antigravity CLI (agy) 会话 token 用量追踪
 
-自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code** 和 **OpenCode** 两个来源，写入统一的 TSV 文件。
+自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent** 和 **Antigravity CLI (agy)** 来源，写入统一的 TSV 文件。
 
 ## 工作原理
 
@@ -296,7 +296,7 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | `tokens_cache_creation` | 缓存写入 token 数 |
 | `git_branch` | 会话时的 git 分支 |
 | `tokens_reasoning` | 推理（thinking）token 数（OpenCode 特有） |
-| `source` | 数据来源：claude / opencode |
+| `source` | 数据来源：claude / opencode / hermes / agy |
 
 完整规范见 [SCHEMA.md](./SCHEMA.md)。
 
