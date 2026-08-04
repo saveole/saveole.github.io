@@ -1,8 +1,8 @@
 # token-usage
 
-> Claude Code, OpenCode, Hermes Agent & Antigravity CLI (agy) 会话 token 用量追踪
+> Claude Code, OpenCode, Hermes Agent, Antigravity CLI (agy) & ZCode 会话 token 用量追踪
 
-自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent** 和 **Antigravity CLI (agy)** 来源，写入统一的 TSV 文件。
+自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent**、**Antigravity CLI (agy)** 和 **ZCode** 来源，写入统一的 TSV 文件。
 
 ## 工作原理
 
@@ -24,6 +24,14 @@ OpenCode session.updated（Plugin）
     ↓ 已预聚合 token，直接映射到 TSV 格式
     ↓ 按 session_id 去重
     ↓ 追加到同一天的 YYYY-MM-DD_{hostname}-{os}.data（同一 TSV 文件）
+    ↓ 自动 git commit + push
+────────────────────────────
+ZCode 主代理回复结束（Stop Hook）
+    ↓ log-usage-zcode.py 触发（--since 5）
+    ↓ 查询 ~/.zcode/cli/db/db.sqlite (SQLite)
+    ↓ 递归 CTE 归并 subagent：沿 session.parent_id 链收集所有子会话
+    ↓ 按 session_id 聚合 model_usage 各 token 列（status='completed'）
+    ↓ 按 session_id 去重，upsert 到同一天的 YYYY-MM-DD_{hostname}-{os}.data
     ↓ 自动 git commit + push
 ────────────────────────────
 博客构建（node build.js）
@@ -271,6 +279,105 @@ agy() {
 python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-agy.py
 ```
 
+## 安装 ZCode 追踪
+
+### 工作原理
+
+ZCode 将所有会话与模型调用记录存储在本地 SQLite 数据库（`~/.zcode/cli/db/db.sqlite`）中，`model_usage` 表已按每次模型请求预聚合 token 用量。通过在 `~/.zcode/cli/config.json` 注册 `Stop` hook，可在主代理每次回复结束后自动触发 `log-usage-zcode.py` 统计并同步 Token 用量。
+
+ZCode 的一个关键特性：**子代理（subagent）作为独立 session 存储**，通过 `session.parent_id` 链回主会话。脚本使用递归 CTE 收集主会话及其所有子会话，将 subagent 的 token 消耗归并到父会话——这与 Claude Code（子代理在同一 transcript 内）的统计语义一致。
+
+### 前提条件
+
+- [ZCode](https://zcode.ai) CLI 已安装并使用过（确保 `~/.zcode/cli/db/db.sqlite` 存在）
+- 上述 Claude Code 安装步骤已完成（共用同一个仓库）
+
+### 第 1 步：检查脚本文件
+
+确认 `log-usage-zcode.py` 在仓库中（克隆时已包含）：
+
+```bash
+ls ~/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py
+```
+
+### 第 2 步：注册 ZCode Stop Hook
+
+> ⚠️ **ZCode 没有 `SessionEnd` 事件**，最接近的是 `Stop`（主代理每次回复结束触发，一 session 多次）。脚本按 `session_id` 幂等去重，重复触发只会更新不会重复写入。
+>
+> ⚠️ **hook 必须注册到 `~/.zcode/cli/config.json` 的 `hooks.events` 结构**，并设置 `hooks.enabled: true`。`.agents/hooks.json` 是 ZCode 不识别的路径（那是 Claude Code / agy 的约定）。
+
+打开 `~/.zcode/cli/config.json`（如不存在则创建），合并入 `hooks` 配置（与已有的 `mcp` 等字段并存）：
+
+```json
+{
+  "mcp": { "...已有内容保持不变..." },
+  "hooks": {
+    "enabled": true,
+    "events": {
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "python3 /home/ant/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py --since 5",
+              "timeout": 30
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+- **`--since 5`**：Stop 每轮都触发，只扫描最近 5 分钟 `time_updated` 的会话，避免全表扫描
+- **`timeout: 30`**：单位秒。SQL 查询 + git 同步通常 < 10s
+- **绝对路径**：command 字符串里的 `~` 可能不被 shell 展开，建议用绝对路径
+
+### 第 3 步：验证
+
+启动 ZCode，和 AI 对话几轮后，检查：
+
+```bash
+# 查看日志
+tail -20 ~/.claude/hooks/tracker.log | grep zcode
+
+# 查看当天记录（应能看到 source=zcode 的行）
+grep "zcode" ~/blog/saveole.github.io/token-usage/$(date +%Y-%m-%d)_*.data
+```
+
+### 手动补录历史数据
+
+首次安装后一次性导入所有已有 ZCode 会话数据（不带 `--since` 会扫描全部 interactive session）：
+
+```bash
+python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py --all
+```
+
+脚本去重逻辑会跳过已记录的 session，只写入新增和变动的数据。
+
+### 触发器机制
+
+```
+ZCode 主代理回复结束
+    ↓
+Stop 事件触发（每次回复都触发）
+    ↓
+log-usage-zcode.py --since 5
+    ↓
+查询 ~/.zcode/cli/db/db.sqlite
+    ↓ 递归 CTE 沿 parent_id 收集 subagent 子会话
+    ↓ SUM(model_usage.*) 聚合，status='completed' 过滤
+写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
+    ↓
+git add → commit → pull --rebase → push
+```
+
+- **触发时机**：每次主代理回复结束（`Stop` 事件）
+- **去重**：按 `session_id` + 5 个 token 字段判断，相同数据不重复写入
+- **SQLite 优势**：ZCode 的 `model_usage` 表已按每次模型请求记录 token（`input_tokens` / `output_tokens` / `reasoning_tokens` / `cache_read_input_tokens` / `cache_creation_input_tokens`），无需逐行解析 JSONL
+- **子代理归并**：subagent 的 token 通过递归 CTE 自动累加进父会话，每个交互会话只产生一行 `.data` 记录
+
 ## 目录结构
 
 ```
@@ -285,6 +392,7 @@ token-usage/
 │   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
 │   ├── log-usage-opencode.py # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
 │   ├── log-usage-agy.py      # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
+│   ├── log-usage-zcode.py    # ZCode 追踪脚本（Python，查询 ~/.zcode/cli/db/db.sqlite，递归 CTE 归并 subagent）
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
@@ -322,7 +430,7 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | `tokens_cache_creation` | 缓存写入 token 数 |
 | `git_branch` | 会话时的 git 分支 |
 | `tokens_reasoning` | 推理（thinking）token 数（OpenCode 特有） |
-| `source` | 数据来源：claude / opencode / hermes / agy |
+| `source` | 数据来源：claude / opencode / hermes / agy / zcode |
 
 完整规范见 [SCHEMA.md](./SCHEMA.md)。
 
@@ -402,3 +510,17 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | 有记录但没 push | 查看 `~/.hermes/plugins/token-usage-tracker.log` 中 GIT 开头的行 |
 | project 显示 "unknown" | Hermes sessions 表不存 cwd，插件 fallback 到 `os.getcwd()` 的 basename |
 | 零 token 会话被跳过 | 正常行为 — input=0 且 output=0 的会话不记录 |
+
+### ZCode
+
+| 现象 | 检查 |
+|------|------|
+| 回复结束后没有记录 | 确认 `~/.zcode/cli/config.json` 中 `hooks.enabled: true` 且 `hooks.events.Stop` 已配置 |
+| hook 配置了但没触发 | `.agents/hooks.json` 对 ZCode **无效**——必须用 `~/.zcode/cli/config.json` 的 `hooks.events` 结构 |
+| 脚本触发了但没有 .data 文件 | 查看 `~/.claude/hooks/tracker.log` 中 `[zcode]` 开头的行，确认 `SKIP` 原因 |
+| `SKIP: ZCode DB not found` | 确认 `~/.zcode/cli/db/db.sqlite` 存在；或设置 `ZCODE_DB_PATH` 环境变量指向正确路径 |
+| .data 文件存在但没有 push | 查看日志中 `GIT:` 开头的行；检查仓库 git remote 配置 |
+| project 列显示 `unknown` | DB 中 `session.directory` 为空，fallback 到 "unknown" |
+| 子代理 token 没被统计 | 确认 DB 中 `session.parent_id` 正确链接子会话；脚本用递归 CTE 自动归并 |
+| 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的 session |
+| reasoning / cache_creation 列为 0 | 当前 GLM 模型不填充这两列，正常 |

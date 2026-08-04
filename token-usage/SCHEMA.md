@@ -20,7 +20,7 @@ Token usage data is stored as TSV (Tab-Separated Values) files with a single hea
 | 10| tokens_cache_creation   | integer | Tokens written to prompt cache (creation)       | 0                                    |
 | 11| git_branch              | string  | Git branch name at session time                | main                                 |
 | 12| tokens_reasoning        | integer | Tokens consumed for reasoning (thinking)        | 175                                  |
-| 13| source                  | string  | Data source identifier (claude / opencode / hermes / agy) | agy                                  |
+| 13| source                  | string  | Data source identifier (claude / opencode / hermes / agy / zcode) | zcode                                  |
 
 **Total: 13 columns, tab-delimited.**
 
@@ -113,6 +113,41 @@ session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count\ttokens_i
 | PLANNER_RESPONSE `thinking` chars        | tokens_reasoning       | thinking 字符数 * 0.35 估算            |
 | `"agy"`                                  | source                 | 固定为 `agy`                           |
 
+### ZCode (SQLite to TSV)
+
+数据来源为 ZCode 本地 SQLite 数据库（`~/.zcode/cli/db/db.sqlite`）。`model_usage` 表按每次模型请求记录 token，`session` 表存储会话元数据。
+
+**子代理归并**：ZCode 把 subagent 作为独立 session 存储（`task_type='subagent_child'`，`parent_id` 链回主会话）。脚本用递归 CTE 沿 `parent_id` 链收集主会话及其所有子会话，token 累加到父会话——每个 interactive session 只产生一行 TSV 记录。
+
+| SQLite Source / Field                     | TSV Column             | Transformation                         |
+|------------------------------------------|------------------------|----------------------------------------|
+| `session.id`                             | session_id             | 直接用（含 `sess_` 前缀）              |
+| `session.time_created`                   | timestamp              | epoch ms → ISO CST (+08:00)            |
+| `session.directory`                      | project                | 目录 basename                           |
+| `model_usage.model_id`（树内最高频）       | model                  | 递归 CTE 内 GROUP BY model_id 取 COUNT DESC |
+| `MAX(completed_at) - MIN(started_at)`    | duration_seconds       | ms → 秒                                |
+| `turn_usage` 树内 COUNT(*)               | message_count          | 对话轮次数                             |
+| `SUM(model_usage.input_tokens)`          | tokens_input           | 递归 CTE 内求和，含 subagent           |
+| `SUM(model_usage.output_tokens)`         | tokens_output          | 递归 CTE 内求和，含 subagent           |
+| `SUM(model_usage.cache_read_input_tokens)` | tokens_cache_read    | 递归 CTE 内求和，含 subagent           |
+| `SUM(model_usage.cache_creation_input_tokens)` | tokens_cache_creation | 递归 CTE 内求和（当前 GLM 模型为 0） |
+| `git branch --show-current`（session.directory） | git_branch      | 子进程执行                             |
+| `SUM(model_usage.reasoning_tokens)`      | tokens_reasoning       | 递归 CTE 内求和（当前 GLM 模型为 0）   |
+| `"zcode"`                                | source                 | 固定为 `zcode`                         |
+
+**过滤条件**：`model_usage.status = 'completed'`（cancelled / error 请求 token 为 0，过滤无数据损失）。
+
+**递归 CTE 示例**（归并 subagent）：
+```sql
+WITH RECURSIVE session_tree(id) AS (
+    SELECT ?                       -- 根 interactive session_id
+    UNION ALL
+    SELECT s.id FROM session s JOIN session_tree t ON s.parent_id = t.id
+)
+SELECT ... FROM model_usage mu
+WHERE mu.session_id IN (SELECT id FROM session_tree) AND mu.status = 'completed';
+```
+
 ## Example
 
 **JSONL assistant entry (input)** — `~/.claude/projects/-home-ant-blog/74fae944-...jsonl` 中的一行：
@@ -143,5 +178,10 @@ session_id\ttimestamp\tproject\tmodel\tduration_seconds\tmessage_count\ttokens_i
 
 **OpenCode TSV example:**
 ```
-ses_12b7a7441ffe28fJLuv9J35Vai\t2026-06-17T15:30:00+08:00\tsaveole.github.io\tdeepseek-v4-pro\t540\t18\t34412\t1746\t241280\t0\tmain\t220\topencode
+ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00\tsaveole.github.io\tdeepseek-v4-pro\t540\t18\t34412\t1746\t241280\t0\tmain\t220\topencode
+```
+
+**ZCode TSV example**（含 subagent 归并后的总消耗）：
+```
+sess_e66fe6bf-5468-4bfb-8fd5-c2b179b5b4b1	2026-08-03T16:16:24+08:00	mcp-gateway	GLM-5.2	5337	17	7962609	69209	7592384	0	master	0	zcode
 ```
