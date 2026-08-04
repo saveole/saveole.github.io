@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 712b3e25-283c-4a66-a403-48bc2528e18a	2026-08-04T08:05:42+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-51d48c0c-workdir	glm-5.2	126	5	63496	1397	164800	0	HEAD	0	claude
 c64a9d73-57ed-4461-8835-5db58efd3c93	2026-08-04T08:31:45+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-8459307f-workdir	glm-5.2	36	4	54509	914	117248	0	HEAD	0	claude
 sess_fbd89f4d-cc25-4420-9041-8a42d8a4e5ae	2026-08-04T09:10:13+08:00	saveole.github.io	GLM-5.2	1341	6	3838474	50250	3637568	0	main	0	zcode
-ses_034ad3563ffeYGtMKMLZIIAE22	2026-08-04T13:50:28+08:00	mcp-gateway	deepseek-v4-flash	42	15	42977	1218	368256	0	master	2335	opencode
+ses_034ad3563ffeYGtMKMLZIIAE22	2026-08-04T13:50:28+08:00	mcp-gateway	deepseek-v4-flash	79	18	49187	1521	521088	0	master	6015	opencode
