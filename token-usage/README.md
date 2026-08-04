@@ -302,7 +302,7 @@ ls ~/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py
 
 ### 第 2 步：注册 ZCode Stop Hook
 
-> ⚠️ **ZCode 没有 `SessionEnd` 事件**，最接近的是 `Stop`（主代理每次回复结束触发，一 session 多次）。脚本按 `session_id` 幂等去重，重复触发只会更新不会重复写入。
+> ⚠️ **ZCode 没有 `SessionEnd` 事件**，最接近的是 `Stop`（主代理每次回复结束触发，一 session 多次）。脚本内置**进程内节流**（默认 15 分钟）：同一 session 在节流窗口内的重复 Stop 触发会直接 return，不查 DB、不碰 git。窗口过期后才再次查询并同步。
 >
 > ⚠️ **hook 必须注册到 `~/.zcode/cli/config.json` 的 `hooks.events` 结构**，并设置 `hooks.enabled: true`。`.agents/hooks.json` 是 ZCode 不识别的路径（那是 Claude Code / agy 的约定）。
 
@@ -319,7 +319,7 @@ ls ~/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py
           "hooks": [
             {
               "type": "command",
-              "command": "python3 /home/ant/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py --since 5",
+              "command": "python3 /home/ant/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py",
               "timeout": 30
             }
           ]
@@ -330,9 +330,11 @@ ls ~/blog/saveole.github.io/token-usage/scripts/log-usage-zcode.py
 }
 ```
 
-- **`--since 5`**：Stop 每轮都触发，只扫描最近 5 分钟 `time_updated` 的会话，避免全表扫描
-- **`timeout: 30`**：单位秒。SQL 查询 + git 同步通常 < 10s
-- **绝对路径**：command 字符串里的 `~` 可能不被 shell 展开，建议用绝对路径
+- **不要在 hook 命令里加 `--since` 或 `--all`**：这两个参数会**绕过节流**（用于手动补录/排查），加在 hook 里会让节流失效、每轮都跑全量
+- **节流窗口**：默认 15 分钟（环境变量 `ZCODE_THROTTLE_MINUTES` 可调）。状态文件在 `~/.zcode/tracker-throttle.json`（`ZCODE_THROTTLE_FILE` 可改路径）
+- **兜底机制**：即使节流期间会话崩溃,下次任何 session 活动触发时,因 `.data` 里数据过期或缺失仍会被 `--since`/`--all` 补录
+- **`timeout: 30`**：单位秒。节流命中时 < 50ms;真正查询+git 同步通常 < 10s
+- **绝对路径**：command 字符串里的 `~` 可能不被 shell 展开,建议用绝对路径
 
 ### 第 3 步：验证
 
@@ -363,18 +365,21 @@ ZCode 主代理回复结束
     ↓
 Stop 事件触发（每次回复都触发）
     ↓
-log-usage-zcode.py --since 5
+log-usage-zcode.py（hook 调用，无 --since/--all 标志）
     ↓
-查询 ~/.zcode/cli/db/db.sqlite
-    ↓ 递归 CTE 沿 parent_id 收集 subagent 子会话
-    ↓ SUM(model_usage.*) 聚合，status='completed' 过滤
-写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
-    ↓
-git add → commit → pull --rebase → push
+读节流 statefile：同 session 距上次记录 < 15 分钟？
+    ├─ 是 → return（< 50ms，不查 DB、不碰 git）   ← 绝大多数情况走这条
+    └─ 否 → 查询 ~/.zcode/cli/db/db.sqlite
+            ↓ 递归 CTE 沿 parent_id 收集 subagent 子会话
+            ↓ SUM(model_usage.*) 聚合，status='completed' 过滤
+            写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
+            ↓ 标记节流 statefile
+            git add → commit → pull --rebase → push
 ```
 
-- **触发时机**：每次主代理回复结束（`Stop` 事件）
-- **去重**：按 `session_id` + 5 个 token 字段判断，相同数据不重复写入
+- **触发时机**：每次主代理回复结束（`Stop` 事件），但**节流后**实际只每 15 分钟跑一次完整流程
+- **节流**：statefile `~/.zcode/tracker-throttle.json` 记录每 session 最近一次记录时刻;窗口可由 `ZCODE_THROTTLE_MINUTES` 调整(默认 15)
+- **去重**：按 `session_id` + 5 个 token 字段判断，相同数据不重复写入(即使节流过期后重查)
 - **SQLite 优势**：ZCode 的 `model_usage` 表已按每次模型请求记录 token（`input_tokens` / `output_tokens` / `reasoning_tokens` / `cache_read_input_tokens` / `cache_creation_input_tokens`），无需逐行解析 JSONL
 - **子代理归并**：subagent 的 token 通过递归 CTE 自动累加进父会话，每个交互会话只产生一行 `.data` 记录
 
@@ -515,7 +520,8 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 
 | 现象 | 检查 |
 |------|------|
-| 回复结束后没有记录 | 确认 `~/.zcode/cli/config.json` 中 `hooks.enabled: true` 且 `hooks.events.Stop` 已配置 |
+| 回复结束后没有记录 | 可能是**节流命中**（正常）：查日志看到 `SKIP: session ... throttled` 即为节流,15 分钟后会自动记录。若需立即记录,手动跑 `--since 60` 或 `--all`(绕过节流) |
+| 回复结束后没有记录(非节流) | 确认 `~/.zcode/cli/config.json` 中 `hooks.enabled: true` 且 `hooks.events.Stop` 已配置 |
 | hook 配置了但没触发 | `.agents/hooks.json` 对 ZCode **无效**——必须用 `~/.zcode/cli/config.json` 的 `hooks.events` 结构 |
 | 脚本触发了但没有 .data 文件 | 查看 `~/.claude/hooks/tracker.log` 中 `[zcode]` 开头的行，确认 `SKIP` 原因 |
 | `SKIP: ZCode DB not found` | 确认 `~/.zcode/cli/db/db.sqlite` 存在；或设置 `ZCODE_DB_PATH` 环境变量指向正确路径 |

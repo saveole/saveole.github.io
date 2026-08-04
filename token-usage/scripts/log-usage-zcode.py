@@ -39,6 +39,12 @@ DATA_DIR = REPO_DIR / "token-usage"
 ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
 LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
 
+# 节流:同一 session 在 THROTTLE_MINUTES 分钟内只记录一次(含 git 操作)。
+# Stop hook 每轮都触发,但绝大多数应直接 return,避免频繁 commit + push。
+# 兜底:即使节流期间崩溃,下次任何会话活动触发 --since 时仍会补录(因为 .data 里数据旧或缺失)。
+THROTTLE_FILE = Path(os.environ.get("ZCODE_THROTTLE_FILE", str(Path.home() / ".zcode" / "tracker-throttle.json")))
+THROTTLE_MINUTES = int(os.environ.get("ZCODE_THROTTLE_MINUTES", "15"))
+
 CST = timezone(timedelta(hours=8))
 
 TSV_HEADER = "\t".join([
@@ -63,6 +69,39 @@ def error_log(msg: str) -> None:
     ERROR_LOG.parent.mkdir(parents=True, exist_ok=True)
     with open(ERROR_LOG, "a") as f:
         f.write(f"[{ts}] [zcode] {msg}\n")
+
+
+# ── 节流(statefile 记录每 session 最近一次记录时刻) ──────────
+
+def is_throttled(session_id: str) -> bool:
+    """True if this session was recorded less than THROTTLE_MINUTES ago."""
+    if not THROTTLE_FILE.is_file():
+        return False
+    try:
+        data = json.loads(THROTTLE_FILE.read_text(encoding="utf-8"))
+        last = data.get(session_id, 0)
+        return (time.time() - last) < THROTTLE_MINUTES * 60
+    except (OSError, ValueError):
+        return False
+
+
+def mark_recorded(session_id: str) -> None:
+    """Update throttle statefile with current timestamp for this session.
+
+    Keeps only recent entries to avoid unbounded growth.
+    """
+    cutoff = time.time() - THROTTLE_MINUTES * 60 * 4  # 保留 4 倍窗口用于兜底补录判断
+    data: dict = {}
+    if THROTTLE_FILE.is_file():
+        try:
+            data = json.loads(THROTTLE_FILE.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = {}
+    # 清理过期条目
+    data = {k: v for k, v in data.items() if v >= cutoff}
+    data[session_id] = time.time()
+    THROTTLE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    THROTTLE_FILE.write_text(json.dumps(data), encoding="utf-8")
 
 
 def run_git(*args: str) -> bool:
@@ -355,6 +394,14 @@ def main() -> None:
             target_session_id = env_sid
             log(f"Env var CLAUDE_SESSION_ID={env_sid[:12]}")
 
+    # ── 节流:hook 触发的单会话路径,同 session N 分钟内不重复记录 ──
+    # 仅对 hook 触发(target_session_id 来自 stdin/env 且无 --all/--since)生效;
+    # --since / --all 是手动调用,始终全量执行(用于补录/排查)。
+    manual = args.all or args.since is not None
+    if target_session_id and not manual and is_throttled(target_session_id):
+        log(f"SKIP: session {target_session_id[:12]} throttled (< {THROTTLE_MINUTES}min)")
+        return
+
     recorded = get_recorded_sessions()
     conn = open_db()
 
@@ -390,6 +437,11 @@ def main() -> None:
         t_cache_read = data["tokens_cache_read"]
         t_cache_creation = data["tokens_cache_creation"]
         t_reasoning = data["tokens_reasoning"]
+
+        # 节流:只要成功查到 session 数据就标记,后续 N 分钟内不再重复查询。
+        # 即使 token 未变化也要标记 —— 这正是节流要覆盖的最常见场景
+        # (会话活跃但自上次记录后无新对话)。
+        mark_recorded(sid)
 
         if sid in recorded:
             _, old = recorded[sid]
