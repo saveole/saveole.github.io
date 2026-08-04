@@ -1,0 +1,4 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+sess_ab7ead39-69e4-4018-9e26-a0a6f8d42382	2026-07-22T20:52:31+08:00	inherit-mcp-server	GLM-5.2	171149	13	5010390	32530	4764608	0	master	0	zcode
+sess_4c402848-eaf7-48f7-ace4-c4ee4d73bc6b	2026-07-22T20:44:12+08:00	saveole.github.io	GLM-5.2	129	2	124597	1612	116736	0	main	0	zcode
+sess_77e888a1-c764-473f-897d-57a3e14404b7	2026-07-22T19:17:08+08:00	inherit-mcp-server	GLM-5.2	104	1	111054	3464	94720	0	master	0	zcode
