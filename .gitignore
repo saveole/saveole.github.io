@@ -9,4 +9,5 @@ dist/
 *.bak
 .idea
 .rick
+.zcode
 __pycache__/
