@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 1a146e75-b71c-4ede-a8c2-3ab0d8a40dc3	2026-07-31T08:03:27+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-4339ea8b-workdir	glm-5.2	112	5	55159	1897	210624	0	HEAD	0	claude
 c1e82e62-9748-4522-8bef-8233cbcf5363	2026-07-31T08:31:23+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-56f74189-workdir	glm-5.2	18	2	26829	375	27840	0	HEAD	0	claude
 sess_255ea437-200a-4985-aa4a-843324b0b010	2026-07-31T11:10:09+08:00	scrm-api	GLM-5.2	1463	6	2702514	37611	2519104	0	master	0	zcode
-sess_9794bcf4-d45c-45d8-af83-8512dcdc9376	2026-07-31T09:47:26+08:00	mcp-gateway	GLM-5.2	351317	19	28211836	137953	27479808	0	master	0	zcode
+sess_9794bcf4-d45c-45d8-af83-8512dcdc9376	2026-07-31T09:47:26+08:00	mcp-gateway	GLM-5.2	351453	20	28509929	138492	27775296	0	master	0	zcode
