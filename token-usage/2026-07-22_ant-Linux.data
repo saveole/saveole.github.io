@@ -1,3 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 a3be67b0-f519-4e76-b029-8e9871766e0b	2026-07-22T09:26:37+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	96	8	53738	3586	352704	0	test	0	claude
 98a46569-0e61-4a4d-9082-bbbf1a21b233	2026-07-22T17:57:39+08:00	-home-ant-code-web-scrm	glm-5.2	296	6	49005	10007	215808	0	feat-mcp-tool	0	claude
+sess_fe98bf4f-dc81-4bb8-a932-f881a1a5e76f	2026-07-22T11:12:12+08:00	mcp-gateway	GLM-5.2	196736	42	63203719	230457	60994560	0	master	0	zcode
+sess_9d75b539-6bbf-4ed1-bcf3-c68e18711744	2026-07-22T16:29:07+08:00	mcp-gateway	GLM-5.2	2910	9	4074752	59136	3720064	0	master	0	zcode

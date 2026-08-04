@@ -1,0 +1,5 @@
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+sess_ebde2262-3c72-4f17-bd22-af3c5f0fd8df	2026-07-21T17:23:50+08:00	xueqiu-crawler	GLM-5.2	521410	11	14912910	140799	14023488	0	main	0	zcode
+sess_a701b63e-9c25-4230-bd85-16804806a1d2	2026-07-21T11:18:45+08:00	ZCodeProject	GLM-5.2	81019	11	5435327	50420	5166272	0	main	0	zcode
+sess_3d09a3bc-a52b-4faa-a8b1-6a115c2e05bc	2026-07-21T17:14:29+08:00	2026	GLM-5.2	1871	3	4535934	23501	4455872	0	main	0	zcode
+sess_c4e62041-b866-4e40-b837-25875ec3f89d	2026-07-21T10:34:33+08:00	scrm-api	GLM-5.2	21771	11	20913720	115323	20238592	0	master	0	zcode
