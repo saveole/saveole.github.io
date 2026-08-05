@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
 8a0cb421-8821-4736-a277-522b5b5b195a	2026-08-05T08:04:25+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-264d25d8-workdir	glm-5.2	142	6	58477	2088	224000	0	HEAD	0	claude
 318c7872-6071-4928-9561-14a74bf33992	2026-08-05T08:33:33+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-5d427aab-workdir	glm-5.2	26	3	58355	340	61952	0	HEAD	0	claude
+6ba7a6f8-e84c-44e9-805f-65efc703a157	2026-08-05T13:36:20+08:00	-home-ant-code-java-inherit-java-server-inherit	glm-5.2	11798	28	349721	81053	2623168	0	master	0	claude
