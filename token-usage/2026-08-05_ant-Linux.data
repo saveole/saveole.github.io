@@ -10,3 +10,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 046aba72-cdc2-43f8-b1ff-2772a7e7f77d	2026-08-05T15:35:58+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	6295	75	160701	98325	10835904	0	master	0	claude
 019fd108-41b5-736e-8f7c-22c94697740a	2026-08-05T16:26:47+08:00	saveole.github.io	deepseek-v4-flash	37	11	22403	3255	251008	0	main	1558	pi
 54bf9495-cb6f-4943-a3af-fb0ba574e1e2	2026-08-05T16:30:02+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	2750	69	99333	51954	6458496	0	master	0	claude
+24977ece-6616-4b9f-a493-ee6173bdc26f	2026-08-05T17:23:55+08:00	scrm-api	gemini-3.6-flash-high	90	27	58004	4094	0	0	master	2139	agy
