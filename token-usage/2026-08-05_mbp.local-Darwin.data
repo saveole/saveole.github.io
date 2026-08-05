@@ -1,2 +1,2 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-ses_02d52cc90ffeTjfIyXDFjm6eCp	2026-08-06T00:06:34+08:00	scrm-api	deepseek-v4-flash	12	7	15927	728	51072	0	feat-mcp-tool	120	opencode
+ses_02d52cc90ffeTjfIyXDFjm6eCp	2026-08-06T00:06:34+08:00	scrm-api	deepseek-v4-flash	17	8	20276	859	69376	0	feat-mcp-tool	436	opencode
