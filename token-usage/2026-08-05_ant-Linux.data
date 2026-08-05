@@ -3,4 +3,7 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 318c7872-6071-4928-9561-14a74bf33992	2026-08-05T08:33:33+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-5d427aab-workdir	glm-5.2	26	3	58355	340	61952	0	HEAD	0	claude
 6ba7a6f8-e84c-44e9-805f-65efc703a157	2026-08-05T13:36:20+08:00	-home-ant-code-java-inherit-java-server-inherit	glm-5.2	11798	28	349721	81053	2623168	0	master	0	claude
 571fb826-86e1-4052-ae09-471ff18e68de	2026-08-05T13:43:31+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	15638	17	195693	27340	1169088	0	master	0	claude
-019fd08d-f6fa-7c92-98fe-d5140827ee22	2026-08-05T14:13:12+08:00	saveole.github.io	deepseek-v4-flash	3578	23	45130	21010	790144	0	main	8705	pi
+019fd08d-f6fa-7c92-98fe-d5140827ee22	2026-08-05T14:13:12+08:00	saveole.github.io	deepseek-v4-flash	3628	35	48257	26974	1620480	0	main	9638	pi
+019fcff7-021c-757b-9133-682398da18ac	2026-08-05T11:28:19+08:00	mcp-gateway	deepseek-v4-flash	9730	81	80728	63759	6038144	0	master	21111	pi
+019fd08b-fb80-7ed7-8f2e-1f82586a9fff	2026-08-05T14:11:02+08:00	tmp	deepseek-v4-flash	0	1	5899	2	0	0	main	0	pi
+019fd08c-21fd-7622-822a-eac9de28ded6	2026-08-05T14:11:12+08:00	tmp	deepseek-v4-flash	0	1	32	1119	5888	0	main	357	pi
