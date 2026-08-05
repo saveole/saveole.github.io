@@ -148,6 +148,28 @@ SELECT ... FROM model_usage mu
 WHERE mu.session_id IN (SELECT id FROM session_tree) AND mu.status = 'completed';
 ```
 
+### pi (JSONL to TSV)
+
+数据来源为 pi coding agent 本地会话文件（`~/.pi/agent/sessions/**/*.jsonl`）。pi 的每条 assistant 消息直接携带 `usage` 字段（无需解析嵌套结构或估算），统计范围与 pi footer 显示的总量一致：assistant 消息 + toolResult 内嵌 usage（工具内部 LLM 工作）+ compaction / branch_summary 的 usage（摘要生成）。
+
+| JSONL Path                              | TSV Column             | Transformation                         |
+|-----------------------------------------|------------------------|----------------------------------------|
+| header `id`                             | session_id             | Direct copy（兜底取文件名 uuid）       |
+| header `timestamp`                      | timestamp              | ISO → CST +08:00                      |
+| header `cwd`                            | project                | 目录 basename                          |
+| `message.model`(频率最高)               | model                  | 取出现次数最多的 model id              |
+| *(首末条 entry timestamp 之差)*          | duration_seconds       | max - min（秒）                        |
+| *(assistant 消息计数)*                   | message_count          | 带 usage 的 assistant 消息数          |
+| `usage.input`                           | tokens_input           | Sum across entries                    |
+| `usage.output`                          | tokens_output          | Sum across entries                    |
+| `usage.cacheRead`                       | tokens_cache_read      | Sum across entries                    |
+| `usage.cacheWrite`                      | tokens_cache_creation  | Sum across entries                    |
+| `git branch --show-current`(header cwd) | git_branch             | 子进程执行                             |
+| `usage.reasoning`                       | tokens_reasoning       | Sum across entries                    |
+| `"pi"`                                  | source                 | 固定为 `pi`                            |
+
+**统计范围**：assistant（每次 LLM 调用）+ toolResult 内嵌 usage + compaction / branch_summary usage。
+
 ## Example
 
 **JSONL assistant entry (input)** — `~/.claude/projects/-home-ant-blog/74fae944-...jsonl` 中的一行：
@@ -184,4 +206,9 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00\tsaveole.github.io\tdee
 **ZCode TSV example**（含 subagent 归并后的总消耗）：
 ```
 sess_e66fe6bf-5468-4bfb-8fd5-c2b179b5b4b1	2026-08-03T16:16:24+08:00	mcp-gateway	GLM-5.2	5337	17	7962609	69209	7592384	0	master	0	zcode
+```
+
+**pi TSV example**（usage 字段直接映射）：
+```
+019fd08d-f6fa-7c92-98fe-d5140827ee22	2026-08-05T14:13:12+08:00	saveole.github.io	deepseek-v4-flash	3578	23	45130	21010	790144	0	main	8705	pi
 ```

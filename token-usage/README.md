@@ -1,8 +1,8 @@
 # token-usage
 
-> Claude Code, OpenCode, Hermes Agent, Antigravity CLI (agy) & ZCode 会话 token 用量追踪
+> Claude Code, OpenCode, Hermes Agent, Antigravity CLI (agy), ZCode & pi 会话 token 用量追踪
 
-自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent**、**Antigravity CLI (agy)** 和 **ZCode** 来源，写入统一的 TSV 文件。
+自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent**、**Antigravity CLI (agy)**、**ZCode** 和 **pi coding agent** 来源，写入统一的 TSV 文件。
 
 ## 工作原理
 
@@ -32,6 +32,14 @@ ZCode 主代理回复结束（Stop Hook）
     ↓ 递归 CTE 归并 subagent：沿 session.parent_id 链收集所有子会话
     ↓ 按 session_id 聚合 model_usage 各 token 列（status='completed'）
     ↓ 按 session_id 去重，upsert 到同一天的 YYYY-MM-DD_{hostname}-{os}.data
+    ↓ 自动 git commit + push
+────────────────────────────
+pi 退出 / /new / /resume / /fork / /clone（session_shutdown）
+    ↓ plugins/pi/index.ts 扩展触发（detached 子进程，不阻塞退出）
+    ↓ log-usage-pi.py --session-file 读取 ~/.pi/agent/sessions/<...>.jsonl
+    ↓ 累加 assistant / toolResult 内嵌 / compaction / branch_summary 的 usage
+    ↓ 按 session_id 去重（进程内节流，默认 5 分钟）
+    ↓ upsert 到同一天的 YYYY-MM-DD_{hostname}-{os}.data
     ↓ 自动 git commit + push
 ────────────────────────────
 博客构建（node build.js）
@@ -383,21 +391,97 @@ log-usage-zcode.py（hook 调用，无 --since/--all 标志）
 - **SQLite 优势**：ZCode 的 `model_usage` 表已按每次模型请求记录 token（`input_tokens` / `output_tokens` / `reasoning_tokens` / `cache_read_input_tokens` / `cache_creation_input_tokens`），无需逐行解析 JSONL
 - **子代理归并**：subagent 的 token 通过递归 CTE 自动累加进父会话，每个交互会话只产生一行 `.data` 记录
 
+## 安装 pi 追踪
+
+### 工作原理
+
+pi coding agent 的会话 JSONL（`~/.pi/agent/sessions/**/*.jsonl`）中，每条 assistant 消息直接携带 `usage` 字段（`input` / `output` / `cacheRead` / `cacheWrite` / `reasoning` / `totalTokens` / `cost`），无需解析嵌套结构或估算。通过在 pi 扩展中监听 `session_shutdown` 事件（退出 / `/new` / `/resume` / `/fork` / `/clone` 时触发），以 detached 子进程运行 `log-usage-pi.py` 统计并同步 Token 用量。
+
+### 前提条件
+
+- [pi coding agent](https://github.com/earendil-works/pi-mono) 已安装并使用过（确保 `~/.pi/agent/sessions/` 存在）
+- 上述 Claude Code 安装步骤已完成（共用同一个仓库）
+
+### 第 1 步：复制扩展
+
+```bash
+mkdir -p ~/.pi/agent/extensions/token-usage-pi
+cp ~/blog/saveole.github.io/token-usage/plugins/pi/index.ts ~/.pi/agent/extensions/token-usage-pi/
+```
+
+### 第 2 步：重启 pi 生效
+
+扩展在 pi 启动时加载。重启 pi，或在新会话中输入 `/reload` 重新加载扩展。
+
+### 第 3 步：验证
+
+退出一次 pi 会话，然后检查：
+
+```bash
+# 查看日志（应有 [pi] START / NEW / GIT 开头的行）
+tail -20 ~/.claude/hooks/tracker.log | grep pi
+
+# 查看当天记录（应能看到 source=pi 的行）
+grep "pi$" ~/blog/saveole.github.io/token-usage/$(date +%Y-%m-%d)_*.data
+```
+
+### 手动补录历史数据
+
+首次安装后一次性导入所有已有 pi 会话数据（不带参数或 `--all` 会扫描全部会话）：
+
+```bash
+python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-pi.py --all
+```
+
+脚本去重逻辑会跳过已记录的 session，只写入新增和变动的数据。
+
+### 触发器机制
+
+```
+pi 退出 / /new / /resume / /fork / /clone
+    ↓
+session_shutdown 事件触发
+    ↓
+plugins/pi/index.ts 扩展（spawn detached，不阻塞 pi 退出）
+    ↓
+python3 log-usage-pi.py --session-file <会话文件>
+    ↓
+读节流 statefile：同 session 距上次记录 < 5 分钟？
+    ├─ 是 → return（不查文件、不碰 git）
+    └─ 否 → 解析该会话 JSONL
+            ↓ 累加 assistant + toolResult 内嵌 + compaction/branch_summary 的 usage
+            写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
+            ↓ 标记节流 statefile
+            git add → commit → pull --rebase → push
+```
+
+- **触发时机**：`session_shutdown`（退出 / 切换会话 / fork / clone），但**节流后**实际只每 5 分钟跑一次完整流程（`PI_THROTTLE_MINUTES` 可调）
+- **节流**：statefile `~/.pi/tracker-throttle.json` 记录每 session 最近一次记录时刻
+- **去重**：按 `session_id` + 5 个 token 字段判断，相同数据不重复写入
+- **JSONL 优势**：pi 的 usage 字段直接带 `input/output/cacheRead/cacheWrite/reasoning`，且 `tokens_reasoning` 有真实值（Claude Code 该列固定为 0）
+- **统计范围**：与 pi footer 显示的总量一致（assistant + 工具内嵌 LLM 调用 + 摘要生成）
+
+详细说明见 [plugins/pi/README.md](./plugins/pi/README.md)。
+
 ## 目录结构
 
 ```
 token-usage/
 ├── YYYY-MM-DD_{hostname}-{os}.data  # 每日每设备会话记录（hook/plugin 自动追加，TSV 格式）
 ├── plugins/
-│   └── hermes/               # Hermes Agent 插件
-│       ├── __init__.py       # 插件实现
-│       ├── plugin.yaml       # 插件清单
-│       └── README.md         # Hermes 插件文档
+│   ├── hermes/               # Hermes Agent 插件
+│   │   ├── __init__.py       # 插件实现
+│   │   ├── plugin.yaml       # 插件清单
+│   │   └── README.md         # Hermes 插件文档
+│   └── pi/                   # pi coding agent 扩展
+│       ├── index.ts          # 扩展实现（session_shutdown 触发，复制到 ~/.pi/agent/extensions/ 使用）
+│       └── README.md         # pi 扩展文档
 ├── scripts/
 │   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
 │   ├── log-usage-opencode.py # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
 │   ├── log-usage-agy.py      # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
 │   ├── log-usage-zcode.py    # ZCode 追踪脚本（Python，查询 ~/.zcode/cli/db/db.sqlite，递归 CTE 归并 subagent）
+│   ├── log-usage-pi.py       # pi 追踪脚本（Python，解析 ~/.pi/agent/sessions/**/*.jsonl 的 usage 字段）
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
@@ -435,7 +519,7 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | `tokens_cache_creation` | 缓存写入 token 数 |
 | `git_branch` | 会话时的 git 分支 |
 | `tokens_reasoning` | 推理（thinking）token 数（OpenCode 特有） |
-| `source` | 数据来源：claude / opencode / hermes / agy / zcode |
+| `source` | 数据来源：claude / opencode / hermes / agy / zcode / pi |
 
 完整规范见 [SCHEMA.md](./SCHEMA.md)。
 
@@ -530,3 +614,14 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | 子代理 token 没被统计 | 确认 DB 中 `session.parent_id` 正确链接子会话；脚本用递归 CTE 自动归并 |
 | 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的 session |
 | reasoning / cache_creation 列为 0 | 当前 GLM 模型不填充这两列，正常 |
+
+### pi
+
+| 现象 | 检查 |
+|------|------|
+| 退出后没有记录 | 确认扩展已加载：`~/.pi/agent/extensions/token-usage-pi/index.ts` 存在；重启 pi 或在新会话 `/reload` |
+| 扩展加载了但没有 .data 文件 | 查看 `~/.claude/hooks/tracker.log` 中 `[pi]` 开头的行，确认 SKIP 原因（节流 / 无 usage / 会话文件不存在） |
+| .data 文件存在但没有 push | 查看日志中 `GIT:` 开头的行；检查仓库 git remote 配置 |
+| project 列显示 `unknown` | session header 无 `cwd` 字段时 fallback，正常 |
+| 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的会话 |
+| 同一会话记录了两条 | 正常不会出现。脚本按 `session_id` 去重，同一会话只会 upsert |
