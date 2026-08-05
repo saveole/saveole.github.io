@@ -1265,6 +1265,53 @@ pre code {
 .legend-cell.token-3 { background: var(--token-3); }
 .legend-cell.token-4 { background: var(--token-4); }
 
+/* Agent distribution badges */
+.agent-distribution {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.6rem;
+    margin-left: 30px;
+}
+
+.agent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--code-bg);
+    font-family: "Inter", sans-serif;
+    font-size: 0.68rem;
+    line-height: 1.4;
+    transition: transform 0.15s var(--ease-out);
+}
+
+.agent-badge:hover {
+    transform: translateY(-1px);
+}
+
+.agent-logo {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.agent-name {
+    font-weight: 500;
+}
+
+.agent-tokens {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.agent-pct {
+    color: var(--text-muted);
+    opacity: 0.7;
+    font-size: 0.62rem;
+}
+
 .legend-info-btn {
   display: inline-flex;
   align-items: center;
