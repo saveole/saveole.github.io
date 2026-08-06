@@ -1,8 +1,8 @@
 # token-usage
 
-> Claude Code, OpenCode, Hermes Agent, Antigravity CLI (agy), ZCode & pi 会话 token 用量追踪
+> Claude Code, OpenCode, Hermes Agent, Antigravity CLI (agy), ZCode, pi & Codex CLI 会话 token 用量追踪
 
-自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent**、**Antigravity CLI (agy)**、**ZCode** 和 **pi coding agent** 来源，写入统一的 TSV 文件。
+自动记录每次 AI 编码助手会话结束后的 token 消耗数据。目前支持 **Claude Code**、**OpenCode**、**Hermes Agent**、**Antigravity CLI (agy)**、**ZCode**、**pi coding agent** 和 **Codex CLI** 来源，写入统一的 TSV 文件。
 
 ## 工作原理
 
@@ -46,6 +46,14 @@ pi 退出 / /new / /resume / /fork / /clone（session_shutdown）
     ↓ 直接读取所有 YYYY-MM-DD_*.data 文件
     ↓ 按 session_id 去重，按日聚合 token
     ↓ 生成热力图数据，渲染到首页
+────────────────────────────
+Codex CLI 会话结束（shell wrapper 触发）
+    ↓ log-usage-codex.py 触发（--since 60）
+    ↓ 扫描 ~/.codex/sessions/**/rollout-*.jsonl
+    ↓ 取最后一次 event_msg token_count 的累计 total_token_usage
+    ↓ input_tokens 拆分为新输入 + cached_input_tokens（cache_read）
+    ↓ 按 session_id 去重，upsert 到同一天的 YYYY-MM-DD_{hostname}-{os}.data
+    ↓ 自动 git commit + push
 ```
 
 ## 安装
@@ -463,6 +471,60 @@ python3 log-usage-pi.py --session-file <会话文件>
 
 详细说明见 [plugins/pi/README.md](./plugins/pi/README.md)。
 
+## 安装 Codex CLI 追踪
+
+### 工作原理
+
+Codex CLI 将会话转录保存在 `~/.codex/sessions/YYYY/MM/DD/rollout-<时间戳>-<uuid>.jsonl` 中。每个 rollout 是 JSONL，其中 `session_meta` 提供会话元数据（会话 id / 开始时间 / cwd / git 分支 / 模型 provider），`event_msg` 的 `token_count` 事件携带**累计** token 用量（`total_token_usage`：`input_tokens` / `cached_input_tokens` / `cache_write_input_tokens` / `output_tokens` / `reasoning_output_tokens`）。由于 `token_count` 是累计值，取最后一次即为会话最终用量。
+
+> ⚠️ `token_count` 事件从较新的 codex-cli 版本（约 0.146+）开始写入。更早的 rollout 没有 usage 数据，`log-usage-codex.py` 会跳过并记日志（`SKIP: no usage`）。
+
+Codex CLI 目前没有像 Claude Code 那样的 SessionEnd Hook，通过 shell wrapper 在每次 `codex` 退出后自动触发。
+
+### 配置步骤
+
+在 `~/.bashrc` 和 `~/.zshrc` 末尾添加如下 Wrapper 函数：
+
+```bash
+# Codex CLI token usage auto tracker
+codex() {
+    command codex "$@"
+    local ret=$?
+    (python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-codex.py --since 60 >/dev/null 2>&1 &)
+    return $ret
+}
+```
+
+添加后运行 `source ~/.bashrc` 或重新打开终端即可生效。手动补录或扫描所有历史 Codex 会话可直接运行：
+
+```bash
+python3 ~/blog/saveole.github.io/token-usage/scripts/log-usage-codex.py
+```
+
+> 可以先加 `--dry-run` 看将要写入的记录（不写文件、不碰 git），确认无误再去掉。
+
+### 触发器机制
+
+```
+codex 退出
+    ↓
+shell wrapper 后台触发
+    ↓
+python3 log-usage-codex.py --since 60
+    ↓
+扫描 ~/.codex/sessions/**/rollout-*.jsonl
+    ↓ 取最后一次 token_count 的 total_token_usage（累计值）
+    ↓ input_tokens 拆分为新输入 + cached_input_tokens
+    写入 YYYY-MM-DD_{hostname}-{os}.data (TSV)
+    ↓ 按 session_id + 5 个 token 字段去重（相同数据不重复写入）
+    git add → commit → pull --rebase → push
+```
+
+- **触发时机**：每次 `codex` 命令退出后，后台运行 `--since 60` 扫描最近 1 分钟更新的 rollout
+- **去重**：按 `session_id` + `input/output/cache_read/cache_creation/reasoning` 判断，相同数据不重复写入
+- **JSONL 优势**：`token_count` 事件直接携带累计 token 用量，无需估算；`tokens_reasoning` 有真实值
+- **统计口径**：Codex 的 `input_tokens` 包含缓存输入，脚本拆分为 `tokens_input`（新输入）+ `tokens_cache_read`（缓存读取），避免重复计数
+
 ## 目录结构
 
 ```
@@ -482,6 +544,7 @@ token-usage/
 │   ├── log-usage-agy.py      # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
 │   ├── log-usage-zcode.py    # ZCode 追踪脚本（Python，查询 ~/.zcode/cli/db/db.sqlite，递归 CTE 归并 subagent）
 │   ├── log-usage-pi.py       # pi 追踪脚本（Python，解析 ~/.pi/agent/sessions/**/*.jsonl 的 usage 字段）
+│   ├── log-usage-codex.py    # Codex CLI 追踪脚本（Python，扫描 ~/.codex/sessions/ 的 rollout JSONL）
 │   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
 │   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
 │   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
@@ -519,7 +582,7 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | `tokens_cache_creation` | 缓存写入 token 数 |
 | `git_branch` | 会话时的 git 分支 |
 | `tokens_reasoning` | 推理（thinking）token 数（OpenCode 特有） |
-| `source` | 数据来源：claude / opencode / hermes / agy / zcode / pi |
+| `source` | 数据来源：claude / opencode / hermes / agy / zcode / pi / codex |
 
 完整规范见 [SCHEMA.md](./SCHEMA.md)。
 
@@ -625,3 +688,14 @@ ses_12b7a7441ffe28fJLuv9J35Vai	2026-06-17T15:30:00+08:00	blog	deepseek-v4-pro	54
 | project 列显示 `unknown` | session header 无 `cwd` 字段时 fallback，正常 |
 | 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的会话 |
 | 同一会话记录了两条 | 正常不会出现。脚本按 `session_id` 去重，同一会话只会 upsert |
+### Codex
+
+| 现象 | 检查 |
+|------|------|
+| 退出后没有记录 | 确认 wrapper 已加到 `~/.bashrc` / `~/.zshrc` 并 `source` 过；或手动跑 `python3 .../log-usage-codex.py --dry-run` 看是否解析出记录 |
+| 历史会话没有记录 | rollout 没有 `token_count` 事件（旧版 codex-cli 不写 usage），脚本跳过；查看 `~/.claude/hooks/tracker.log` 中 `[codex] SKIP: no usable usage` |
+| .data 文件存在但没有 push | 查看日志中 `GIT:` 开头的行；检查仓库 git remote 配置 |
+| project 列显示 `unknown` | session_meta 无 `cwd` 时 fallback，正常 |
+| 零 token 会话被跳过 | 正常 — 脚本只记录 `input > 0 OR output > 0` 的会话 |
+| tokens_input 与 tokens_cache_read 的分界 | Codex 的 `input_tokens` 含缓存，脚本拆为 新输入 + `cached_input_tokens`，两者之和等于原始 input |
+| 同一会话记录了两条 | 正常不会出现。脚本按 session_id 去重，同一会话只会 upsert |

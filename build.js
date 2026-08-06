@@ -141,7 +141,7 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
     const bySourceTotal = {};
     const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
-    const knownSources = new Set(['claude', 'opencode', 'hermes', 'agy', 'zcode', 'pi']);
+    const knownSources = new Set(['claude', 'opencode', 'hermes', 'agy', 'zcode', 'pi', 'codex']);
     for (const df of dataFiles) {
         const date = df.replace(/_.+$/, '').replace(/\.data$/, ''); // Extract YYYY-MM-DD
         const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');

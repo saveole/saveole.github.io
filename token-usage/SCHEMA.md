@@ -20,7 +20,7 @@ Token usage data is stored as TSV (Tab-Separated Values) files with a single hea
 | 10| tokens_cache_creation   | integer | Tokens written to prompt cache (creation)       | 0                                    |
 | 11| git_branch              | string  | Git branch name at session time                | main                                 |
 | 12| tokens_reasoning        | integer | Tokens consumed for reasoning (thinking)        | 175                                  |
-| 13| source                  | string  | Data source identifier (claude / opencode / hermes / agy / zcode) | zcode                                  |
+| 13| source                  | string  | Data source identifier (claude / opencode / hermes / agy / zcode / pi / codex) | zcode                                  |
 
 **Total: 13 columns, tab-delimited.**
 
@@ -169,6 +169,33 @@ WHERE mu.session_id IN (SELECT id FROM session_tree) AND mu.status = 'completed'
 | `"pi"`                                  | source                 | 固定为 `pi`                            |
 
 **统计范围**：assistant（每次 LLM 调用）+ toolResult 内嵌 usage + compaction / branch_summary usage。
+
+### Codex (rollout JSONL to TSV)
+
+数据来源为 Codex CLI 本地会话文件（`~/.codex/sessions/**/rollout-*.jsonl`）。每个 rollout 是一行一个 JSON 事件：`session_meta` 提供会话元数据，`event_msg` 的 `token_count` 事件携带**累计** token 用量（`info.total_token_usage`），取最后一次即为会话最终用量。
+
+| Rollout JSONL Path                              | TSV Column             | Transformation                         |
+|-------------------------------------------------|------------------------|----------------------------------------|
+| `session_meta.payload.session_id` / `id`        | session_id             | Direct copy（兜底取文件名末尾 UUID）   |
+| `session_meta.payload.timestamp`                | timestamp              | ISO → CST +08:00                       |
+| `session_meta.payload.cwd`                      | project                | 目录 basename                           |
+| `turn_context` / `response_item` 的 `payload.model` | model              | 取出现次数最多的 model id               |
+| *(首末事件 timestamp 之差)*                      | duration_seconds       | max - min（秒）                         |
+| *(assistant response_item 计数)*                | message_count          | role == "assistant" 的消息数            |
+| `total_token_usage.input_tokens - cached_input_tokens` | tokens_input    | 新输入（不含缓存）                      |
+| `total_token_usage.output_tokens`               | tokens_output          | Direct copy                             |
+| `total_token_usage.cached_input_tokens`         | tokens_cache_read      | 缓存读取部分                            |
+| `total_token_usage.cache_write_input_tokens`    | tokens_cache_creation  | Direct copy                             |
+| `session_meta.payload.git.branch`               | git_branch             | Direct copy（兜底执行 git 命令）        |
+| `total_token_usage.reasoning_output_tokens`     | tokens_reasoning       | Direct copy                             |
+| `"codex"`                                       | source                 | 固定为 `codex`                          |
+
+**注意**：
+
+- `token_count` 事件从较新的 codex-cli 版本开始写入，更早的 rollout 没有 usage 数据，脚本跳过（记 `SKIP: no usage`）。
+- Codex 的 `input_tokens` 包含缓存输入，拆分为 `tokens_input`（新输入）与 `tokens_cache_read`（缓存读取），两者之和等于原始 `input_tokens`。
+- `reasoning_output_tokens` 已计入 `output_tokens`，`tokens_reasoning` 仅为拆分展示，与 opencode 语义一致。
+
 
 ## Example
 
