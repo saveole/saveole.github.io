@@ -42,7 +42,7 @@
                 </div>
                 <span class="legend-info-btn" tabindex="0">&#9432;</span>
                 <div class="legend-info-panel">
-                    <p><strong>Token 统计</strong>：统计 <strong>Claude Code</strong>、<strong>OpenCode</strong>、<strong>Hermes</strong>、<strong>agy</strong>、<strong>ZCode</strong> 及 <strong>pi</strong> 的 token 消耗，不包含其他 AI 工具或平台。每个会话结束时，按 <code>session_id</code> 记录总消耗，归入<strong>会话结束当日</strong>。</p>
+                    <p><strong>Token 统计</strong>：统计 <strong>Claude Code</strong>、<strong>OpenCode</strong>、<strong>Hermes</strong>、<strong>agy</strong>、<strong>ZCode</strong>、<strong>pi</strong> 及 <strong>Codex CLI</strong> 的 token 消耗，不包含其他 AI 工具或平台。每个会话结束时，按 <code>session_id</code> 记录总消耗，归入<strong>会话结束当日</strong>。</p>
                     <p><strong>跑步数据</strong>：来自 Garmin Connect CN，颜色基准 5km。</p>
                     <p><strong>可能的误差</strong>：</p>
                     <ul>
@@ -91,7 +91,8 @@
             hermes:   { name: 'Hermes',       color: '#7C3AED' },
             agy:      { name: 'Antigravity',  color: '#4285F4' },
             zcode:    { name: 'ZCode',        color: '#00B894' },
-            pi:       { name: 'pi',           color: '#E84393' }
+            pi:       { name: 'pi',           color: '#E84393' },
+            codex:    { name: 'Codex CLI',    color: '#10A37F' }
         };
         var AGENT_SVG = {
             // Anthropic "A"
@@ -105,7 +106,9 @@
             // Z in rounded rect
             zcode:    '<rect x="1.5" y="1.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 5.5h6L5 10.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
             // π symbol
-            pi:       '<text x="8" y="12.5" text-anchor="middle" font-size="13" font-family="Georgia,serif" font-weight="700" fill="currentColor">π</text>'
+            pi:       '<text x="8" y="12.5" text-anchor="middle" font-size="13" font-family="Georgia,serif" font-weight="700" fill="currentColor">π</text>',
+            // Codex "X" mark
+            codex:    '<path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
         };
         function agentIcon(src) {
             var path = AGENT_SVG[src];
