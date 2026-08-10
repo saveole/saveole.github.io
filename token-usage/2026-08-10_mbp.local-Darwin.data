@@ -1,2 +1,2 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-ses_014adaf57ffez1OXQ4d96pScvk	2026-08-10T18:57:48+08:00	inherit-mcp-server	deepseek-v4-flash	2936	158	614661	72169	23486336	0	feat/dark-dashboard-theme	59194	opencode
+ses_014adaf57ffez1OXQ4d96pScvk	2026-08-10T18:57:48+08:00	inherit-mcp-server	deepseek-v4-flash	2942	159	614833	72302	23732992	0	feat/dark-dashboard-theme	59589	opencode
