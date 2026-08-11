@@ -17,3 +17,4 @@ ses_01098ee42ffenkBqcWRyZI20gQ	2026-08-11T13:58:57+08:00	ssh	deepseek-v4-flash	5
 019fee65-55e6-7303-8ef6-f7af444dac6e	2026-08-11T09:17:26+08:00	scrm	deepseek-v4-flash	603	51	22001	11767	931840	0	beta_dev	3305	pi
 019fefc1-49ba-7cd0-bd94-fb56fd768f94	2026-08-11T15:37:29+08:00	scrm	deepseek-v4-flash	312	8	1370	2517	42496	0	beta_dev	840	pi
 019fefb0-4360-7993-a00a-bbd4f2dc7920	2026-08-11T15:18:54+08:00	inherit-mcp-server	deepseek-v4-flash	144	18	23557	19384	537728	0	master	15369	pi
+ses_0100c0a88ffe3FCZU2g6efo2Bl	2026-08-11T16:32:50+08:00	mcp-gateway	deepseek-v4-flash	56	13	55037	1053	358784	0	feat/dark-dashboard-theme	7035	opencode
