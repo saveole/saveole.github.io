@@ -4,4 +4,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_011b04357ffeq3alch3eEri8FB	2026-08-11T08:53:50+08:00	mcp-gateway	deepseek-v4-flash	646	44	56459	7004	2081408	0	feat/dark-dashboard-theme	10443	opencode
 ses_01186b872ffe01QtD5g5lhjxt1	2026-08-11T09:39:13+08:00	mcp-gateway	deepseek-v4-flash	5106	107	98296	17983	6914432	0	feat/dark-dashboard-theme	21025	opencode
 ses_01156f642ffeOchsju5I5mvOBW	2026-08-11T10:31:23+08:00	mcp-gateway	deepseek-v4-flash	203	13	62778	5728	394368	0	feat/dark-dashboard-theme	7026	opencode
-ses_011300db6ffefwn6BgajFDVSGO	2026-08-11T11:13:53+08:00	scrm-api	deepseek-v4-flash	34	14	24993	2215	274688	0	feat-mcp-tool	1623	opencode
+ses_011300db6ffefwn6BgajFDVSGO	2026-08-11T11:13:53+08:00	scrm-api	deepseek-v4-flash	64	17	25337	2622	365184	0	feat-mcp-tool	1623	opencode
