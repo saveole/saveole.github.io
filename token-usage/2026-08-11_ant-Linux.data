@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 506df5bd-08c0-492d-bee3-ae7149738bf7	2026-08-11T08:03:29+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-73fc73cc-workdir	glm-5.2	176	7	76033	2451	266176	0	HEAD	0	claude
 5971378b-c7ec-4868-bb8d-36b56fdfe0ab	2026-08-11T08:30:59+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-266dcb3c-workdir	glm-5.2	23	2	73183	316	16128	0	HEAD	0	claude
 ses_011b04357ffeq3alch3eEri8FB	2026-08-11T08:53:50+08:00	mcp-gateway	deepseek-v4-flash	646	44	56459	7004	2081408	0	feat/dark-dashboard-theme	10443	opencode
-ses_01186b872ffe01QtD5g5lhjxt1	2026-08-11T09:39:13+08:00	mcp-gateway	deepseek-v4-flash	921	44	39110	7462	1604864	0	feat/dark-dashboard-theme	6034	opencode
+ses_01186b872ffe01QtD5g5lhjxt1	2026-08-11T09:39:13+08:00	mcp-gateway	deepseek-v4-flash	1452	52	42205	8462	1984128	0	feat/dark-dashboard-theme	7416	opencode
