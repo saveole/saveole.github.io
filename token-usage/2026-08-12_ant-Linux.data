@@ -6,3 +6,4 @@ ses_00c5dc250ffesiG6mqW1nPEB47	2026-08-12T09:42:03+08:00	inherit-mcp-server	deep
 ses_00c4c9600ffehjh9BDFyTLHckt	2026-08-12T10:00:49+08:00	inherit-mcp-server	deepseek-v4-flash	4	3	13286	132	35072	0	master	28	opencode
 sess_d8a0f7c4-028f-4c41-a13f-2a5c48ce67be	2026-08-12T14:28:06+08:00	breathe-app	GLM-5.2	1953	2	1259577	34460	1173824	0	main	0	zcode
 ses_00b33f8bbffeejvIA602VoOWa4	2026-08-12T15:07:19+08:00	breathe-app	deepseek-v4-flash	681	37	43211	19438	1941760	0	main	22444	opencode
+db95b94c-99a6-4e5b-aebb-81cfa827d81a	2026-08-12T16:03:02+08:00	-home-ant-code-java-scrm-api	glm-5.2	5004	55	223350	82098	5945792	0	master	0	claude
