@@ -8,3 +8,4 @@ sess_d8a0f7c4-028f-4c41-a13f-2a5c48ce67be	2026-08-12T14:28:06+08:00	breathe-app	
 ses_00b33f8bbffeejvIA602VoOWa4	2026-08-12T15:07:19+08:00	breathe-app	deepseek-v4-flash	681	37	43211	19438	1941760	0	main	22444	opencode
 db95b94c-99a6-4e5b-aebb-81cfa827d81a	2026-08-12T16:03:02+08:00	-home-ant-code-java-scrm-api	glm-5.2	5004	55	223350	82098	5945792	0	master	0	claude
 94d65c67-b425-423f-9cd1-cd3cc5850229	2026-08-12T16:15:18+08:00	-home-ant-code-java-scrm-api	glm-5.2	599	10	40907	15927	568384	0	fix/xiongying-wedoc-student-dedup	0	claude
+414bb84f-3c2a-42ef-a30e-a04d852f9dcf	2026-08-12T16:29:09+08:00	-home-ant-code-golang-src-scrmgo	glm-5.2	123	9	38251	3617	506752	0	9.8/NFQX-12702	0	claude
