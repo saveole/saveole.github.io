@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 568c7c39-1756-45c5-a67f-c8ba48ebddf0	2026-08-12T08:02:19+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-64ae3b56-workdir	glm-5.2	115	5	77566	1162	168704	0	HEAD	0	claude
 dcf1bbfc-075f-46bd-8279-3e22278832d5	2026-08-12T08:30:55+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-f346fbea-workdir	glm-5.2	30	4	40287	486	141952	0	HEAD	0	claude
 ses_00c615922ffeb7giTDxLqotEK0	2026-08-12T09:38:08+08:00	inherit-mcp-server	deepseek-v4-flash	158	15	143324	6845	1107968	0	master	17435	opencode
-ses_00c5dc250ffesiG6mqW1nPEB47	2026-08-12T09:42:03+08:00	inherit-mcp-server	deepseek-v4-flash	111	14	39292	1692	382464	0	master	3446	opencode
+ses_00c5dc250ffesiG6mqW1nPEB47	2026-08-12T09:42:03+08:00	inherit-mcp-server	deepseek-v4-flash	986	21	41402	3455	680704	0	master	3446	opencode
