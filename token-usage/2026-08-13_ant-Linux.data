@@ -3,4 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 cbb48792-84c7-4dcc-a0b2-5db3d9b6b4ac	2026-08-13T08:31:00+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-ba7df7e4-workdir	glm-5.2	32	4	62635	893	112704	0	HEAD	0	claude
 20260813_090903_460537	2026-08-13T09:20:17+08:00	Fixing Hermes ImportError Gateway Restart	glm-5.2	620	32	25008	4219	341824	0	master
 20260813_092704_dacc59	2026-08-13T09:35:14+08:00	Agent与OS使用占比布局调整	glm-5.2	436	40	18809	2421	522368	0	main
-ses_0072fde57ffexbAE2mCoQXYgLa	2026-08-13T09:50:17+08:00	saveole.github.io	deepseek-v4-flash	256	34	42083	5583	1152640	0	main	3645	opencode
+ses_0072fde57ffexbAE2mCoQXYgLa	2026-08-13T09:50:17+08:00	saveole.github.io	deepseek-v4-flash	304	36	42594	6069	1255168	0	main	3707	opencode
