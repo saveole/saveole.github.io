@@ -27,13 +27,15 @@ LOCK_FILE = Path("/tmp/hermes-token-usage.lock")
 LOG_FILE = Path.home() / ".hermes" / "plugins" / "token-usage-tracker.log"
 STATE_DB = Path.home() / ".hermes" / "state.db"
 
-# TSV columns (same as Claude Code token-usage SCHEMA.md)
+SOURCE = "hermes"
+
+# TSV columns (same as token-usage SCHEMA.md — 13 columns)
 TSV_HEADER = "\t".join([
     "session_id", "timestamp", "project", "model",
     "duration_seconds", "message_count",
     "tokens_input", "tokens_output",
     "tokens_cache_read", "tokens_cache_creation",
-    "git_branch",
+    "git_branch", "tokens_reasoning", "source",
 ])
 
 
@@ -61,7 +63,8 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
             """
             SELECT id, model, started_at, ended_at, end_reason,
                    message_count, input_tokens, output_tokens,
-                   cache_read_tokens, cache_write_tokens, title
+                   cache_read_tokens, cache_write_tokens,
+                   reasoning_tokens, title, cwd, git_branch
             FROM sessions WHERE id = ?
             """,
             (session_id,),
@@ -87,8 +90,12 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
     if d["started_at"] and d["ended_at"]:
         duration = int(d["ended_at"] - d["started_at"])
 
-    # Determine project: title > cwd basename > unknown
-    project = d.get("title") or ""
+    # Determine project: db cwd > title > unknown
+    project = d.get("cwd") or ""
+    if project and project != "/":
+        project = os.path.basename(project.rstrip("/"))
+    if not project:
+        project = d.get("title") or ""
     if not project:
         try:
             cwd = os.getcwd()
@@ -99,6 +106,11 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
     if not project:
         project = "unknown"
 
+    # Git branch: db value > live git command
+    git_branch = d.get("git_branch") or ""
+    if not git_branch:
+        git_branch = _get_git_branch()
+
     return {
         "session_id": d["id"],
         "model": d["model"] or "unknown",
@@ -108,7 +120,9 @@ def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
         "tokens_output": d["output_tokens"] or 0,
         "tokens_cache_read": d["cache_read_tokens"] or 0,
         "tokens_cache_creation": d["cache_write_tokens"] or 0,
+        "tokens_reasoning": d["reasoning_tokens"] or 0,
         "project": project,
+        "git_branch": git_branch,
     }
 
 
@@ -160,6 +174,9 @@ def _git_sync(data_file: Path) -> None:
 
     rel_path = data_file.relative_to(REPO_DIR)
 
+    # 0. Stash any unstaged changes so pull --rebase won't fail
+    _git(data_file, "stash", "--include-untracked")
+
     # 1. Pull latest to avoid diverged branches
     t0 = time.monotonic()
     _log("GIT: pulling origin main...")
@@ -169,6 +186,9 @@ def _git_sync(data_file: Path) -> None:
         _log(f"GIT pull FAILED ({elapsed:.1f}s): {r.stderr.strip()[:200]}")
     else:
         _log(f"GIT: pull OK ({elapsed:.1f}s)")
+
+    # Restore stashed changes (if any)
+    _git(data_file, "stash", "pop")
 
     # 2. Stage the data file
     r = _git(data_file, "add", str(rel_path))
@@ -237,7 +257,8 @@ def _backfill_missing() -> int:
             """
             SELECT id, model, started_at, ended_at,
                    message_count, input_tokens, output_tokens,
-                   cache_read_tokens, cache_write_tokens, title
+                   cache_read_tokens, cache_write_tokens,
+                   reasoning_tokens, title, cwd, git_branch
             FROM sessions
             WHERE input_tokens > 0 OR output_tokens > 0
             """
@@ -262,8 +283,14 @@ def _backfill_missing() -> int:
         if row["started_at"] and row["ended_at"]:
             duration = int(row["ended_at"] - row["started_at"])
 
-        project = row["title"] or "unknown"
+        project = row["cwd"] or ""
+        if project and project != "/":
+            project = os.path.basename(project.rstrip("/"))
+        if not project:
+            project = row["title"] or "unknown"
         model = row["model"] or "unknown"
+
+        git_branch = row["git_branch"] or "unknown"
 
         ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
         if row["started_at"]:
@@ -287,7 +314,9 @@ def _backfill_missing() -> int:
             str(duration), str(row["message_count"] or 0),
             str(row["input_tokens"] or 0), str(row["output_tokens"] or 0),
             str(row["cache_read_tokens"] or 0), str(row["cache_write_tokens"] or 0),
-            "unknown",
+            git_branch,
+            str(row["reasoning_tokens"] or 0),
+            SOURCE,
         ])
 
         if date_str not in new_by_date:
@@ -340,12 +369,12 @@ def _record_usage(session_id: str, platform_name: str) -> None:
 
     _log(
         f"TOKENS input={data['tokens_input']} output={data['tokens_output']} "
-        f"cache_read={data['tokens_cache_read']} cache_creation={data['tokens_cache_creation']}"
+        f"cache_read={data['tokens_cache_read']} cache_creation={data['tokens_cache_creation']} "
+        f"reasoning={data['tokens_reasoning']}"
     )
 
     # Build record
     now = datetime.now(timezone(timedelta(hours=8)))
-    git_branch = _get_git_branch()
 
     tsv_row = "\t".join([
         data["session_id"],
@@ -358,7 +387,9 @@ def _record_usage(session_id: str, platform_name: str) -> None:
         str(data["tokens_output"]),
         str(data["tokens_cache_read"]),
         str(data["tokens_cache_creation"]),
-        git_branch,
+        data["git_branch"],
+        str(data["tokens_reasoning"]),
+        SOURCE,
     ])
 
     date_str = now.strftime("%Y-%m-%d")

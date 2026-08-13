@@ -30,7 +30,7 @@ Hermes 会话结束（退出 CLI / /new / context compression）
 | 自动补录 | incremental.py（扫描 transcript） | _backfill_missing()（扫描 state.db） |
 | 配置位置 | `~/.claude/hooks/log-usage.sh` | `~/.hermes/plugins/token-usage/` |
 
-两者写入完全相同的 TSV schema（11 列），可在同一份 `.data` 文件中共存，无需额外处理。
+两者写入完全相同的 TSV schema（13 列，含 `tokens_reasoning` 与 `source=hermes`），可在同一份 `.data` 文件中共存，无需额外处理。
 
 ## 安装
 

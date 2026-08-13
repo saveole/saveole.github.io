@@ -148,6 +148,33 @@ SELECT ... FROM model_usage mu
 WHERE mu.session_id IN (SELECT id FROM session_tree) AND mu.status = 'completed';
 ```
 
+### Hermes (SQLite to TSV)
+
+数据来源为 Hermes Agent 本地数据库（`~/.hermes/state.db`），`sessions` 表已预聚合，由 `token-usage/plugins/hermes/__init__.py` 在 `on_session_finalize` hook 时写入。
+
+| SQLite Column / Source        | TSV Column             | Transformation                        |
+|-------------------------------|------------------------|---------------------------------------|
+| `sessions.id`                 | session_id             | Direct copy（`YYYYMMDD_HHMMSS_hex`） |
+| `sessions.started_at`         | timestamp              | epoch → ISO CST (+08:00)              |
+| `sessions.cwd` basename       | project                | 取 cwd 目录 basename，fallback 到 title |
+| `sessions.model`              | model                  | Direct copy                           |
+| `started_at`/`ended_at` 之差  | duration_seconds       | 秒                                    |
+| `sessions.message_count`      | message_count          | Direct copy                           |
+| `sessions.input_tokens`       | tokens_input           | Direct copy                           |
+| `sessions.output_tokens`      | tokens_output          | Direct copy                           |
+| `sessions.cache_read_tokens`  | tokens_cache_read      | Direct copy                           |
+| `sessions.cache_write_tokens` | tokens_cache_creation  | Direct copy                           |
+| `sessions.git_branch`         | git_branch             | DB 值，fallback 到 git 命令           |
+| `sessions.reasoning_tokens`   | tokens_reasoning       | Direct copy                           |
+| `"hermes"`                    | source                 | 固定为 `hermes`                       |
+
+**注意**：Hermes 的 `session_id` 形如 `20260813_092704_dacc59`，与 Claude Code 的 UUID 区分。旧记录（11 列、无 source 列）曾默认填充为 `claude`，已在迁移中统一修正为 `hermes`。
+
+**Hermes TSV example:**
+```
+20260813_092704_dacc59	2026-08-13T09:27:04+08:00	saveole.github.io	glm-5.2	3600	45	120000	8000	900000	0	main	922	hermes
+```
+
 ### pi (JSONL to TSV)
 
 数据来源为 pi coding agent 本地会话文件（`~/.pi/agent/sessions/**/*.jsonl`）。pi 的每条 assistant 消息直接携带 `usage` 字段（无需解析嵌套结构或估算），统计范围与 pi footer 显示的总量一致：assistant 消息 + toolResult 内嵌 usage（工具内部 LLM 工作）+ compaction / branch_summary 的 usage（摘要生成）。

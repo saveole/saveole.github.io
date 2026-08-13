@@ -1,5 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-20260421_191052_c971b4	2026-04-22T09:06:23+08:00	scrm-api	glm-5.1	50012	29	79809	2222	206848	0	feature/scrm/9.3/mantis	0	claude
+20260421_191052_c971b4	2026-04-22T09:06:23+08:00	scrm-api	glm-5.1	50012	29	79809	2222	206848	0	feature/scrm/9.3/mantis	0	hermes
 9435f81a-64cc-4617-aaea-16d5bfaef67a	2026-04-22T12:06:06.361Z	kv	glm-4.7	50	24	30752	3725	254848	0	main	0	claude
 636026ab-1229-4365-b9bf-9c6c11db2ab6	2026-04-22T03:35:00.514Z	blog	glm-4.7	441	55	17236	3812	680448	0	main	0	claude
 b314cb35-1c36-43df-9863-58a528aa5adc	2026-04-22T01:43:55.593Z	blog	glm-4.7	8	13	28242	1163	83840	0	main	0	claude
