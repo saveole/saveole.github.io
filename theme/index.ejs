@@ -52,7 +52,13 @@
                     <p class="legend-info-note">以上场景实际发生频率较低，不影响整体趋势参考。</p>
                 </div>
             </div>
-            <div class="agent-distribution" id="agent-distribution"></div>
+            <div class="usage-card">
+                <h2 class="usage-card-title">Token 使用占比</h2>
+                <div class="usage-card-body">
+                    <div class="agent-distribution" id="agent-distribution"></div>
+                    <div class="os-distribution" id="os-distribution"></div>
+                </div>
+            </div>
         </header>
 
         <section class="post-list">
@@ -316,6 +322,58 @@
         }).join('');
         var agentEl = document.getElementById('agent-distribution');
         if (agentEl) agentEl.innerHTML = agentHtml;
+
+        // --- OS distribution donut chart ---
+        var OS_META = {
+            Linux:  { name: 'Linux',  color: '#3b82f6' },
+            Darwin: { name: 'macOS',  color: '#64748b' },
+            Windows:{ name: 'Windows',color: '#0891b2' }
+        };
+        var byOsTotal = data.byOsTotal || {};
+        var osEntries = Object.keys(byOsTotal).map(function(k) {
+            return { os: k, tokens: byOsTotal[k] };
+        }).sort(function(a, b) { return b.tokens - a.tokens; });
+        var osGrandTotal = osEntries.reduce(function(s, e) { return s + e.tokens; }, 0);
+
+        if (osEntries.length > 0 && osGrandTotal > 0) {
+            var R = 34, C = 2 * Math.PI * R;
+            var cumulative = 0;
+            var segHtml = '';
+            osEntries.forEach(function(e, i) {
+                var pct = e.tokens / osGrandTotal;
+                var dashLen = pct * C;
+                var dashGap = C - dashLen;
+                var offset = -cumulative * C;
+                var meta = OS_META[e.os] || { name: e.os, color: '#94a3b8' };
+                segHtml += '<circle cx="48" cy="48" r="' + R + '" fill="none" stroke="' + meta.color + '" stroke-width="14"' +
+                    ' stroke-dasharray="' + dashLen + ' ' + dashGap + '"' +
+                    ' stroke-dashoffset="' + offset + '"' +
+                    ' transform="rotate(-90 48 48)"' +
+                    ' style="transition: stroke-width 0.2s" data-os="' + e.os + '"' +
+                    ' class="os-seg"' +
+                    '><title>' + meta.name + ': ' + formatTokens(e.tokens) + ' (' + (pct * 100).toFixed(1) + '%)</title></circle>';
+                cumulative += pct;
+            });
+
+            var legendHtml = osEntries.map(function(e) {
+                var pct = (e.tokens / osGrandTotal * 100).toFixed(1);
+                var meta = OS_META[e.os] || { name: e.os, color: '#94a3b8' };
+                return '<div class="os-legend-item">' +
+                    '<span class="os-dot" style="background:' + meta.color + '"></span>' +
+                    '<span class="os-legend-name">' + meta.name + '</span>' +
+                    '<span class="os-legend-tokens">' + formatTokens(e.tokens) + '</span>' +
+                    '<span class="os-legend-pct">' + pct + '%</span>' +
+                    '</div>';
+            }).join('');
+
+            var osEl = document.getElementById('os-distribution');
+            if (osEl) osEl.innerHTML =
+                '<div class="os-donut-wrapper">' +
+                '<svg class="os-donut" viewBox="0 0 96 96" width="96" height="96">' + segHtml + '</svg>' +
+                '<div class="os-donut-center"><span class="os-donut-total">' + formatTokens(osGrandTotal) + '</span></div>' +
+                '</div>' +
+                '<div class="os-legend">' + legendHtml + '</div>';
+        }
 
         // Info panel click toggle (touch-friendly)
         var infoBtn = document.querySelector('.legend-info-btn');

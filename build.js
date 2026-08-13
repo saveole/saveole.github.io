@@ -135,15 +135,19 @@ postList.forEach(postData => {
 postList.sort((a, b) => b.rawDate - a.rawDate);
 
 // 读取 token 用量数据（直接从 .data TSV 文件聚合）
-let tokenUsageData = { days: [], bySourceTotal: {} };
+let tokenUsageData = { days: [], bySourceTotal: {}, byOsTotal: {} };
 const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
 if (fs.existsSync(TOKEN_USAGE_DIR)) {
     const dayMap = {};
     const bySourceTotal = {};
+    const byOsTotal = {};
     const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
     const knownSources = new Set(['claude', 'opencode', 'hermes', 'agy', 'zcode', 'pi', 'codex']);
     for (const df of dataFiles) {
         const date = df.replace(/_.+$/, '').replace(/\.data$/, ''); // Extract YYYY-MM-DD
+        // Extract OS from filename suffix: YYYY-MM-DD_{hostname}-{os}.data
+        const suffixMatch = df.match(/^\d{4}-\d{2}-\d{2}_(.+)-(\w+)\.data$/);
+        const os = suffixMatch ? suffixMatch[2] : null; // e.g. "Linux", "Darwin"
         const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
         if (lines.length < 2) continue; // header only
         const header = lines[0].split('\t');
@@ -172,6 +176,10 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
             if (source !== 'unknown') {
                 bySourceTotal[source] = (bySourceTotal[source] || 0) + rowTotal;
             }
+            // OS aggregation (only for files with hostname-os suffix)
+            if (os) {
+                byOsTotal[os] = (byOsTotal[os] || 0) + rowTotal;
+            }
         }
     }
     tokenUsageData.days = Object.keys(dayMap).sort().map(date => ({
@@ -179,6 +187,7 @@ if (fs.existsSync(TOKEN_USAGE_DIR)) {
         total_tokens: dayMap[date]
     }));
     tokenUsageData.bySourceTotal = bySourceTotal;
+    tokenUsageData.byOsTotal = byOsTotal;
 }
 
 // Read running data and merge
