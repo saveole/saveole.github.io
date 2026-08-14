@@ -3,3 +3,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 23e760c7-9b23-4067-b7af-7659b2ab319a	2026-08-14T08:03:30+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1b0de14f-workdir	glm-5.2	184	6	64901	1943	212736	0	HEAD	0	claude
 761eda1c-b989-47df-85bf-b3af464bdc03	2026-08-14T08:31:02+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-13bf487d-workdir	glm-5.2	36	5	49770	1147	109248	0	HEAD	0	claude
 019ffdd2-dbb4-70ec-b0a9-a8454cf02fa2	2026-08-14T09:11:22+08:00	scrm-api	deepseek-v4-flash	78	22	17431	9380	363776	0	feature/NFQX-12718	3155	pi
+019ffdd7-b31e-729e-8ba4-f987f6c9581d	2026-08-14T09:16:39+08:00	scrm-api	deepseek-v4-flash	94	28	18864	9152	547328	0	feature/NFQX-12718	3683	pi
