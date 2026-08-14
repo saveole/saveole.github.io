@@ -15,3 +15,4 @@ ses_001c4ec7affe5KR2NdL8YEzaCj	2026-08-14T11:05:12+08:00	octest2	deepseek-chat	5
 ses_001c67013ffeqKOC4m2bEunIaa	2026-08-14T11:03:33+08:00	octest	deepseek-chat	5	3	187	52	32384	0	master	0	opencode
 ses_001c6b08affeVFQYHQEyjJF8Ro	2026-08-14T11:03:16+08:00	octest	deepseek-chat	2	2	16224	2	0	0	master	0	opencode
 ses_001cc3171ffeKbiLAlaAveGhmE	2026-08-14T10:57:15+08:00	agent-test	deepseek-v4-flash	2	2	14392	3	1920	0	feature/NFQX-12738	0	opencode
+53aef284-1d1d-4198-8152-4b0904b41936	2026-08-14T11:19:07+08:00	-home-ant-projects-saveole-code	glm-5.2	1039	56	94970	30522	5280768	0	main	0	claude
