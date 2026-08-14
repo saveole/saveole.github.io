@@ -1,3 +1,4 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
 20260806_140933_338fa72d	2026-08-14T04:04:49+08:00	MCP工具未加载到当前会话	glm-5.2	0	117	194059	15780	3823296	0	unknown
 23e760c7-9b23-4067-b7af-7659b2ab319a	2026-08-14T08:03:30+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1b0de14f-workdir	glm-5.2	184	6	64901	1943	212736	0	HEAD	0	claude
+761eda1c-b989-47df-85bf-b3af464bdc03	2026-08-14T08:31:02+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-13bf487d-workdir	glm-5.2	36	5	49770	1147	109248	0	HEAD	0	claude
