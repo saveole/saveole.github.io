@@ -7,3 +7,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_0020f79e9ffeRUfceeOM3h0Ttw	2026-08-14T09:43:46+08:00	opencode	deepseek-v4-flash	1	2	12276	2	1920	0	unknown	0	opencode
 ses_0020f0628ffeJ6kTAvIKXTSRH0	2026-08-14T09:44:16+08:00	opencode	deepseek-v4-flash	2	3	727	52	28288	0	unknown	0	opencode
 ses_0020ef9d4ffe9YzGcwMFyhoef7	2026-08-14T09:44:19+08:00	opencode	deepseek-v4-flash	2	3	12312	46	16128	0	unknown	0	opencode
+019ffdf4-be96-7a90-83c8-96c0e03806c9	2026-08-14T09:48:23+08:00	agent-test	deepseek-v4-flash	163	25	40051	20389	788608	0	feature/NFQX-12738	11152	pi
