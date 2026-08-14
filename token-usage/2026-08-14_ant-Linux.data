@@ -6,3 +6,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 019ffdd7-b31e-729e-8ba4-f987f6c9581d	2026-08-14T09:16:39+08:00	scrm-api	deepseek-v4-flash	94	28	18864	9152	547328	0	feature/NFQX-12718	3683	pi
 ses_0020f79e9ffeRUfceeOM3h0Ttw	2026-08-14T09:43:46+08:00	opencode	deepseek-v4-flash	1	2	12276	2	1920	0	unknown	0	opencode
 ses_0020f0628ffeJ6kTAvIKXTSRH0	2026-08-14T09:44:16+08:00	opencode	deepseek-v4-flash	2	3	727	52	28288	0	unknown	0	opencode
+ses_0020ef9d4ffe9YzGcwMFyhoef7	2026-08-14T09:44:19+08:00	opencode	deepseek-v4-flash	2	3	12312	46	16128	0	unknown	0	opencode
