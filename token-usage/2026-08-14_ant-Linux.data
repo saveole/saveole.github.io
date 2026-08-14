@@ -1,5 +1,5 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch
-20260806_140933_338fa72d	2026-08-14T04:04:49+08:00	MCP工具未加载到当前会话	glm-5.2	0	117	194059	15780	3823296	0	unknown
+session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
+20260806_140933_338fa72d	2026-08-14T04:04:49+08:00	MCP工具未加载到当前会话	glm-5.2	0	117	194059	15780	3823296	0	unknown	0	claude
 23e760c7-9b23-4067-b7af-7659b2ab319a	2026-08-14T08:03:30+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-1b0de14f-workdir	glm-5.2	184	6	64901	1943	212736	0	HEAD	0	claude
 761eda1c-b989-47df-85bf-b3af464bdc03	2026-08-14T08:31:02+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-13bf487d-workdir	glm-5.2	36	5	49770	1147	109248	0	HEAD	0	claude
 019ffdd2-dbb4-70ec-b0a9-a8454cf02fa2	2026-08-14T09:11:22+08:00	scrm-api	deepseek-v4-flash	78	22	17431	9380	363776	0	feature/NFQX-12718	3155	pi
@@ -18,4 +18,4 @@ ses_001cc3171ffeKbiLAlaAveGhmE	2026-08-14T10:57:15+08:00	agent-test	deepseek-v4-
 53aef284-1d1d-4198-8152-4b0904b41936	2026-08-14T11:19:07+08:00	-home-ant-projects-saveole-code	glm-5.2	1039	56	94970	30522	5280768	0	main	0	claude
 ses_001be3cb2ffe9076uOt27pcx3v	2026-08-14T11:12:30+08:00	octest2	deepseek-v4-flash	2	2	14386	3	1920	0	unknown	0	opencode
 ses_001ae96f0ffevD9OBPvZ3Z47s7	2026-08-14T11:29:36+08:00	saveole-code	deepseek-v4-flash	13	8	23802	569	164224	0	main	78	opencode
-ses_001a7eb75ffehBQqwBzBCkUIrg	2026-08-14T11:36:53+08:00	saveole-code	deepseek-v4-flash	31	19	38061	1967	592000	0	main	588	opencode
+ses_001a7eb75ffehBQqwBzBCkUIrg	2026-08-14T11:36:53+08:00	saveole-code	deepseek-v4-flash	87	26	60327	2449	1108864	0	main	7073	opencode
