@@ -9,3 +9,9 @@ ses_0020f0628ffeJ6kTAvIKXTSRH0	2026-08-14T09:44:16+08:00	opencode	deepseek-v4-fl
 ses_0020ef9d4ffe9YzGcwMFyhoef7	2026-08-14T09:44:19+08:00	opencode	deepseek-v4-flash	2	3	12312	46	16128	0	unknown	0	opencode
 019ffdf4-be96-7a90-83c8-96c0e03806c9	2026-08-14T09:48:23+08:00	agent-test	deepseek-v4-flash	163	25	40051	20389	788608	0	feature/NFQX-12738	11152	pi
 ses_001ffddabffe0fmAsQuc3Ze36S	2026-08-14T10:00:49+08:00	opencode	deepseek-v4-flash	1	2	14379	4	1920	0	unknown	0	opencode
+ses_001beaadeffepxYjfuKf7GEIE0	2026-08-14T11:12:02+08:00	octest2	deepseek-chat	2	2	12636	2	3584	0	master	0	opencode
+ses_001c4553dffetZB9DQgWikIx29	2026-08-14T11:05:51+08:00	octest3	deepseek-chat	3	3	14490	58	18048	0	master	0	opencode
+ses_001c4ec7affe5KR2NdL8YEzaCj	2026-08-14T11:05:12+08:00	octest2	deepseek-chat	5	4	16358	147	32640	0	master	0	opencode
+ses_001c67013ffeqKOC4m2bEunIaa	2026-08-14T11:03:33+08:00	octest	deepseek-chat	5	3	187	52	32384	0	master	0	opencode
+ses_001c6b08affeVFQYHQEyjJF8Ro	2026-08-14T11:03:16+08:00	octest	deepseek-chat	2	2	16224	2	0	0	master	0	opencode
+ses_001cc3171ffeKbiLAlaAveGhmE	2026-08-14T10:57:15+08:00	agent-test	deepseek-v4-flash	2	2	14392	3	1920	0	feature/NFQX-12738	0	opencode
