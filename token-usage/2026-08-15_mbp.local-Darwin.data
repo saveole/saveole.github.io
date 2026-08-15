@@ -1,2 +1,2 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-ses_ffd390fc0ffed8tkVY46kHFSx6	2026-08-15T08:16:27+08:00	xz-dev-tool	glm-5.3	716	38	91528	22803	2418112	0	main	31593	opencode
+ses_ffd390fc0ffed8tkVY46kHFSx6	2026-08-15T08:16:27+08:00	xz-dev-tool	glm-5.3	724	39	141781	22941	2426880	0	main	31736	opencode
