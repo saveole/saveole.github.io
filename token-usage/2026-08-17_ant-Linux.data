@@ -1,5 +1,5 @@
 session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-sess_3ddd56ee-d604-4905-8978-6078dabdda14	2026-08-17T11:04:41+08:00	scrm-api	GLM-5.3	24161	9	9980589	123393	8500480	0	feat/9.8/NFQX-12739	0	zcode
+sess_3ddd56ee-d604-4905-8978-6078dabdda14	2026-08-17T11:04:41+08:00	scrm-api	GLM-5.3	27351	10	30239381	206025	28649152	0	feat/9.8/NFQX-12739	0	zcode
 ses_ff1607756ffeJ4cXDsNE6tqaD2	2026-08-17T15:28:51+08:00	saveole-code	deepseek-v4-flash	4940	330	1644451	85256	60334848	0	main	97134	opencode
 ses_ff14cd739ffepPf82eS6eCFSol	2026-08-17T15:50:17+08:00	saveole-code	deepseek-v4-flash	3490	26	90926	3779	623744	0	main	6220	opencode
 ses_ff14387a3ffe5dPtR0UnAuzxIO	2026-08-17T16:00:27+08:00	saveole-code	deepseek-v4-flash	164	29	49172	10169	939008	0	main	2214	opencode
