@@ -4,6 +4,10 @@ token-usage plugin — Hermes session token tracker.
 On session finalize, reads token stats from state.db and appends a TSV row
 to the token-usage repo (same schema as Claude Code tracker), then auto-commits
 and pushes to remote.
+
+Hermes keeps its own lock, backfill, and a defensive stash-based git flow;
+the TSV schema, dedup, and daily-file writing come from the shared
+tracker_sink module.
 """
 
 from __future__ import annotations
@@ -13,6 +17,7 @@ import os
 import platform
 import sqlite3
 import subprocess
+import sys
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -22,32 +27,30 @@ logger = logging.getLogger(__name__)
 
 # ── Config ──────────────────────────────────────────────────────────────────
 REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" / "saveole.github.io")))
-DATA_DIR = REPO_DIR / "token-usage"
 LOCK_FILE = Path("/tmp/hermes-token-usage.lock")
-LOG_FILE = Path.home() / ".hermes" / "plugins" / "token-usage-tracker.log"
 STATE_DB = Path.home() / ".hermes" / "state.db"
 
 SOURCE = "hermes"
 
-# TSV columns (same as token-usage SCHEMA.md — 13 columns)
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output",
-    "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink, TSV_HEADER, _ALL_SOURCES  # noqa: E402
+
+    sink = TrackerSink(
+        source=SOURCE,
+        repo_dir=REPO_DIR,
+        log_file=Path.home() / ".hermes" / "plugins" / "token-usage-tracker.log",
+        log_prefix="[hermes]",
+    )
+except Exception:
+    sink = None  # repo absent — nothing to record; _record_usage will skip
 
 
 def _log(msg: str) -> None:
     """Append to tracker log."""
-    try:
-        LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-        ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
-        with open(LOG_FILE, "a") as f:
-            f.write(f"[{ts}] {msg}\n")
-    except Exception:
-        pass
+    if sink is not None:
+        sink.log(msg)
 
 
 def _get_session_data(session_id: str) -> Optional[Dict[str, Any]]:
@@ -234,20 +237,11 @@ def _backfill_missing() -> int:
     Returns count of newly backfilled sessions.
     Only appends — never modifies existing records. No git operations.
     """
-    if not STATE_DB.exists() or not DATA_DIR.exists():
+    if sink is None or not STATE_DB.exists() or not sink.data_dir.exists():
         return 0
 
-    # 1. Collect already-recorded session_ids from .data files
-    recorded = set()
-    for data_file in DATA_DIR.glob("*.data"):
-        try:
-            content = data_file.read_text()
-            for line in content.splitlines()[1:]:  # skip header
-                parts = line.split("\t", 1)
-                if parts and parts[0]:
-                    recorded.add(parts[0])
-        except Exception:
-            pass
+    # 1. Collect already-recorded session_ids from .data files (all sources)
+    recorded = set(sink.recorded_sessions(source=_ALL_SOURCES))
 
     # 2. Query all non-zero sessions from state.db
     try:
@@ -270,8 +264,6 @@ def _backfill_missing() -> int:
         return 0
 
     # 3. Find unrecorded sessions, group by date
-    hostname = platform.node() or "unknown"
-    os_name = platform.system() or "unknown"
     new_by_date = {}  # {date_str: [tsv_row, ...]}
 
     for row in rows:
@@ -292,36 +284,33 @@ def _backfill_missing() -> int:
 
         git_branch = row["git_branch"] or "unknown"
 
-        ts = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
         if row["started_at"]:
             try:
                 dt = datetime.fromtimestamp(row["started_at"], tz=timezone(timedelta(hours=8)))
-                ts = dt.strftime("%Y-%m-%dT%H:%M:%S+08:00")
             except Exception:
-                pass
+                dt = None
+        else:
+            dt = None
 
-        # Date from started_at
-        date_str = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
-        if row["started_at"]:
-            try:
-                dt = datetime.fromtimestamp(row["started_at"], tz=timezone(timedelta(hours=8)))
-                date_str = dt.strftime("%Y-%m-%d")
-            except Exception:
-                pass
-
-        tsv_row = "\t".join([
-            sid, ts, project, model,
-            str(duration), str(row["message_count"] or 0),
-            str(row["input_tokens"] or 0), str(row["output_tokens"] or 0),
-            str(row["cache_read_tokens"] or 0), str(row["cache_write_tokens"] or 0),
-            git_branch,
-            str(row["reasoning_tokens"] or 0),
-            SOURCE,
-        ])
+        record = {
+            "session_id": sid,
+            "timestamp": dt.strftime("%Y-%m-%dT%H:%M:%S+08:00") if dt else datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00"),
+            "project": project,
+            "model": model,
+            "duration_seconds": duration,
+            "message_count": row["message_count"] or 0,
+            "tokens_input": row["input_tokens"] or 0,
+            "tokens_output": row["output_tokens"] or 0,
+            "tokens_cache_read": row["cache_read_tokens"] or 0,
+            "tokens_cache_creation": row["cache_write_tokens"] or 0,
+            "git_branch": git_branch,
+            "tokens_reasoning": row["reasoning_tokens"] or 0,
+        }
+        date_str = record["timestamp"][:10]
 
         if date_str not in new_by_date:
             new_by_date[date_str] = []
-        new_by_date[date_str].append(tsv_row)
+        new_by_date[date_str].append(sink.format_row(record))
 
     if not new_by_date:
         return 0
@@ -329,7 +318,7 @@ def _backfill_missing() -> int:
     # 4. Append new records
     total = 0
     for date_str, rows_list in sorted(new_by_date.items()):
-        data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
+        data_file = sink.data_dir / f"{date_str}_{platform.node() or 'unknown'}-{platform.system() or 'unknown'}.data"
 
         # Double-check for race with concurrent writes
         if data_file.exists():
@@ -358,6 +347,10 @@ def _record_usage(session_id: str, platform_name: str) -> None:
         _log("SKIP: no session_id")
         return
 
+    if sink is None:
+        _log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
+        return
+
     if not REPO_DIR.exists():
         _log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
@@ -375,27 +368,21 @@ def _record_usage(session_id: str, platform_name: str) -> None:
 
     # Build record
     now = datetime.now(timezone(timedelta(hours=8)))
-
-    tsv_row = "\t".join([
-        data["session_id"],
-        now.strftime("%Y-%m-%dT%H:%M:%S+08:00"),
-        data["project"],
-        data["model"],
-        str(data["duration_seconds"]),
-        str(data["message_count"]),
-        str(data["tokens_input"]),
-        str(data["tokens_output"]),
-        str(data["tokens_cache_read"]),
-        str(data["tokens_cache_creation"]),
-        data["git_branch"],
-        str(data["tokens_reasoning"]),
-        SOURCE,
-    ])
-
+    record = {
+        "session_id": data["session_id"],
+        "timestamp": now.strftime("%Y-%m-%dT%H:%M:%S+08:00"),
+        "project": data["project"],
+        "model": data["model"],
+        "duration_seconds": data["duration_seconds"],
+        "message_count": data["message_count"],
+        "tokens_input": data["tokens_input"],
+        "tokens_output": data["tokens_output"],
+        "tokens_cache_read": data["tokens_cache_read"],
+        "tokens_cache_creation": data["tokens_cache_creation"],
+        "git_branch": data["git_branch"],
+        "tokens_reasoning": data["tokens_reasoning"],
+    }
     date_str = now.strftime("%Y-%m-%d")
-    hostname = platform.node() or "unknown"
-    os_name = platform.system() or "unknown"
-    data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
 
     # Concurrency lock
     if not _acquire_lock():
@@ -403,21 +390,15 @@ def _record_usage(session_id: str, platform_name: str) -> None:
         return
 
     try:
-        # Deduplicate by session_id
-        if data_file.exists():
-            content = data_file.read_text()
-            if data["session_id"] in content:
-                _log(f"SKIP: session {session_id[:8]} already recorded")
-                return
+        # Deduplicate by session_id (exact match, source-filtered)
+        if data["session_id"] in sink.recorded_sessions():
+            _log(f"SKIP: session {session_id[:8]} already recorded")
+            return
 
-        # Write TSV
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        if not data_file.exists():
-            data_file.write_text(TSV_HEADER + "\n")
-        with open(data_file, "a") as f:
-            f.write(tsv_row + "\n")
-
-        _log(f"WROTE: {data_file.name}")
+        # Write TSV (shared sink: header + filename + append)
+        rel_path = sink.upsert(record, date_str)
+        _log(f"WROTE: {rel_path}")
+        data_file = sink.data_dir / Path(rel_path).name
 
         # Git sync (commit is sync, push is async)
         _git_sync(data_file)

@@ -6,6 +6,17 @@
 
 ## 工作原理
 
+所有来源的 tracker 脚本共用同一个深度模块 `scripts/tracker_sink.py`：
+TSV 13 列 schema、`YYYY-MM-DD_{hostname}-{os}.data` 文件名规则、按
+`session_id` 的去重/更新写入、旧 11 列 header 迁移，以及
+git add → commit → pull --rebase → push 全流程都收敛在 sink 里。
+各 `log-usage-<agent>.py` 只做「从各自数据源抽取」的薄适配，写完交给 sink。
+
+> **注意**：`log-usage.py`（复制到 `~/.claude/hooks/`）和 hermes 插件在运行时
+> 会从 `REPO_DIR/token-usage/scripts/` 导入 `tracker_sink`。因此仓库必须
+> 存在于 `TOKEN_USAGE_REPO_DIR`（默认 `~/blog/saveole.github.io`），否则脚本
+> 会按原行为静默跳过（写入 `SKIP: REPO_DIR not found`）。
+
 ```
 Claude Code 退出（SessionEnd Hook）
     ↓ log-usage.py 触发
@@ -539,15 +550,16 @@ token-usage/
 │       ├── index.ts          # 扩展实现（session_shutdown 触发，复制到 ~/.pi/agent/extensions/ 使用）
 │       └── README.md         # pi 扩展文档
 ├── scripts/
-│   ├── log-usage.py          # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
-│   ├── log-usage-opencode.py # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
-│   ├── log-usage-agy.py      # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
-│   ├── log-usage-zcode.py    # ZCode 追踪脚本（Python，查询 ~/.zcode/cli/db/db.sqlite，递归 CTE 归并 subagent）
-│   ├── log-usage-pi.py       # pi 追踪脚本（Python，解析 ~/.pi/agent/sessions/**/*.jsonl 的 usage 字段）
-│   ├── log-usage-codex.py    # Codex CLI 追踪脚本（Python，扫描 ~/.codex/sessions/ 的 rollout JSONL）
-│   ├── incremental.py        # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
-│   ├── aggregate.py          # 终端诊断脚本（仅打印汇总，不写文件）
-│   └── backfill.py           # 全量历史回填（增量 merge，含 git 操作，首次安装用）
+│   ├── tracker_sink.py          # 共享的深度 session-log 模块（所有 tracker 共用：TSV 写入/去重/git 同步/日志）
+│   ├── log-usage.py             # Claude Code Hook 脚本（Python，复制到 ~/.claude/hooks/ 使用）
+│   ├── log-usage-opencode.py    # OpenCode Plugin 脚本（Python，由 tokentracker.js 调用）
+│   ├── log-usage-agy.py         # Antigravity CLI (agy) 追踪脚本（Python，扫描 ~/.gemini/antigravity-cli/ 记录用量）
+│   ├── log-usage-zcode.py       # ZCode 追踪脚本（Python，查询 ~/.zcode/cli/db/db.sqlite，递归 CTE 归并 subagent）
+│   ├── log-usage-pi.py          # pi 追踪脚本（Python，解析 ~/.pi/agent/sessions/**/*.jsonl 的 usage 字段）
+│   ├── log-usage-codex.py       # Codex CLI 追踪脚本（Python，扫描 ~/.codex/sessions/ 的 rollout JSONL）
+│   ├── incremental.py           # 轻量增量补录（hook 后台调用，仅 append，不碰 git）
+│   ├── aggregate.py             # 终端诊断脚本（仅打印汇总，不写文件）
+│   └── backfill.py              # 全量历史回填（增量 merge，含 git 操作，首次安装用）
 ├── SCHEMA.md                 # TSV 格式规范
 ├── .gitignore                # 忽略已废弃的 daily-summary.json / REPORT.md
 └── README.md                 # 本文件

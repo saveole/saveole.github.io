@@ -20,10 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import platform
-import socket
 import sqlite3
-import subprocess
 import sys
 import time
 from datetime import datetime, timezone, timedelta
@@ -35,10 +32,6 @@ from pathlib import Path
 REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" / "saveole.github.io")))
 ZCODE_DB = Path(os.environ.get("ZCODE_DB_PATH", str(Path.home() / ".zcode" / "cli" / "db" / "db.sqlite")))
 
-DATA_DIR = REPO_DIR / "token-usage"
-ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
-LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
-
 # 节流:同一 session 在 THROTTLE_MINUTES 分钟内只记录一次(含 git 操作)。
 # Stop hook 每轮都触发,但绝大多数应直接 return,避免频繁 commit + push。
 # 兜底:即使节流期间崩溃,下次任何会话活动触发 --since 时仍会补录(因为 .data 里数据旧或缺失)。
@@ -47,28 +40,25 @@ THROTTLE_MINUTES = int(os.environ.get("ZCODE_THROTTLE_MINUTES", "15"))
 
 CST = timezone(timedelta(hours=8))
 
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
-
 SOURCE = "zcode"
 
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink  # noqa: E402
 
-def log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{ts}] [zcode] {msg}\n")
+    sink = TrackerSink(source=SOURCE, repo_dir=REPO_DIR, log_prefix="[zcode]", branch_fallback="main")
+except Exception:
+    sink = None  # repo absent — nothing to record; main() will skip
 
 
-def error_log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    ERROR_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with open(ERROR_LOG, "a") as f:
-        f.write(f"[{ts}] [zcode] {msg}\n")
+def _skip() -> None:
+    """Mirror the old graceful skip when the repo is absent."""
+    try:
+        with open(Path.home() / ".claude" / "hooks" / "tracker.log", "a") as f:
+            f.write(f"SKIP: REPO_DIR not found ({REPO_DIR})\n")
+    except Exception:
+        pass
 
 
 # ── 节流(statefile 记录每 session 最近一次记录时刻) ──────────
@@ -104,38 +94,11 @@ def mark_recorded(session_id: str) -> None:
     THROTTLE_FILE.write_text(json.dumps(data), encoding="utf-8")
 
 
-def run_git(*args: str) -> bool:
-    """Run a git command; log stderr on failure. Returns True on success."""
-    try:
-        result = subprocess.run(
-            ["git", *args],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(REPO_DIR),
-        )
-        if result.returncode != 0:
-            for line in result.stderr.strip().splitlines():
-                if line:
-                    error_log(line)
-        return result.returncode == 0
-    except Exception as e:
-        error_log(str(e))
-        return False
-
-
 def get_git_branch(directory: str) -> str:
     """Run git branch --show-current in the given directory."""
     if not directory or not os.path.isdir(directory):
         return "main"
-    try:
-        result = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True, text=True, timeout=5,
-            cwd=directory,
-        )
-        branch = result.stdout.strip()
-        return branch if branch else "main"
-    except Exception:
-        return "main"
+    return sink.git_branch(directory)
 
 
 # ── SQLite helpers ────────────────────────────────────────────
@@ -257,7 +220,6 @@ def query_session(conn: sqlite3.Connection, session_id: str) -> dict | None:
         "tokens_cache_creation": t_cache_creation,
         "git_branch": git_branch,
         "tokens_reasoning": t_reasoning,
-        "source": SOURCE,
         "_date": date_str,
     }
 
@@ -287,70 +249,6 @@ def list_interactive_sessions(conn: sqlite3.Connection, since_minutes: int | Non
     return [r[0] for r in rows]
 
 
-# ── Dedup against existing .data files ────────────────────────
-
-def get_recorded_sessions() -> dict[str, tuple[str, dict]]:
-    """Scan all .data files for existing zcode records.
-    Returns {session_id: (data_file_path, tokens_dict)}.
-    """
-    recorded: dict[str, tuple[str, dict]] = {}
-    if not DATA_DIR.is_dir():
-        return recorded
-    for data_file in sorted(DATA_DIR.glob("*.data")):
-        try:
-            lines = data_file.read_text(encoding="utf-8").splitlines()
-            if len(lines) < 2:
-                continue
-            for line in lines[1:]:
-                if not line.strip():
-                    continue
-                cols = line.split("\t")
-                sid = cols[0] if len(cols) > 0 else ""
-                src = cols[12] if len(cols) > 12 else ""
-                if sid and src == SOURCE:
-                    tokens = {
-                        "input": int(cols[6]) if len(cols) > 6 else 0,
-                        "output": int(cols[7]) if len(cols) > 7 else 0,
-                        "cache_read": int(cols[8]) if len(cols) > 8 else 0,
-                        "cache_creation": int(cols[9]) if len(cols) > 9 else 0,
-                        "reasoning": int(cols[11]) if len(cols) > 11 else 0,
-                    }
-                    recorded[sid] = (str(data_file), tokens)
-        except (OSError, ValueError):
-            continue
-    return recorded
-
-
-def format_tsv_row(data: dict) -> str:
-    return "\t".join([
-        data["session_id"], data["timestamp"], data["project"], data["model"],
-        str(data["duration_seconds"]), str(data["message_count"]),
-        str(data["tokens_input"]), str(data["tokens_output"]),
-        str(data["tokens_cache_read"]), str(data["tokens_cache_creation"]),
-        data["git_branch"], str(data["tokens_reasoning"]), SOURCE,
-    ])
-
-
-def upsert_data_file(data_file: Path, session_id: str, tsv_row: str) -> None:
-    """Replace existing session line or append new one (by session_id)."""
-    lines: list[str] = []
-    if data_file.is_file():
-        lines = data_file.read_text(encoding="utf-8").splitlines(keepends=True)
-    replaced = False
-    out: list[str] = []
-    for line in lines:
-        if line.startswith(session_id + "\t"):
-            out.append(tsv_row + "\n")
-            replaced = True
-        else:
-            out.append(line)
-    if not replaced:
-        if not out or not out[0].startswith("session_id\t"):
-            out.insert(0, TSV_HEADER + "\n")
-        out.append(tsv_row + "\n")
-    data_file.write_text("".join(out), encoding="utf-8")
-
-
 # ── main ──────────────────────────────────────────────────────
 
 def main() -> None:
@@ -361,12 +259,15 @@ def main() -> None:
                         help="Force full scan of all interactive sessions")
     args = parser.parse_args()
 
+    if sink is None:
+        _skip()
+        return
     if not REPO_DIR.is_dir():
-        log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
+        sink.log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
     if not ZCODE_DB.is_file():
-        log(f"SKIP: ZCode DB not found ({ZCODE_DB})")
+        sink.log(f"SKIP: ZCode DB not found ({ZCODE_DB})")
         return
 
     # ── Resolve target session ids ──
@@ -385,24 +286,24 @@ def main() -> None:
         sid = hook_data.get("session_id") or hook_data.get("conversationId") or hook_data.get("sessionId")
         if sid:
             target_session_id = sid
-            log(f"Hook payload received for session_id={sid[:12]}")
+            sink.log(f"Hook payload received for session_id={sid[:12]}")
 
     # Fallback: CLAUDE_SESSION_ID env var (injected by ZCode hook runner)
     if not target_session_id:
         env_sid = os.environ.get("CLAUDE_SESSION_ID", "").strip()
         if env_sid:
             target_session_id = env_sid
-            log(f"Env var CLAUDE_SESSION_ID={env_sid[:12]}")
+            sink.log(f"Env var CLAUDE_SESSION_ID={env_sid[:12]}")
 
     # ── 节流:hook 触发的单会话路径,同 session N 分钟内不重复记录 ──
     # 仅对 hook 触发(target_session_id 来自 stdin/env 且无 --all/--since)生效;
     # --since / --all 是手动调用,始终全量执行(用于补录/排查)。
     manual = args.all or args.since is not None
     if target_session_id and not manual and is_throttled(target_session_id):
-        log(f"SKIP: session {target_session_id[:12]} throttled (< {THROTTLE_MINUTES}min)")
+        sink.log(f"SKIP: session {target_session_id[:12]} throttled (< {THROTTLE_MINUTES}min)")
         return
 
-    recorded = get_recorded_sessions()
+    recorded = sink.recorded_sessions()
     conn = open_db()
 
     try:
@@ -411,23 +312,21 @@ def main() -> None:
         else:
             session_ids = list_interactive_sessions(conn, args.since)
     except sqlite3.Error as e:
-        error_log(f"DB query failed: {e}")
+        sink.error_log(f"DB query failed: {e}")
         conn.close()
         return
 
-    log(f"START scanning {len(session_ids)} zcode sessions...")
+    sink.log(f"START scanning {len(session_ids)} zcode sessions...")
 
     new_count = 0
     updated_count = 0
-    dirty_dates: set[str] = set()
-    hostname = socket.gethostname()
-    os_name = platform.system()
+    changed_files: set[str] = set()
 
     for sid in session_ids:
         try:
             data = query_session(conn, sid)
         except sqlite3.Error as e:
-            error_log(f"query_session failed for {sid[:12]}: {e}")
+            sink.error_log(f"query_session failed for {sid[:12]}: {e}")
             continue
         if not data:
             continue
@@ -444,7 +343,7 @@ def main() -> None:
         mark_recorded(sid)
 
         if sid in recorded:
-            _, old = recorded[sid]
+            old = recorded[sid]
             if (old["input"] == t_input and
                     old["output"] == t_output and
                     old["cache_read"] == t_cache_read and
@@ -452,52 +351,25 @@ def main() -> None:
                     old["reasoning"] == t_reasoning):
                 continue
             updated_count += 1
-            log(f"UPDATE session {sid[:12]} input={t_input} output={t_output}")
+            sink.log(f"UPDATE session {sid[:12]} input={t_input} output={t_output}")
         else:
             new_count += 1
-            log(f"NEW session {sid[:12]} input={t_input} output={t_output}")
+            sink.log(f"NEW session {sid[:12]} input={t_input} output={t_output}")
 
         date_str = data["_date"]
-        dirty_dates.add(date_str)
-        data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        upsert_data_file(data_file, sid, format_tsv_row(data))
+        changed_files.add(sink.upsert(data, date_str))
 
     conn.close()
 
     if new_count == 0 and updated_count == 0:
-        log("SKIP: no new or updated zcode sessions")
+        sink.log("SKIP: no new or updated zcode sessions")
         return
 
-    log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(dirty_dates)} dates")
+    sink.log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(changed_files)} files")
 
-    # ── Git sync ──
-    for date_str in dirty_dates:
-        rel_path = f"token-usage/{date_str}_{hostname}-{os_name}.data"
-        subprocess.run(["git", "add", rel_path], capture_output=True, cwd=str(REPO_DIR))
+    sink.git_sync(changed_files, f"track: zcode token usage ({new_count} new, {updated_count} updated)")
 
-    t0 = time.monotonic()
-    log("GIT: committing zcode token usage...")
-    if run_git("commit", "-m", f"track: zcode token usage ({new_count} new, {updated_count} updated)"):
-        log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pulling --rebase origin main...")
-    if run_git("pull", "--rebase", "origin", "main"):
-        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pushing origin main...")
-    if run_git("push", "origin", "main"):
-        log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s)")
-
-    log("DONE zcode log-usage")
+    sink.log("DONE zcode log-usage")
 
 
 if __name__ == "__main__":

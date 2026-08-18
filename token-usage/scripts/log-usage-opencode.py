@@ -14,13 +14,9 @@ from __future__ import annotations
 
 import json
 import os
-import platform
-import re
-import socket
 import sqlite3
-import subprocess
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════
@@ -33,114 +29,45 @@ OPENCODE_DB = Path(os.environ.get(
     str(Path.home() / ".local" / "share" / "opencode" / "opencode.db"),
 ))
 
-DATA_DIR = REPO_DIR / "token-usage"
-ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
-LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
+SOURCE = "opencode"
+
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink  # noqa: E402
+
+    sink = TrackerSink(source=SOURCE, repo_dir=REPO_DIR)
+except Exception:
+    sink = None  # repo absent — nothing to record; main() will skip
 
 CST = timezone(timedelta(hours=8))
 
-# Extended TSV header with reasoning tokens and source column
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
 
-SOURCE = "opencode"
-
-
-def log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{ts}] {msg}\n")
-
-
-def error_log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with open(ERROR_LOG, "a") as f:
-        f.write(f"[{ts}] {msg}\n")
-
-
-def run_git(*args: str) -> bool:
-    """Run a git command; log stderr on failure. Returns True on success."""
+def _skip() -> None:
+    """Mirror the old graceful skip when the repo is absent."""
     try:
-        result = subprocess.run(
-            ["git", *args],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(REPO_DIR),
-        )
-        if result.returncode != 0:
-            for line in result.stderr.strip().splitlines():
-                if line:
-                    error_log(line)
-        return result.returncode == 0
-    except Exception as e:
-        error_log(str(e))
-        return False
+        with open(Path.home() / ".claude" / "hooks" / "tracker.log", "a") as f:
+            f.write(f"SKIP: REPO_DIR not found ({REPO_DIR})\n")
+    except Exception:
+        pass
 
 
 def get_git_branch(directory: str) -> str:
     """Run git branch --show-current in the given directory."""
-    if not directory:
-        return "unknown"
-    try:
-        result = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True, text=True, timeout=10,
-            cwd=directory,
-        )
-        branch = result.stdout.strip()
-        return branch if branch else "unknown"
-    except Exception:
-        return "unknown"
-
-
-def get_recorded_sessions() -> dict[str, tuple[str, dict, str]]:
-    """Scan all .data files for existing opencode session records.
-    Returns {session_id: (data_file_path, tokens_dict, timestamp_str)}.
-    """
-    recorded: dict[str, tuple[str, dict, str]] = {}
-    if not DATA_DIR.is_dir():
-        return recorded
-    for data_file in sorted(DATA_DIR.glob("*.data")):
-        try:
-            lines = data_file.read_text().splitlines()
-            if len(lines) < 2:
-                continue
-            header_cols = lines[0].split("\t")
-            for line in lines[1:]:
-                if not line.strip():
-                    continue
-                cols = line.split("\t")
-                sid = cols[0] if len(cols) > 0 else ""
-                src = cols[12] if len(cols) > 12 else ""
-                if sid and src == SOURCE:
-                    tokens = {
-                        "input": int(cols[6]) if len(cols) > 6 else 0,
-                        "output": int(cols[7]) if len(cols) > 7 else 0,
-                        "cache_read": int(cols[8]) if len(cols) > 8 else 0,
-                        "cache_creation": int(cols[9]) if len(cols) > 9 else 0,
-                        "reasoning": int(cols[11]) if len(cols) > 11 else 0,
-                    }
-                    ts = cols[1] if len(cols) > 1 else ""
-                    recorded[sid] = (str(data_file), tokens, ts)
-        except (OSError, ValueError):
-            continue
-    return recorded
+    return sink.git_branch(directory)
 
 
 def query_opencode_sessions(since_minutes: int | None = None) -> list[dict]:
     """Query opencode.db for sessions with token usage data."""
     if not OPENCODE_DB.is_file():
-        log(f"SKIP: opencode db not found at {OPENCODE_DB}")
+        sink.log(f"SKIP: opencode db not found at {OPENCODE_DB}")
         return []
 
     try:
         conn = sqlite3.connect(str(OPENCODE_DB))
         conn.row_factory = sqlite3.Row
     except sqlite3.Error as e:
-        error_log(f"Failed to connect opencode db: {e}")
+        sink.error_log(f"Failed to connect opencode db: {e}")
         return []
 
     # Build query: sessions with non-zero tokens, joined with project name
@@ -175,7 +102,7 @@ def query_opencode_sessions(since_minutes: int | None = None) -> list[dict]:
     try:
         rows = conn.execute(query, params).fetchall()
     except sqlite3.Error as e:
-        error_log(f"Query failed: {e}")
+        sink.error_log(f"Query failed: {e}")
         conn.close()
         return []
 
@@ -236,49 +163,12 @@ def query_opencode_sessions(since_minutes: int | None = None) -> list[dict]:
     return sessions
 
 
-def write_tsv_record(session_id: str, record: str, date: str, hostname: str, os_name: str) -> str:
-    """Write or update a TSV record. Returns the data file path."""
-    data_file = DATA_DIR / f"{date}_{hostname}-{os_name}.data"
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-    if data_file.is_file():
-        lines = data_file.read_text().splitlines(keepends=True)
-        # Upgrade old 11-column header to 13-column if needed
-        if lines and lines[0].count("\t") == 10:
-            lines[0] = TSV_HEADER + "\n"
-            # Pad existing rows to 13 columns
-            for idx in range(1, len(lines)):
-                if lines[idx].strip():
-                    cols = lines[idx].rstrip("\n").split("\t")
-                    while len(cols) < 13:
-                        cols.append("0" if len(cols) < 12 else "claude")
-                    lines[idx] = "\t".join(cols) + "\n"
-        replaced = False
-        new_lines: list[str] = []
-        for line in lines:
-            if line.startswith(session_id + "\t"):
-                new_lines.append(record + "\n")
-                replaced = True
-            else:
-                new_lines.append(line)
-        if replaced:
-            data_file.write_text("".join(new_lines))
-        else:
-            with open(data_file, "a") as f:
-                f.write(record + "\n")
-    else:
-        with open(data_file, "w") as f:
-            f.write(TSV_HEADER + "\n")
-            f.write(record + "\n")
-
-    return str(data_file.relative_to(REPO_DIR))
-
-
 def main() -> None:
+    if sink is None:
+        _skip()
+        return
     if not REPO_DIR.is_dir():
-        ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        with open(LOG_FILE, "a") as f:
-            f.write(f"[{ts}] SKIP: REPO_DIR not found ({REPO_DIR})\n")
+        sink.log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
     # Parse --since argument
@@ -290,17 +180,14 @@ def main() -> None:
         except ValueError:
             pass
 
-    hostname = socket.gethostname()
-    os_name = platform.system()
-
     # Get existing opencode records for dedup
-    recorded = get_recorded_sessions()
-    log(f"START: found {len(recorded)} existing opencode records")
+    recorded = sink.recorded_sessions()
+    sink.log(f"START: found {len(recorded)} existing opencode records")
 
     # Query new sessions from opencode DB
     sessions = query_opencode_sessions(since_minutes=since_minutes)
     if not sessions:
-        log("DONE: no sessions found")
+        sink.log("DONE: no sessions found")
         return
 
     new_count = 0
@@ -320,26 +207,23 @@ def main() -> None:
             timestamp = now.strftime("%Y-%m-%dT%H:%M:%S+08:00")
             date = now.strftime("%Y-%m-%d")
 
-        # Build TSV record
-        record = "\t".join([
-            sid,
-            timestamp,
-            s["project"],
-            s["model"],
-            str(s["duration"]),
-            str(s["message_count"]),
-            str(s["tokens_input"]),
-            str(s["tokens_output"]),
-            str(s["tokens_cache_read"]),
-            str(s["tokens_cache_creation"]),
-            s["git_branch"],
-            str(s["tokens_reasoning"]),
-            SOURCE,
-        ])
+        record = {
+            "session_id": sid,
+            "timestamp": timestamp,
+            "project": s["project"],
+            "model": s["model"],
+            "duration_seconds": s["duration"],
+            "message_count": s["message_count"],
+            "tokens_input": s["tokens_input"],
+            "tokens_output": s["tokens_output"],
+            "tokens_cache_read": s["tokens_cache_read"],
+            "tokens_cache_creation": s["tokens_cache_creation"],
+            "git_branch": s["git_branch"],
+            "tokens_reasoning": s["tokens_reasoning"],
+        }
 
         # Dedup check
         if sid in recorded:
-            existing_tokens = recorded[sid][1]
             new_tokens = {
                 "input": s["tokens_input"],
                 "output": s["tokens_output"],
@@ -347,46 +231,28 @@ def main() -> None:
                 "cache_creation": s["tokens_cache_creation"],
                 "reasoning": s["tokens_reasoning"],
             }
-            if new_tokens == existing_tokens:
+            if new_tokens == recorded[sid]:
                 continue
 
-        data_file_rel = write_tsv_record(sid, record, date, hostname, os_name)
-        changed_files.add(data_file_rel)
+        rel_path = sink.upsert(record, date)
+        changed_files.add(rel_path)
 
         if sid in recorded:
             updated_count += 1
-            log(f"UPDATE: session {sid[:8]} token counts updated")
+            sink.log(f"UPDATE: session {sid[:8]} token counts updated")
         else:
             new_count += 1
-            log(f"NEW: session {sid[:8]} input={s['tokens_input']} output={s['tokens_output']}")
+            sink.log(f"NEW: session {sid[:8]} input={s['tokens_input']} output={s['tokens_output']}")
 
     if not changed_files:
-        log("DONE: no changes")
+        sink.log("DONE: no changes")
         return
 
-    log(f"RECORDED: {new_count} new, {updated_count} updated sessions")
+    sink.log(f"RECORDED: {new_count} new, {updated_count} updated sessions")
 
-    # ── Git sync ──
-    for f in changed_files:
-        subprocess.run(
-            ["git", "add", str(f)],
-            capture_output=True, cwd=str(REPO_DIR),
-        )
+    sink.git_sync(changed_files, f"track: opencode token usage {new_count} new, {updated_count} updated")
 
-    if not run_git("commit", "-m", f"track: opencode token usage {new_count} new, {updated_count} updated"):
-        log("GIT: commit FAILED (no changes or error)")
-
-    if run_git("pull", "--rebase", "origin", "main"):
-        log("GIT: pull OK")
-    else:
-        log("GIT: pull FAILED")
-
-    if run_git("push", "origin", "main"):
-        log("GIT: push OK")
-    else:
-        log("GIT: push FAILED")
-
-    log(f"DONE: {new_count} new, {updated_count} updated")
+    sink.log(f"DONE: {new_count} new, {updated_count} updated")
 
 
 if __name__ == "__main__":

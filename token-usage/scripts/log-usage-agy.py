@@ -15,11 +15,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import platform
 import re
-import socket
 import sqlite3
-import subprocess
 import sys
 import time
 from datetime import datetime, timezone, timedelta
@@ -31,68 +28,34 @@ from pathlib import Path
 REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" / "saveole.github.io")))
 AGY_DIR = Path(os.environ.get("AGY_DIR_PATH", str(Path.home() / ".gemini" / "antigravity-cli")))
 
-DATA_DIR = REPO_DIR / "token-usage"
-ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
-LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
-
 CST = timezone(timedelta(hours=8))
-
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
 
 SOURCE = "agy"
 
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink  # noqa: E402
 
-def log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{ts}] [agy] {msg}\n")
-
-
-def error_log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    ERROR_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with open(ERROR_LOG, "a") as f:
-        f.write(f"[{ts}] [agy] {msg}\n")
+    sink = TrackerSink(source=SOURCE, repo_dir=REPO_DIR, log_prefix="[agy]", branch_fallback="main")
+except Exception:
+    sink = None  # repo absent — nothing to record; main() will skip
 
 
-def run_git(*args: str) -> bool:
-    """Run a git command; log stderr on failure. Returns True on success."""
+def _skip() -> None:
+    """Mirror the old graceful skip when the repo is absent."""
     try:
-        result = subprocess.run(
-            ["git", *args],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(REPO_DIR),
-        )
-        if result.returncode != 0:
-            for line in result.stderr.strip().splitlines():
-                if line:
-                    error_log(line)
-        return result.returncode == 0
-    except Exception as e:
-        error_log(str(e))
-        return False
+        with open(Path.home() / ".claude" / "hooks" / "tracker.log", "a") as f:
+            f.write(f"SKIP: REPO_DIR not found ({REPO_DIR})\n")
+    except Exception:
+        pass
 
 
 def get_git_branch(directory: str) -> str:
     """Run git branch --show-current in the given directory."""
     if not directory or not os.path.isdir(directory):
         return "main"
-    try:
-        result = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True, text=True, timeout=5,
-            cwd=directory,
-        )
-        branch = result.stdout.strip()
-        return branch if branch else "main"
-    except Exception:
-        return "main"
+    return sink.git_branch(directory)
 
 
 def get_workspace_map() -> dict[str, str]:
@@ -115,7 +78,7 @@ def get_workspace_map() -> dict[str, str]:
                     except json.JSONDecodeError:
                         continue
         except Exception as e:
-            error_log(f"Failed reading history.jsonl: {e}")
+            sink.error_log(f"Failed reading history.jsonl: {e}")
     return ws_map
 
 
@@ -138,40 +101,6 @@ def get_model_from_db(cid: str) -> str:
         except Exception:
             pass
     return "gemini-3.6-flash"
-
-
-def get_recorded_sessions() -> dict[str, tuple[str, dict, str]]:
-    """Scan all .data files for existing agy session records.
-    Returns {session_id: (data_file_path, tokens_dict, timestamp_str)}.
-    """
-    recorded: dict[str, tuple[str, dict, str]] = {}
-    if not DATA_DIR.is_dir():
-        return recorded
-    for data_file in sorted(DATA_DIR.glob("*.data")):
-        try:
-            lines = data_file.read_text().splitlines()
-            if len(lines) < 2:
-                continue
-            header_cols = lines[0].split("\t")
-            for line in lines[1:]:
-                if not line.strip():
-                    continue
-                cols = line.split("\t")
-                sid = cols[0] if len(cols) > 0 else ""
-                src = cols[12] if len(cols) > 12 else ""
-                if sid and src == SOURCE:
-                    tokens = {
-                        "input": int(cols[6]) if len(cols) > 6 else 0,
-                        "output": int(cols[7]) if len(cols) > 7 else 0,
-                        "cache_read": int(cols[8]) if len(cols) > 8 else 0,
-                        "cache_creation": int(cols[9]) if len(cols) > 9 else 0,
-                        "reasoning": int(cols[11]) if len(cols) > 11 else 0,
-                    }
-                    ts = cols[1] if len(cols) > 1 else ""
-                    recorded[sid] = (str(data_file), tokens, ts)
-        except (OSError, ValueError):
-            continue
-    return recorded
 
 
 def parse_agy_session(cid: str, workspace_map: dict[str, str]) -> dict | None:
@@ -225,7 +154,7 @@ def parse_agy_session(cid: str, workspace_map: dict[str, str]) -> dict | None:
                         # Tool execution output returned to model
                         input_chars += len(content)
     except Exception as e:
-        error_log(f"Error reading transcript for {cid}: {e}")
+        sink.error_log(f"Error reading transcript for {cid}: {e}")
         return None
 
     if msg_count == 0:
@@ -273,7 +202,6 @@ def parse_agy_session(cid: str, workspace_map: dict[str, str]) -> dict | None:
         "tokens_cache_creation": 0,
         "git_branch": git_branch,
         "tokens_reasoning": tokens_reasoning,
-        "source": SOURCE,
     }
 
 
@@ -282,13 +210,16 @@ def main() -> None:
     parser.add_argument("--since", type=int, default=None, help="Scan sessions updated in last N minutes")
     args = parser.parse_args()
 
+    if sink is None:
+        _skip()
+        return
     if not REPO_DIR.is_dir():
-        log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
+        sink.log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
     brain_base = AGY_DIR / "brain"
     if not brain_base.is_dir():
-        log(f"SKIP: agy brain dir not found at {brain_base}")
+        sink.log(f"SKIP: agy brain dir not found at {brain_base}")
         return
 
     hook_data = None
@@ -300,7 +231,7 @@ def main() -> None:
         except Exception:
             pass
 
-    recorded = get_recorded_sessions()
+    recorded = sink.recorded_sessions()
     workspace_map = get_workspace_map()
 
     cids = []
@@ -308,7 +239,7 @@ def main() -> None:
         cid = hook_data.get("conversationId") or hook_data.get("session_id")
         if cid:
             cids = [cid]
-            log(f"Hook payload received for conversationId={cid[:8]}")
+            sink.log(f"Hook payload received for conversationId={cid[:8]}")
 
     if not cids:
         cids = [d.name for d in brain_base.iterdir() if d.is_dir()]
@@ -320,11 +251,11 @@ def main() -> None:
                 if (brain_base / cid).stat().st_mtime >= cutoff
             ]
 
-    log(f"START scanning {len(cids)} agy sessions...")
+    sink.log(f"START scanning {len(cids)} agy sessions...")
 
     new_count = 0
     updated_count = 0
-    dirty_dates: set[str] = set()
+    changed_files: set[str] = set()
 
     for cid in cids:
         data = parse_agy_session(cid, workspace_map)
@@ -340,7 +271,7 @@ def main() -> None:
 
         # Check if already recorded with same tokens
         if sid in recorded:
-            _, old_tokens, _ = recorded[sid]
+            old_tokens = recorded[sid]
             if (old_tokens["input"] == t_input and
                 old_tokens["output"] == t_output and
                 old_tokens["cache_read"] == t_cache_read and
@@ -348,10 +279,10 @@ def main() -> None:
                 old_tokens["reasoning"] == t_reasoning):
                 continue
             updated_count += 1
-            log(f"UPDATE session {sid[:8]} input={t_input} output={t_output}")
+            sink.log(f"UPDATE session {sid[:8]} input={t_input} output={t_output}")
         else:
             new_count += 1
-            log(f"NEW session {sid[:8]} input={t_input} output={t_output}")
+            sink.log(f"NEW session {sid[:8]} input={t_input} output={t_output}")
 
         ts_str = data["timestamp"]
         try:
@@ -360,74 +291,17 @@ def main() -> None:
         except (ValueError, TypeError):
             date_str = datetime.now(CST).strftime("%Y-%m-%d")
 
-        dirty_dates.add(date_str)
-
-        hostname = socket.gethostname()
-        os_name = platform.system()
-        data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-        tsv_row = "\t".join([
-            sid, ts_str, data["project"], data["model"],
-            str(data["duration_seconds"]), str(data["message_count"]),
-            str(t_input), str(t_output),
-            str(t_cache_read), str(t_cache_creation),
-            data["git_branch"], str(t_reasoning), SOURCE,
-        ])
-
-        if data_file.is_file():
-            lines = data_file.read_text(encoding="utf-8").splitlines(keepends=True)
-            replaced = False
-            new_lines = []
-            for line in lines:
-                if line.startswith(sid + "\t"):
-                    new_lines.append(tsv_row + "\n")
-                    replaced = True
-                else:
-                    new_lines.append(line)
-            if not replaced:
-                new_lines.append(tsv_row + "\n")
-            data_file.write_text("".join(new_lines), encoding="utf-8")
-        else:
-            with open(data_file, "w", encoding="utf-8") as f:
-                f.write(TSV_HEADER + "\n")
-                f.write(tsv_row + "\n")
+        changed_files.add(sink.upsert(data, date_str))
 
     if new_count == 0 and updated_count == 0:
-        log("SKIP: no new or updated agy sessions")
+        sink.log("SKIP: no new or updated agy sessions")
         return
 
-    log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(dirty_dates)} dates")
+    sink.log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(changed_files)} files")
 
-    # ── Git sync ──
-    for date_str in dirty_dates:
-        hostname = socket.gethostname()
-        os_name = platform.system()
-        rel_path = f"token-usage/{date_str}_{hostname}-{os_name}.data"
-        subprocess.run(["git", "add", rel_path], capture_output=True, cwd=str(REPO_DIR))
+    sink.git_sync(changed_files, f"track: agy token usage ({new_count} new, {updated_count} updated)")
 
-    t0 = time.monotonic()
-    log("GIT: committing agy token usage...")
-    if run_git("commit", "-m", f"track: agy token usage ({new_count} new, {updated_count} updated)"):
-        log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pulling --rebase origin main...")
-    if run_git("pull", "--rebase", "origin", "main"):
-        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pushing origin main...")
-    if run_git("push", "origin", "main"):
-        log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s)")
-
-    log("DONE agy log-usage")
+    sink.log("DONE agy log-usage")
 
 
 if __name__ == "__main__":

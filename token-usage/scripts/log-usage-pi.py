@@ -23,9 +23,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import platform
-import socket
-import subprocess
 import sys
 import time
 from datetime import datetime, timezone, timedelta
@@ -37,10 +34,6 @@ from pathlib import Path
 REPO_DIR = Path(os.environ.get("TOKEN_USAGE_REPO_DIR", str(Path.home() / "blog" / "saveole.github.io")))
 PI_SESSION_DIR = Path(os.environ.get("PI_SESSION_DIR", str(Path.home() / ".pi" / "agent" / "sessions")))
 
-DATA_DIR = REPO_DIR / "token-usage"
-ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
-LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
-
 # 节流:同一 session 在 THROTTLE_MINUTES 分钟内只记录一次(含 git 操作)。
 # session_shutdown 在退出、/new、/resume、/fork、/clone 时都会触发,
 # 节流避免频繁 commit + push。兜底:下次任何会话触发时,
@@ -50,28 +43,25 @@ THROTTLE_MINUTES = int(os.environ.get("PI_THROTTLE_MINUTES", "5"))
 
 CST = timezone(timedelta(hours=8))
 
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
-
 SOURCE = "pi"
 
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink  # noqa: E402
 
-def log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{ts}] [pi] {msg}\n")
+    sink = TrackerSink(source=SOURCE, repo_dir=REPO_DIR, log_prefix="[pi]", branch_fallback="main")
+except Exception:
+    sink = None  # repo absent — nothing to record; main() will skip
 
 
-def error_log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    ERROR_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with open(ERROR_LOG, "a") as f:
-        f.write(f"[{ts}] [pi] {msg}\n")
+def _skip() -> None:
+    """Mirror the old graceful skip when the repo is absent."""
+    try:
+        with open(Path.home() / ".claude" / "hooks" / "tracker.log", "a") as f:
+            f.write(f"SKIP: REPO_DIR not found ({REPO_DIR})\n")
+    except Exception:
+        pass
 
 
 # ── 节流(statefile 记录每 session 最近一次记录时刻) ──────────
@@ -103,38 +93,11 @@ def mark_recorded(session_id: str) -> None:
     THROTTLE_FILE.write_text(json.dumps(data), encoding="utf-8")
 
 
-def run_git(*args: str) -> bool:
-    """Run a git command; log stderr on failure. Returns True on success."""
-    try:
-        result = subprocess.run(
-            ["git", *args],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(REPO_DIR),
-        )
-        if result.returncode != 0:
-            for line in result.stderr.strip().splitlines():
-                if line:
-                    error_log(line)
-        return result.returncode == 0
-    except Exception as e:
-        error_log(str(e))
-        return False
-
-
 def get_git_branch(directory: str) -> str:
     """Run git branch --show-current in the given directory."""
     if not directory or not os.path.isdir(directory):
         return "main"
-    try:
-        result = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True, text=True, timeout=5,
-            cwd=directory,
-        )
-        branch = result.stdout.strip()
-        return branch if branch else "main"
-    except Exception:
-        return "main"
+    return sink.git_branch(directory)
 
 
 # ── pi session JSONL parsing ──────────────────────────────────
@@ -241,7 +204,6 @@ def parse_session_file(path: Path) -> dict | None:
         "tokens_cache_creation": t_cache_creation,
         "git_branch": git_branch,
         "tokens_reasoning": t_reasoning,
-        "source": SOURCE,
         "_date": date_str,
     }
 
@@ -268,70 +230,6 @@ def list_session_files(since_minutes: int | None) -> list[Path]:
     return files
 
 
-# ── Dedup against existing .data files ────────────────────────
-
-def get_recorded_sessions() -> dict[str, tuple[str, dict]]:
-    """Scan all .data files for existing pi records.
-    Returns {session_id: (data_file_path, tokens_dict)}.
-    """
-    recorded: dict[str, tuple[str, dict]] = {}
-    if not DATA_DIR.is_dir():
-        return recorded
-    for data_file in sorted(DATA_DIR.glob("*.data")):
-        try:
-            lines = data_file.read_text(encoding="utf-8").splitlines()
-            if len(lines) < 2:
-                continue
-            for line in lines[1:]:
-                if not line.strip():
-                    continue
-                cols = line.split("\t")
-                sid = cols[0] if len(cols) > 0 else ""
-                src = cols[12] if len(cols) > 12 else ""
-                if sid and src == SOURCE:
-                    tokens = {
-                        "input": int(cols[6]) if len(cols) > 6 else 0,
-                        "output": int(cols[7]) if len(cols) > 7 else 0,
-                        "cache_read": int(cols[8]) if len(cols) > 8 else 0,
-                        "cache_creation": int(cols[9]) if len(cols) > 9 else 0,
-                        "reasoning": int(cols[11]) if len(cols) > 11 else 0,
-                    }
-                    recorded[sid] = (str(data_file), tokens)
-        except (OSError, ValueError):
-            continue
-    return recorded
-
-
-def format_tsv_row(data: dict) -> str:
-    return "\t".join([
-        data["session_id"], data["timestamp"], data["project"], data["model"],
-        str(data["duration_seconds"]), str(data["message_count"]),
-        str(data["tokens_input"]), str(data["tokens_output"]),
-        str(data["tokens_cache_read"]), str(data["tokens_cache_creation"]),
-        data["git_branch"], str(data["tokens_reasoning"]), SOURCE,
-    ])
-
-
-def upsert_data_file(data_file: Path, session_id: str, tsv_row: str) -> None:
-    """Replace existing session line or append new one (by session_id)."""
-    lines: list[str] = []
-    if data_file.is_file():
-        lines = data_file.read_text(encoding="utf-8").splitlines(keepends=True)
-    replaced = False
-    out: list[str] = []
-    for line in lines:
-        if line.startswith(session_id + "\t"):
-            out.append(tsv_row + "\n")
-            replaced = True
-        else:
-            out.append(line)
-    if not replaced:
-        if not out or not out[0].startswith("session_id\t"):
-            out.insert(0, TSV_HEADER + "\n")
-        out.append(tsv_row + "\n")
-    data_file.write_text("".join(out), encoding="utf-8")
-
-
 # ── main ──────────────────────────────────────────────────────
 
 def main() -> None:
@@ -344,14 +242,17 @@ def main() -> None:
                         help="Force full scan of all sessions")
     args = parser.parse_args()
 
+    if sink is None:
+        _skip()
+        return
     if not REPO_DIR.is_dir():
-        log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
+        sink.log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
     if args.session_file:
         session_file = Path(args.session_file)
         if not session_file.is_file():
-            log(f"SKIP: session file not found ({session_file})")
+            sink.log(f"SKIP: session file not found ({session_file})")
             return
 
         # 节流:hook 模式的单会话路径,同 session N 分钟内不重复记录
@@ -365,12 +266,12 @@ def main() -> None:
         except Exception:
             pass
         if session_id and is_throttled(session_id):
-            log(f"SKIP: session {session_id[:12]} throttled (< {THROTTLE_MINUTES}min)")
+            sink.log(f"SKIP: session {session_id[:12]} throttled (< {THROTTLE_MINUTES}min)")
             return
 
         data = parse_session_file(session_file)
         if not data:
-            log(f"SKIP: no usable usage in {session_file.name}")
+            sink.log(f"SKIP: no usable usage in {session_file.name}")
             return
         session_id = data["session_id"]
         mark_recorded(session_id)
@@ -378,21 +279,19 @@ def main() -> None:
         return
 
     # ── Sweep 模式(--since / --all / 无参数 = 全量) ──
-    recorded = get_recorded_sessions()
+    recorded = sink.recorded_sessions()
     files = list_session_files(args.since)
-    log(f"START scanning {len(files)} pi session files...")
+    sink.log(f"START scanning {len(files)} pi session files...")
 
     new_count = 0
     updated_count = 0
-    dirty_dates: set[str] = set()
-    hostname = socket.gethostname()
-    os_name = platform.system()
+    changed_files: set[str] = set()
 
     for sf in files:
         try:
             data = parse_session_file(sf)
         except Exception as e:
-            error_log(f"parse failed for {sf.name}: {e}")
+            sink.error_log(f"parse failed for {sf.name}: {e}")
             continue
         if not data:
             continue
@@ -407,7 +306,7 @@ def main() -> None:
         t_reasoning = data["tokens_reasoning"]
 
         if sid in recorded:
-            _, old = recorded[sid]
+            old = recorded[sid]
             if (old["input"] == t_input and
                     old["output"] == t_output and
                     old["cache_read"] == t_cache_read and
@@ -415,83 +314,45 @@ def main() -> None:
                     old["reasoning"] == t_reasoning):
                 continue
             updated_count += 1
-            log(f"UPDATE session {sid[:12]} input={t_input} output={t_output}")
+            sink.log(f"UPDATE session {sid[:12]} input={t_input} output={t_output}")
         else:
             new_count += 1
-            log(f"NEW session {sid[:12]} input={t_input} output={t_output}")
+            sink.log(f"NEW session {sid[:12]} input={t_input} output={t_output}")
 
-        date_str = data["_date"]
-        dirty_dates.add(date_str)
-        data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        upsert_data_file(data_file, sid, format_tsv_row(data))
+        changed_files.add(sink.upsert(data, data["_date"]))
 
     if new_count == 0 and updated_count == 0:
-        log("SKIP: no new or updated pi sessions")
+        sink.log("SKIP: no new or updated pi sessions")
         return
 
-    log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(dirty_dates)} dates")
-    git_sync(dirty_dates, new_count, updated_count, hostname, os_name)
-    log("DONE pi log-usage")
+    sink.log(f"Recorded: {new_count} new, {updated_count} updated sessions across {len(changed_files)} files")
+    sink.git_sync(changed_files, f"track: pi token usage ({new_count} new, {updated_count} updated)")
+    sink.log("DONE pi log-usage")
 
 
 def process_one(data: dict) -> None:
     """Hook mode: upsert a single session record + git sync."""
     sid = data["session_id"]
     date_str = data["_date"]
-    hostname = socket.gethostname()
-    os_name = platform.system()
 
     # 与 .data 已有记录比对:无变化则跳过(节流窗口过期后重查的场景)
-    recorded = get_recorded_sessions()
-    if sid in recorded:
-        _, old = recorded[sid]
+    recorded = sink.recorded_sessions()
+    new = sid not in recorded
+    if not new:
+        old = recorded[sid]
         if (old["input"] == data["tokens_input"] and
                 old["output"] == data["tokens_output"] and
                 old["cache_read"] == data["tokens_cache_read"] and
                 old["cache_creation"] == data["tokens_cache_creation"] and
                 old["reasoning"] == data["tokens_reasoning"]):
-            log(f"SKIP: session {sid[:12]} unchanged in .data")
+            sink.log(f"SKIP: session {sid[:12]} unchanged in .data")
             return
-        log(f"UPDATE session {sid[:12]} input={data['tokens_input']} output={data['tokens_output']}")
+        sink.log(f"UPDATE session {sid[:12]} input={data['tokens_input']} output={data['tokens_output']}")
     else:
-        log(f"NEW session {sid[:12]} input={data['tokens_input']} output={data['tokens_output']}")
+        sink.log(f"NEW session {sid[:12]} input={data['tokens_input']} output={data['tokens_output']}")
 
-    data_file = DATA_DIR / f"{date_str}_{hostname}-{os_name}.data"
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    upsert_data_file(data_file, sid, format_tsv_row(data))
-
-    git_sync({date_str}, 1 if sid not in recorded else 0,
-             0 if sid not in recorded else 1, hostname, os_name)
-
-
-def git_sync(dirty_dates: set[str], new_count: int, updated_count: int,
-             hostname: str, os_name: str) -> None:
-    """git add dirty .data files, commit, pull --rebase, push."""
-    for date_str in dirty_dates:
-        rel_path = f"token-usage/{date_str}_{hostname}-{os_name}.data"
-        subprocess.run(["git", "add", rel_path], capture_output=True, cwd=str(REPO_DIR))
-
-    t0 = time.monotonic()
-    log("GIT: committing pi token usage...")
-    if run_git("commit", "-m", f"track: pi token usage ({new_count} new, {updated_count} updated)"):
-        log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pulling --rebase origin main...")
-    if run_git("pull", "--rebase", "origin", "main"):
-        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s)")
-
-    t0 = time.monotonic()
-    log("GIT: pushing origin main...")
-    if run_git("push", "origin", "main"):
-        log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s)")
+    rel_path = sink.upsert(data, date_str)
+    sink.git_sync([rel_path], f"track: pi token usage ({1 if new else 0} new, {0 if new else 1} updated)")
 
 
 if __name__ == "__main__":

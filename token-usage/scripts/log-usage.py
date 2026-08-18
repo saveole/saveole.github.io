@@ -11,12 +11,9 @@ from __future__ import annotations
 
 import json
 import os
-import platform
-import socket
 import subprocess
 import sys
-import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # ═══════════════════════════════════════════════════════════════
@@ -39,48 +36,14 @@ else:
         Path.home() / ".claude",
     ]
 
-DATA_DIR = REPO_DIR / "token-usage"
-ERROR_LOG = Path.home() / ".claude" / "hooks" / "tracker-errors.log"
-LOG_FILE = Path.home() / ".claude" / "hooks" / "tracker.log"
+# ── Deep session-log sink (shared with all agent trackers) ──
+try:
+    sys.path.insert(0, str(REPO_DIR / "token-usage" / "scripts"))
+    from tracker_sink import TrackerSink  # noqa: E402
 
-CST = timezone(timedelta(hours=8))
-
-TSV_HEADER = "\t".join([
-    "session_id", "timestamp", "project", "model",
-    "duration_seconds", "message_count",
-    "tokens_input", "tokens_output", "tokens_cache_read", "tokens_cache_creation",
-    "git_branch", "tokens_reasoning", "source",
-])
-
-
-def log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{ts}] {msg}\n")
-
-
-def error_log(msg: str) -> None:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    with open(ERROR_LOG, "a") as f:
-        f.write(f"[{ts}] {msg}\n")
-
-
-def run_git(*args: str) -> bool:
-    """Run a git command; log stderr on failure. Returns True on success."""
-    try:
-        result = subprocess.run(
-            ["git", *args],
-            capture_output=True, text=True, timeout=120,
-            cwd=str(REPO_DIR),
-        )
-        if result.returncode != 0:
-            for line in result.stderr.strip().splitlines():
-                if line:
-                    error_log(line)
-        return result.returncode == 0
-    except Exception as e:
-        error_log(str(e))
-        return False
+    sink = TrackerSink(source="claude", repo_dir=REPO_DIR)
+except Exception:
+    sink = None  # repo absent — nothing to record; main() will skip
 
 
 # ── ccusage-style session discovery ───────────────────────────
@@ -188,10 +151,16 @@ def parse_session_jsonl(path: Path) -> dict | None:
 # ── main ──────────────────────────────────────────────────────
 
 def main() -> None:
-    if not REPO_DIR.is_dir():
-        ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        with open(LOG_FILE, "a") as f:
-            f.write(f"[{ts}] SKIP: REPO_DIR not found ({REPO_DIR})\n")
+    if sink is None or not REPO_DIR.is_dir():
+        if sink is None:
+            # repo absent — mirror the old graceful skip
+            try:
+                with open(Path.home() / ".claude" / "hooks" / "tracker.log", "a") as f:
+                    f.write(f"SKIP: REPO_DIR not found ({REPO_DIR})\n")
+            except Exception:
+                pass
+        else:
+            sink.log(f"SKIP: REPO_DIR not found ({REPO_DIR})")
         return
 
     # ── Read hook input from stdin ──
@@ -207,7 +176,7 @@ def main() -> None:
     session_id = hook.get("session_id", "")
     cwd = hook.get("cwd", "")
 
-    log(f"START session={session_id[:8]} cwd={cwd}")
+    sink.log(f"START session={session_id[:8]} cwd={cwd}")
 
     # ── Find JSONL via ccusage-style discovery ──
     jsonl_path = find_session_jsonl(session_id)
@@ -217,31 +186,31 @@ def main() -> None:
         transcript_path = hook.get("transcript_path", "")
         if transcript_path and Path(transcript_path).is_file():
             jsonl_path = Path(transcript_path)
-            log(f"FALLBACK: using transcript_path={transcript_path}")
+            sink.log(f"FALLBACK: using transcript_path={transcript_path}")
 
     if jsonl_path is None:
-        log(f"SKIP: no JSONL found for session={session_id[:8]}")
+        sink.log(f"SKIP: no JSONL found for session={session_id[:8]}")
         return
 
-    log(f"JSONL: {jsonl_path}")
+    sink.log(f"JSONL: {jsonl_path}")
 
     try:
         _run(session_id, jsonl_path, cwd)
     except Exception as e:
-        error_log(f"RUN FAILED: {e}")
+        sink.error_log(f"RUN FAILED: {e}")
 
 
 def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
     data = parse_session_jsonl(jsonl_path)
     if data is None:
-        log("SKIP: no assistant messages")
+        sink.log("SKIP: no assistant messages")
         return
 
     if data["input"] == 0 and data["output"] == 0:
-        log("SKIP: zero tokens")
+        sink.log("SKIP: zero tokens")
         return
 
-    log(
+    sink.log(
         f"TOKENS input={data['input']} output={data['output']} "
         f"cache_read={data['cache_read']} cache_creation={data['cache_creation']}"
     )
@@ -251,82 +220,31 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
     if project == "unknown" and cwd:
         project = os.path.basename(cwd)
 
-    now = datetime.now(CST).strftime("%Y-%m-%dT%H:%M:%S+08:00")
-    date = datetime.now(CST).strftime("%Y-%m-%d")
-    hostname = socket.gethostname()
-    os_name = platform.system()
+    now = datetime.now(timezone(timedelta(hours=8)))
+    timestamp = now.strftime("%Y-%m-%dT%H:%M:%S+08:00")
+    date = now.strftime("%Y-%m-%d")
 
-    record = "\t".join([
-        session_id, now, project, data["model"],
-        str(data["duration"]), str(data["message_count"]),
-        str(data["input"]), str(data["output"]),
-        str(data["cache_read"]), str(data["cache_creation"]),
-        data["git_branch"],
-        "0",
-        "claude",
-    ])
+    record = {
+        "session_id": session_id,
+        "timestamp": timestamp,
+        "project": project,
+        "model": data["model"],
+        "duration_seconds": data["duration"],
+        "message_count": data["message_count"],
+        "tokens_input": data["input"],
+        "tokens_output": data["output"],
+        "tokens_cache_read": data["cache_read"],
+        "tokens_cache_creation": data["cache_creation"],
+        "git_branch": data["git_branch"],
+        "tokens_reasoning": 0,
+    }
 
     # ── Deduplicate / update by session_id ──
-    data_file = DATA_DIR / f"{date}_{hostname}-{os_name}.data"
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-    if data_file.is_file():
-        lines = data_file.read_text().splitlines(keepends=True)
-        # Upgrade old 11-column header to 13-column if needed
-        if lines and lines[0].count("\t") == 10:
-            lines[0] = TSV_HEADER + "\n"
-            for idx in range(1, len(lines)):
-                if lines[idx].strip():
-                    cols = lines[idx].rstrip("\n").split("\t")
-                    while len(cols) < 13:
-                        cols.append("0" if len(cols) < 12 else "claude")
-                    lines[idx] = "\t".join(cols) + "\n"
-        replaced = False
-        new_lines: list[str] = []
-        for line in lines:
-            if line.startswith(session_id + "\t"):
-                # Replace with updated record
-                new_lines.append(record + "\n")
-                replaced = True
-            else:
-                new_lines.append(line)
-        if replaced:
-            data_file.write_text("".join(new_lines))
-            log(f"UPDATE: session {session_id[:8]} token counts updated")
-        else:
-            with open(data_file, "a") as f:
-                f.write(record + "\n")
-    else:
-        with open(data_file, "w") as f:
-            f.write(TSV_HEADER + "\n")
-            f.write(record + "\n")
+    rel_path = sink.upsert(record, date)
+    sink.log(f"UPDATED: session {session_id[:8]} in {rel_path}")
 
     # ── Git sync ──
-    subprocess.run(
-        ["git", "add", f"token-usage/{date}_{hostname}-{os_name}.data"],
-        capture_output=True, cwd=str(REPO_DIR),
-    )
-
-    t0 = time.monotonic()
-    log(f"GIT: committing session {session_id[:8]}...")
-    if run_git("commit", "-m", f"track: token usage {date} session {session_id[:8]}"):
-        log(f"GIT: commit OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: commit FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
-
-    t0 = time.monotonic()
-    log("GIT: pulling --rebase origin main...")
-    if run_git("pull", "--rebase", "origin", "main"):
-        log(f"GIT: pull OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: pull FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
-
-    t0 = time.monotonic()
-    log("GIT: pushing origin main...")
-    if run_git("push", "origin", "main"):
-        log(f"GIT: push OK ({int(time.monotonic() - t0)}s)")
-    else:
-        log(f"GIT: push FAILED ({int(time.monotonic() - t0)}s, see {ERROR_LOG})")
+    sink.git_sync([rel_path], f"track: token usage {date} session {session_id[:8]}")
 
     # ── Background incremental scan + git sync ──
     incremental = REPO_DIR / "token-usage" / "scripts" / "incremental.py"
@@ -341,11 +259,11 @@ def _run(session_id: str, jsonl_path: Path, cwd: str) -> None:
         )
         subprocess.Popen(
             ["bash", "-c", sync_script],
-            stdout=open(LOG_FILE, "a"),
+            stdout=open(sink.log_file, "a"),
             stderr=subprocess.STDOUT,
         )
 
-    log(f"DONE session={session_id[:8]}")
+    sink.log(f"DONE session={session_id[:8]}")
 
 
 if __name__ == "__main__":
