@@ -1,33 +1,19 @@
 const fs = require('fs');
-const hljs = require('highlight.js'); // 确保这一行存在且在 markdown-it 配置之前
-const taskLists = require('markdown-it-task-lists');
 const path = require('path');
-const matter = require('gray-matter');
-
-const md = require('markdown-it')({
-    html: true,         // 允许 MD 中的 HTML
-    linkify: true,    // 自动转换链接
-    typographer: true, // 启用一些排版优化
-    highlight: function (str, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-            try {
-                // 注意这里：必须外层包裹 hljs 类名
-                return '<pre class="hljs"><code>' +
-                       hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-                       '</code></pre>';
-            } catch (__) {}
-        }
-        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-    }
-}).use(taskLists, { label: true });
 const ejs = require('ejs');
 
-// 配置路径
+const { processPosts } = require('./lib/posts');
+const { aggregateTokenUsage } = require('./lib/tokenUsage');
+const { loadRunningMap, mergeRunningMap, buildRunningPageData } = require('./lib/running');
+const { buildReadingPageData } = require('./lib/reading');
+
 const POSTS_DIR = path.join(__dirname, 'posts');
 const DIST_DIR = path.join(__dirname, 'dist');
 const THEME_DIR = path.join(__dirname, 'theme');
+const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
+const RUNNING_DATA_DIR = path.join(__dirname, 'running-data');
+const READING_DATA_DIR = path.join(__dirname, 'reading-data');
 
-// EJS render options (shared across all templates for include support)
 const ejsOpts = { root: THEME_DIR, views: [THEME_DIR] };
 
 // 1. 清理并准备输出目录
@@ -36,272 +22,43 @@ fs.mkdirSync(DIST_DIR);
 
 // 2. 拷贝 CSS 和静态资源
 fs.copyFileSync(path.join(THEME_DIR, 'style.css'), path.join(DIST_DIR, 'style.css'));
-
-// 拷贝 assets 目录到 dist
 if (fs.existsSync(path.join(__dirname, 'assets'))) {
     fs.cpSync(path.join(__dirname, 'assets'), path.join(DIST_DIR, 'assets'), { recursive: true });
 }
 
-// 3. 读取所有文章
-const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
+// 3. 处理所有文章
+const { posts, tagIndex } = processPosts(POSTS_DIR);
 
-const postList = [];
-const allTags = {}; // tag -> [{title, url, date}]
-
-// Extract inline #hashtags from markdown content, excluding code blocks, headings, etc.
-function extractInlineTags(content) {
-    const tags = new Set();
-    // Remove code blocks (fenced and inline) to avoid false positives
-    const cleaned = content
-        .replace(/```[\s\S]*?```/g, '')
-        .replace(/`[^`]*`/g, '')
-        .replace(/^#{1,6}\s+.*/gm, ''); // Remove markdown headings
-    // Match #tag patterns: # followed by CJK or alphanumeric chars
-    const tagRegex = /(?:^|\s)#([\w一-鿿぀-ゟ゠-ヿ]+)/g;
-    let match;
-    while ((match = tagRegex.exec(cleaned)) !== null) {
-        tags.add(match[1]);
-    }
-    return Array.from(tags);
-}
-
-// Replace inline #tag with styled links in rendered HTML
-function replaceInlineTags(html, tags) {
-    tags.forEach(tag => {
-        // Match #tag that is NOT inside <code>, <pre>, or already inside an HTML tag
-        // Use a simple approach: replace #tag that appears as text content
-        const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp('(?<![\\w/])#' + escapedTag + '(?![\\w])', 'g');
-        html = html.replace(regex, '<a href="#" class="inline-tag" data-tag="' + tag + '">#' + tag + '</a>');
-    });
-    return html;
-}
-
-// 1. 循环处理每一篇文章
-files.forEach(file => {
-    const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
-    const { data, content } = matter(rawContent);
-
-    // 草稿跳过：frontmatter 中 published: false 的文章不构建、不出现在首页和标签页
-    if (data.published === false) return;
-
-    // 修正图片路径：将 ../assets/ 替换为 ./assets/
-    const fixedContent = content.replace(/\.\.\/assets\//g, './assets/');
-
-    // Extract tags from frontmatter and inline
-    const frontmatterTags = (data.tags || []).map(t => String(t));
-    const inlineTags = extractInlineTags(fixedContent);
-    const mergedTags = [...new Set([...frontmatterTags, ...inlineTags])];
-
-    // Render markdown first, then replace inline #tags with links
-    let htmlContent = md.render(fixedContent);
-    htmlContent = replaceInlineTags(htmlContent, inlineTags);
-
-    // 日期处理逻辑
-    const postDate = data.date ? new Date(data.date) : new Date(0);
-    const isValidDate = !isNaN(postDate.getTime());
-
-    const postData = {
-        title: data.title || '无题',
-        subtitle: data.subtitle || '',
-        date: isValidDate ? postDate.toISOString().split('T')[0] : '未知日期',
-        rawDate: postDate,
-        url: file.replace('.md', '.html'),
-        content: htmlContent,
-        tags: mergedTags,
-        categories: data.categories || []
-    };
-
-    // Build tag index
-    mergedTags.forEach(tag => {
-        if (!allTags[tag]) allTags[tag] = [];
-        allTags[tag].push({ title: postData.title, url: postData.url, date: postData.date });
-    });
-
-    postList.push(postData);
-});
-
-// 2. Render post detail pages (after tag index is built)
-postList.forEach(postData => {
+// 4. 渲染文章详情页（在标签索引构建完成后）
+posts.forEach(postData => {
     const postHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'layout.ejs'), 'utf-8'), {
         ...postData,
-        tagIndex: JSON.stringify(allTags)
+        tagIndex: JSON.stringify(tagIndex)
     }, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, postData.url), postHtml);
 });
 
-// 2. 首页渲染（在循环结束后执行一次）
-// 按时间倒序
-postList.sort((a, b) => b.rawDate - a.rawDate);
+// 5. 首页渲染（按时间倒序 + token/跑步数据合并）
+posts.sort((a, b) => b.rawDate - a.rawDate);
 
-// 读取 token 用量数据（直接从 .data TSV 文件聚合）
-let tokenUsageData = { days: [], bySourceTotal: {}, byOsTotal: {} };
-const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
-if (fs.existsSync(TOKEN_USAGE_DIR)) {
-    const dayMap = {};
-    const bySourceTotal = {};
-    const byOsTotal = {};
-    const dataFiles = fs.readdirSync(TOKEN_USAGE_DIR).filter(f => /^\d{4}-\d{2}-\d{2}(_.+)?\.data$/.test(f)).sort();
-    const knownSources = new Set(['claude', 'opencode', 'hermes', 'agy', 'zcode', 'pi', 'codex']);
-    for (const df of dataFiles) {
-        const date = df.replace(/_.+$/, '').replace(/\.data$/, ''); // Extract YYYY-MM-DD
-        // Extract OS from filename suffix: YYYY-MM-DD_{hostname}-{os}.data
-        const suffixMatch = df.match(/^\d{4}-\d{2}-\d{2}_(.+)-(\w+)\.data$/);
-        const os = suffixMatch ? suffixMatch[2] : null; // e.g. "Linux", "Darwin"
-        const lines = fs.readFileSync(path.join(TOKEN_USAGE_DIR, df), 'utf-8').trim().split('\n');
-        if (lines.length < 2) continue; // header only
-        const header = lines[0].split('\t');
-        const sourceIdx = header.indexOf('source');
-        for (let i = 1; i < lines.length; i++) {
-            const cols = lines[i].split('\t');
-            const get = (name) => parseInt(cols[header.indexOf(name)] || '0', 10) || 0;
-            const rawSource = sourceIdx >= 0 ? (cols[sourceIdx] || 'unknown') : 'unknown';
-            const source = knownSources.has(rawSource) ? rawSource : 'unknown';
-            const vals = {
-                input: get('tokens_input'),
-                output: get('tokens_output'),
-                cache_read: get('tokens_cache_read'),
-                cache_creation: get('tokens_cache_creation'),
-                reasoning: get('tokens_reasoning')
-            };
-            if (!dayMap[date]) dayMap[date] = { input: 0, output: 0, cache_read: 0, cache_creation: 0, reasoning: 0, bySource: {} };
-            dayMap[date].input += vals.input;
-            dayMap[date].output += vals.output;
-            dayMap[date].cache_read += vals.cache_read;
-            dayMap[date].cache_creation += vals.cache_creation;
-            dayMap[date].reasoning += vals.reasoning;
-            const rowTotal = vals.input + vals.output + vals.cache_read + vals.cache_creation + vals.reasoning;
-            if (!dayMap[date].bySource[source]) dayMap[date].bySource[source] = 0;
-            dayMap[date].bySource[source] += rowTotal;
-            if (source !== 'unknown') {
-                bySourceTotal[source] = (bySourceTotal[source] || 0) + rowTotal;
-            }
-            // OS aggregation (only for files with hostname-os suffix)
-            if (os) {
-                byOsTotal[os] = (byOsTotal[os] || 0) + rowTotal;
-            }
-        }
-    }
-    tokenUsageData.days = Object.keys(dayMap).sort().map(date => ({
-        date,
-        total_tokens: dayMap[date]
-    }));
-    tokenUsageData.bySourceTotal = bySourceTotal;
-    tokenUsageData.byOsTotal = byOsTotal;
-}
-
-// Read running data and merge
-const runningMap = {};
-const RUNNING_DATA_FILE = path.join(__dirname, 'running-data', 'activities.json');
-if (fs.existsSync(RUNNING_DATA_FILE)) {
-    JSON.parse(fs.readFileSync(RUNNING_DATA_FILE, 'utf-8')).forEach(a => {
-        runningMap[a.date] = a.distance_km;
-    });
-}
-const existingDates = new Set(tokenUsageData.days.map(d => d.date));
-tokenUsageData.days.forEach(d => { d.running_km = runningMap[d.date] || 0; });
-Object.keys(runningMap).forEach(date => {
-    if (!existingDates.has(date)) {
-        tokenUsageData.days.push({
-            date,
-            total_tokens: { input: 0, output: 0, cache_read: 0, cache_creation: 0 },
-            running_km: runningMap[date]
-        });
-    }
-});
-tokenUsageData.days.sort((a, b) => a.date.localeCompare(b.date));
+const tokenView = aggregateTokenUsage(TOKEN_USAGE_DIR);
+tokenView.days = mergeRunningMap(tokenView.days, loadRunningMap(RUNNING_DATA_DIR));
 
 const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 'utf-8'), {
-    posts: postList,
-    dailyData: JSON.stringify(tokenUsageData)
+    posts,
+    dailyData: JSON.stringify(tokenView)
 }, ejsOpts);
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 
-// --- Running page data processing ---
-const RUNNING_DATA_DIR = path.join(__dirname, 'running-data');
-
-function formatDuration(seconds) {
-    return Math.round(seconds / 60) + 'min';
-}
-
-function formatPace(secondsPerKm) {
-    const min = Math.floor(secondsPerKm / 60);
-    const sec = secondsPerKm % 60;
-    return min + "'" + (sec < 10 ? '0' : '') + sec + '"';
-}
-
-let runningPageData = null;
-if (fs.existsSync(RUNNING_DATA_DIR)) {
-    const activitiesRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'activities.json'), 'utf-8'));
-    const bodyRaw = JSON.parse(fs.readFileSync(path.join(RUNNING_DATA_DIR, 'body.json'), 'utf-8'));
-
-    // Build unified timeline from all dates in both data sources
-    const dateSet = new Set();
-    activitiesRaw.forEach(a => dateSet.add(a.date));
-    bodyRaw.forEach(b => dateSet.add(b.date));
-    const timeline = Array.from(dateSet).sort();
-
-    // Format activities for template
-    const activities = activitiesRaw.map(a => ({
-        date: a.date,
-        start_time: a.start_time || '',
-        type: a.type || 'running',
-        distance_km: a.distance_km,
-        duration: formatDuration(a.duration_s),
-        pace: formatPace(a.avg_pace_s_per_km),
-        avg_hr: a.avg_hr,
-        max_hr: a.max_hr,
-        cadence_spm: a.cadence_spm
-    })).sort((a, b) => b.date.localeCompare(a.date));
-
-    // Build tracks data: outdoor runs >= 5km with polyline, sorted by date desc
-    const tracks = activitiesRaw
-        .filter(a => a.summary_polyline && a.distance_km >= 5)
-        .map(a => ({
-            date: a.date,
-            distance_km: a.distance_km,
-            pace: formatPace(a.avg_pace_s_per_km),
-            duration: formatDuration(a.duration_s),
-            summary_polyline: a.summary_polyline
-        }))
-        .sort((a, b) => b.date.localeCompare(a.date));
-
-    runningPageData = {
-        timelineJSON: JSON.stringify(timeline),
-        bodyJSON: JSON.stringify(bodyRaw),
-        activitiesJSON: JSON.stringify(activities),
-        tracksJSON: JSON.stringify(tracks)
-    };
-}
-
+// 6. 跑步页面
+const runningPageData = buildRunningPageData(RUNNING_DATA_DIR);
 if (runningPageData) {
     const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
 }
 
-// --- Reading page data processing ---
-const READING_DATA_DIR = path.join(__dirname, 'reading-data');
-let readingPageData = null;
-if (fs.existsSync(READING_DATA_DIR)) {
-    const booksRaw = JSON.parse(fs.readFileSync(path.join(READING_DATA_DIR, 'books.json'), 'utf-8'));
-    const quotesRaw = JSON.parse(fs.readFileSync(path.join(READING_DATA_DIR, 'quotes.json'), 'utf-8'));
-
-    const currentYear = String(new Date().getFullYear());
-    const stats = {
-        total: booksRaw.length,
-        reading: booksRaw.filter(b => b.status === 'reading').length,
-        finished: booksRaw.filter(b => b.status === 'finished').length,
-        wishlist: booksRaw.filter(b => b.status === 'wishlist').length,
-        yearFinished: booksRaw.filter(b => b.status === 'finished' && b.finished_at && b.finished_at.startsWith(currentYear)).length
-    };
-
-    readingPageData = {
-        booksJSON: JSON.stringify(booksRaw),
-        quotesJSON: JSON.stringify(quotesRaw),
-        statsJSON: JSON.stringify(stats)
-    };
-}
-
+// 7. 阅读页面
+const readingPageData = buildReadingPageData(READING_DATA_DIR);
 if (readingPageData) {
     const readingHtml = ejs.render(
         fs.readFileSync(path.join(THEME_DIR, 'reading.ejs'), 'utf-8'),
@@ -312,9 +69,9 @@ if (readingPageData) {
     console.log('Reading page generated.');
 }
 
-console.log(`🚀 构建成功！已生成 ${postList.length} 篇文章和 1 个首页。`);
+console.log(`🚀 构建成功！已生成 ${posts.length} 篇文章和 1 个首页。`);
 
-// 复制独立页面（如 token-usage）
+// 8. 复制独立页面（如 token-usage）
 const PAGES_DIR = path.join(__dirname, 'pages');
 if (fs.existsSync(PAGES_DIR)) {
     fs.cpSync(PAGES_DIR, DIST_DIR, { recursive: true });

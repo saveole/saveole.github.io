@@ -22,17 +22,22 @@ The site is automatically deployed to GitHub Pages via `.github/workflows/pages-
 
 ### Build Process (`build.js`)
 
-The build script orchestrates the entire site generation:
+The build script is a thin composition over four deep per-pipeline modules in `lib/`. It orchestrates:
 
 1. **Cleanup**: Removes and recreates `dist/` directory
 2. **Asset copying**: Copies `theme/style.css` and `assets/` to `dist/`
-3. **Post processing**: For each `.md` file in `posts/`:
+3. **Posts** (`lib/posts.js` → `processPosts(postsDir)`): For each `.md` file in `posts/`:
    - Parses YAML frontmatter with `gray-matter`
    - Extracts tags from both `tags:` field and inline `#hashtag` patterns in content
    - Renders Markdown to HTML using `markdown-it` with syntax highlighting
    - Converts inline `#tag` to clickable links that trigger a popup
-   - Renders using `theme/layout.ejs` template
-4. **Index generation**: Sorts posts by date (descending) and renders `theme/index.ejs`
+   - Returns `{ posts, tagIndex }`
+4. **Index generation** (`lib/tokenUsage.js` + `lib/running.js`): Sorts posts by date (descending), aggregates token usage from TSV data files, merges running distances into the daily view, and renders `theme/index.ejs`
+5. **Running page** (`lib/running.js` → `buildRunningPageData(dir)`): Formats activities/tracks/timeline and renders `theme/running.ejs`
+6. **Reading page** (`lib/reading.js` → `buildReadingPageData(dir)`): Loads books/quotes, computes stats, and renders `theme/reading.ejs`
+7. **Page copying**: Copies `pages/` to `dist/`
+
+Each module exposes a small interface (directory → view model), so a single pipeline can be tested through `npm test` without running the whole build.
 
 ### Post Frontmatter Format
 
@@ -74,10 +79,12 @@ Both types are merged into a single `tags` array. Inline `#tag` patterns are con
 ```
 ├── assets/          # Static assets (images, favicons) - copied to dist/
 ├── dist/            # Generated output (not in git)
+├── lib/             # Deep per-pipeline build modules (posts, tokenUsage, running, reading)
 ├── posts/           # Markdown blog posts
 ├── theme/           # EJS templates and CSS
+├── test/            # Pipeline tests (npm test)
 ├── .github/         # GitHub Actions workflows
-└── build.js         # Main build script
+└── build.js         # Thin composition over lib/ modules
 ```
 
 ## Key Dependencies
