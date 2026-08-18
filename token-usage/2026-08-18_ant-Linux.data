@@ -2,4 +2,4 @@ session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	t
 ses_fed4c3804ffeaRaejqmy2VlkAb	2026-08-18T10:29:27+08:00	saveole.github.io	deepseek-v4-flash	6	5	29775	419	24192	0	main	134	opencode
 ses_fec7de0ccffehUiCHVakM39mBM	2026-08-18T14:14:49+08:00	scrm-api	deepseek-v4-flash	116	18	86086	1778	282624	0	feat/9.8/NFQX-12739	54	opencode
 ses_fec174c41ffeXqzXovBnacOgjO	2026-08-18T16:06:52+08:00	oauth2-server	deepseek-v4-flash	91	12	45447	5713	342016	0	main	4122	opencode
-ses_fec102e25ffesOXWim3qpaQyIq	2026-08-18T16:14:39+08:00	planner-web	deepseek-v4-flash	827	67	80681	34045	5747072	0	unknown	16493	opencode
+ses_fec102e25ffesOXWim3qpaQyIq	2026-08-18T16:14:39+08:00	planner-web	deepseek-v4-flash	861	72	82049	35119	6388992	0	unknown	17372	opencode
