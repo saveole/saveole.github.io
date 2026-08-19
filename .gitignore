@@ -11,3 +11,4 @@ dist/
 .rick
 .zcode
 __pycache__/
+token-usage/

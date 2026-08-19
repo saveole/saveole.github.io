@@ -1,2 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-sess_d8929396-ddc4-4eb9-a39c-634a2d13b73d	2026-07-09T15:21:35+08:00	ZCodeProject	GLM-5.2	1436	4	772494	23809	640768	0	main	0	zcode

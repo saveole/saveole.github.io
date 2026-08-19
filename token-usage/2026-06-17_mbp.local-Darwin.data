@@ -1,9 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-ses_129e18b6bffeDMsqv71VK31Fi9	2026-06-17T23:06:20+08:00	saveole.github.io	deepseek-v4-flash	244	7	25249	3874	74624	0	main	239	opencode
-ses_129e19fdaffeJR1DTnaK9GpBrJ	2026-06-17T23:06:15+08:00	saveole.github.io	deepseek-v4-flash	321	19	30647	3017	421504	0	main	4034	opencode
-ses_12997c3f9ffeF47JD0MC3boe3P	2026-06-18T00:26:55+08:00	inherit-mcp-server	deepseek-v4-flash	54	7	14292	1139	53504	0	master	730	opencode
-ses_12989247cffene1rM8Moh51DO8	2026-06-18T00:42:54+08:00	inherit-mcp-server	deepseek-v4-flash	16	6	289	78	40960	0	master	106	opencode
-ses_129873dcaffeD6UE0wfvCDYCyF	2026-06-18T00:44:58+08:00	inherit-mcp-server	deepseek-v4-flash	252	15	2140	1051	104064	0	master	552	opencode
-ses_129819232ffeFa2L3hfWGbgUN0	2026-06-18T00:51:10+08:00	inherit-mcp-server	deepseek-v4-flash	83	6	192	205	30848	0	master	142	opencode
-05558c65-4ea6-44ae-a617-f087aa36ca03	2026-06-17T16:55:08.642Z	inherit-mcp-server	glm-5.2	152	17	38473	5624	263872	0	master	0	claude
-5ef98442-06ad-4df8-9bd4-eb7e5a4c3468	2026-06-17T15:12:39.177Z	xueqiu-crawler	glm-5.2	4720	398	258332	132291	26437568	0	main	0	claude

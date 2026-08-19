@@ -1,8 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-712b3e25-283c-4a66-a403-48bc2528e18a	2026-08-04T08:05:42+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-51d48c0c-workdir	glm-5.2	126	5	63496	1397	164800	0	HEAD	0	claude
-c64a9d73-57ed-4461-8835-5db58efd3c93	2026-08-04T08:31:45+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-8459307f-workdir	glm-5.2	36	4	54509	914	117248	0	HEAD	0	claude
-sess_fbd89f4d-cc25-4420-9041-8a42d8a4e5ae	2026-08-04T09:10:13+08:00	saveole.github.io	GLM-5.2	1341	6	3838474	50250	3637568	0	main	0	zcode
-ses_034ad3563ffeYGtMKMLZIIAE22	2026-08-04T13:50:28+08:00	mcp-gateway	deepseek-v4-flash	324	43	68823	4755	2375936	0	master	27170	opencode
-6d14ae91-e2d3-4806-995c-574811ec739b	2026-08-04T15:33:04+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	1654	56	174932	56951	6806784	0	master	0	claude
-a9bed779-968c-43a0-b4bd-2afd28bf473c	2026-08-04T16:24:01+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	603	17	106329	22576	1156480	0	master	0	claude
-019fcb53-4cd5-7443-9b7e-0c613aadb58c	2026-08-04T13:51:01+08:00	mcp-gateway	deepseek-v4-flash	0	1	7099	88	0	0	master	55	pi

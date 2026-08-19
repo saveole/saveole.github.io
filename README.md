@@ -33,6 +33,25 @@ npx serve dist
 python -m http.server 8000 -d dist
 ```
 
+### Token 用量数据（token-usage）
+
+首页的热力图依赖 token 用量数据，这些数据已迁移到独立的私有仓库
+[`saveole/token-usage`](https://github.com/saveole/token-usage)，由各 AI
+编码助手的 tracker 脚本自动写入。
+
+构建时通过 `TOKEN_USAGE_DIR` 环境变量定位数据目录（默认 `./token-usage`）：
+
+```bash
+# 本地全新环境：先克隆数据仓库
+git clone https://github.com/saveole/token-usage.git token-usage
+
+# 或通过环境变量指定其他位置
+TOKEN_USAGE_DIR=/path/to/token-usage node build.js
+```
+
+CI 部署时会在构建前用 `TOKEN_USAGE_READ_TOKEN` secret 自动拉取该私有仓库。
+若该 secret 缺失，首页热力图数据为空（构建仍会成功）。
+
 ## 写作指南
 
 ### 文章格式

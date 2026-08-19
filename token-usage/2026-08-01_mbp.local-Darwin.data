@@ -1,2 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-sess_94ed08e2-32f0-450a-b182-539cd1788666	2026-08-01T08:10:11+08:00	reverse	GLM-5.2	1569	8	6561449	27773	6403008	0	main	0	zcode

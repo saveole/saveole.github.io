@@ -1,5 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-9faec668-53c1-4ecc-8aca-e4a08230c0fc	2026-07-27T09:54:55+08:00	-home-ant-code-golang-src-mcp-gateway	glm-5.2	277	9	43723	9117	492352	0	master	0	claude
-sess_055f476e-06cf-4237-8d7b-9d1597c2e0c6	2026-07-27T10:12:02+08:00	mcp-gateway	GLM-5.2	169608	20	37949952	143024	36577344	0	master	0	zcode
-sess_943e6ebe-3d06-4422-8eb3-48c394973337	2026-07-27T17:00:09+08:00	scrm-api	GLM-5.2	2468	4	4161587	51411	3796096	0	master	0	zcode
-sess_07f62027-b90b-4130-8d10-0238f754f6d0	2026-07-27T08:16:15+08:00	hspeed	GLM-5.2	6377	4	14897206	71756	14568064	0	main	0	zcode

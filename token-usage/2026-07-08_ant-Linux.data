@@ -1,9 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-1ddb7f02-28aa-4952-bded-e7f97b8793ad	2026-07-08T08:02:52+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-8a911135-workdir	glm-5.2	90	3	20896	1250	84224	0	HEAD	0	claude
-76e5ea9e-c679-49a9-9532-c0884bb81cb1	2026-07-08T08:32:22+08:00	-home-ant-multica-workspaces-desktop-api-multica-ai-e0bd491e-bba5-40dc-b1c1-87e09acdfb08-de69962e-workdir	glm-5.2	25	4	24420	988	92928	0	HEAD	0	claude
-f1431615-512f-485b-8172-b02b42a2f258	2026-07-08T09:42:14+08:00	-home-ant-code-java-scrm-api	glm-5.2	0	1	53632	80	256	0	master	0	claude
-5c598496-d832-4fdb-a21e-8d63c6889f67	2026-07-08T13:42:13+08:00	-home-ant-code-java-scrm-api	glm-5.2	3413	36	133851	39287	3318272	0	feat/9.6/NFQX-12253	0	claude
-3478d636-250e-4e3f-be86-a509d06f6c04	2026-07-08T13:48:41+08:00	-home-ant-projects-xueqiu-crawler	glm-5.2	3806	34	174666	66885	4310144	0	main	0	claude
-82244206-a53d-4865-9762-2b67c36eb2b3	2026-07-08T16:46:02+08:00	-home-ant-code-java-java-server-inherit	glm-5.2	69	4	35537	2906	175488	0	master	0	claude
-sess_de7f502e-0036-4d29-acb8-07fc8cde0cea	2026-07-08T14:17:53+08:00	ZCodeProject	GLM-5.2	1106831	17	31289698	100074	30272000	0	main	0	zcode
-sess_77774b2a-2c1d-4dbf-a438-8402c5aa26d3	2026-07-08T09:18:36+08:00	ZCodeProject	GLM-5.2	5755	2	393543	2307	294464	0	main	0	zcode

@@ -9,7 +9,7 @@ assert.strictEqual(posts.length, 14, 'all 14 published posts processed');
 assert.ok(Object.keys(tagIndex).length > 0, 'tag index built');
 posts.forEach(p => assert.ok(p.content.length > 0, `post ${p.url} has content`));
 
-const token = aggregateTokenUsage('token-usage');
+const token = aggregateTokenUsage(process.env.TOKEN_USAGE_DIR || 'token-usage');
 assert.ok(token.days.length > 0, 'token days aggregated');
 assert.ok(Object.keys(token.bySourceTotal).length >= 1, 'bySource rollup present');
 token.days.forEach(d => assert.ok(d.total_tokens, `day ${d.date} has totals`));

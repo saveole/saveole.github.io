@@ -10,7 +10,7 @@ const { buildReadingPageData } = require('./lib/reading');
 const POSTS_DIR = path.join(__dirname, 'posts');
 const DIST_DIR = path.join(__dirname, 'dist');
 const THEME_DIR = path.join(__dirname, 'theme');
-const TOKEN_USAGE_DIR = path.join(__dirname, 'token-usage');
+const TOKEN_USAGE_DIR = process.env.TOKEN_USAGE_DIR || path.join(__dirname, 'token-usage');
 const RUNNING_DATA_DIR = path.join(__dirname, 'running-data');
 const READING_DATA_DIR = path.join(__dirname, 'reading-data');
 

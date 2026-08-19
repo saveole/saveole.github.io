@@ -1,9 +1,0 @@
-session_id	timestamp	project	model	duration_seconds	message_count	tokens_input	tokens_output	tokens_cache_read	tokens_cache_creation	git_branch	tokens_reasoning	source
-ses_0d9550d39ffeg6f02Ux31xGmqq	2026-07-03T14:29:25+08:00	inherit-mcp-server	deepseek-v4-flash	60	13	29240	5401	245888	0	master	510	opencode
-ses_0d9551d26ffeMBuZ2rDxRTkQWK	2026-07-03T14:29:21+08:00	inherit-mcp-server	deepseek-v4-flash	650	40	31190	8472	1009280	0	master	5204	opencode
-ses_0d9527228ffeWukuBhr5y1GDef	2026-07-03T14:32:16+08:00	inherit-mcp-server	deepseek-v4-flash	72	20	30522	5550	412416	0	master	426	opencode
-ses_0d9428c3cffe4dd33pm4auJ9Rp	2026-07-03T14:49:37+08:00	inherit-mcp-server	deepseek-v4-flash	147	13	15143	1121	118016	0	master	908	opencode
-ses_0d925f22effeaVIB7UHlThP4lB	2026-07-03T15:20:52+08:00	inherit-mcp-server	deepseek-v4-flash	89325	14	34773	1625	219776	0	master	1342	opencode
-sess_ab6219a5-ca26-40a8-aa8a-cb397b7692e4	2026-07-03T13:32:43+08:00	ZCodeProject	GLM-5.2	4270	6	512352	12333	422848	0	main	0	zcode
-sess_ae005f60-9a29-4ffa-be97-c6f2f5444459	2026-07-03T14:44:35+08:00	ZCodeProject	GLM-5.2	18	1	17601	791	14784	0	main	0	zcode
-sess_a8a6b0a3-1c41-43ad-9459-d9f60305bb38	2026-07-03T13:05:30+08:00	ZCodeProject	GLM-5.2	1399	8	754463	13187	731392	0	main	0	zcode
