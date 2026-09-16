@@ -32,6 +32,7 @@ jobs:
           node-version: "22"
 
       - name: Checkout token-usage data
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: saveole/token-usage
@@ -39,6 +40,7 @@ jobs:
           token: ${{ secrets.TOKEN_USAGE_READ_TOKEN }}
 
       - name: Checkout running data
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: saveole/running
