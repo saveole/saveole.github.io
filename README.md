@@ -52,6 +52,24 @@ TOKEN_USAGE_DIR=/path/to/token-usage node build.js
 CI 部署时会在构建前用 `TOKEN_USAGE_READ_TOKEN` secret 自动拉取该私有仓库。
 若该 secret 缺失，首页热力图数据为空（构建仍会成功）。
 
+### 跑步与身体数据（running-data）
+
+跑步活动记录（Garmin 同步）与身体指标（体重/体脂率）数据已迁移到独立的私有仓库
+[`saveole/running`](https://github.com/saveole/running)。
+
+构建时通过 `RUNNING_DATA_DIR` 环境变量定位数据目录（默认 `./running-data`，且会自动探测同级 `../running/running-data`）：
+
+```bash
+# 本地开发（若在同级目录存在 running 仓库会自动感知）：
+node build.js
+
+# 或手动指定位置
+RUNNING_DATA_DIR=/path/to/running/running-data node build.js
+```
+
+CI 部署时会在构建前拉取该私有仓库（使用 `RUNNING_DATA_READ_TOKEN` secret）。
+若数据缺失，跑步页面将跳过生成（构建仍会成功）。
+
 ## 写作指南
 
 ### 文章格式

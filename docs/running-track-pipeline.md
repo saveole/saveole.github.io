@@ -2,6 +2,8 @@
 
 本文档描述从 Garmin Connect 获取跑步活动数据、解析 GPS 轨迹、编码存储、前端 SVG 可视化，以及轨迹相似度计算的完整流程。
 
+> **注**：数据获取、存储与定时同步流水线已独立至私有仓库 [`saveole/running`](https://github.com/saveole/running)；博客主仓库通过构建期拉取消费该数据。
+
 ---
 
 ## 整体架构概览

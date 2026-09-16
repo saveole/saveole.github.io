@@ -16,21 +16,33 @@ This is a minimal static site generator for a personal blog. It converts Markdow
 The site is automatically deployed to GitHub Pages via `.github/workflows/pages-deploy.yml` when pushing to the `main` branch. The workflow:
 1. Uses Node.js 22
 2. Checks out the private `saveole/token-usage` repo into `token-usage/` (using `TOKEN_USAGE_READ_TOKEN` secret)
-3. Runs `npm ci` then `node build.js`
-4. Deploys the `dist/` directory
+3. Checks out the private `saveole/running` repo into `running-data/` (using `RUNNING_DATA_READ_TOKEN` secret)
+4. Runs `npm ci` then `node build.js`
+5. Deploys the `dist/` directory
 
-### Token usage data (`token-usage/`)
+### External Private Data Repositories
+
+#### Token usage data (`token-usage/`)
 
 Token usage data for the homepage heatmap lives in the **separate private repo**
 `saveole/token-usage` — not in this repo. This repo consumes it at build time:
 
-- `build.js` reads it from `process.env.TOKEN_USAGE_DIR` (default `./token-usage`).
-- Local fresh clones must clone that repo into `token-usage/` or set
-  `TOKEN_USAGE_DIR` to an existing checkout.
+- `build.js` reads it from `process.env.TOKEN_USAGE_DIR` (default `./token-usage`, with fallback to `../token-usage`).
 - CI checks it out via `actions/checkout` with `repository: saveole/token-usage`
   and `token: ${{ secrets.TOKEN_USAGE_READ_TOKEN }}` before building.
 - If the dir/secret is absent, `aggregateTokenUsage` returns an empty view and the
   build still succeeds (homepage heatmap just renders empty).
+
+#### Running & health data (`running-data/`)
+
+Running activities and body measurement data live in the **separate private repo**
+`saveole/running` — not in this repo. This repo consumes it at build time:
+
+- `build.js` reads it from `process.env.RUNNING_DATA_DIR` (default `./running-data`, with fallback to `../running/running-data`).
+- CI checks it out via `actions/checkout` with `repository: saveole/running`
+  and `token: ${{ secrets.RUNNING_DATA_READ_TOKEN }}` before building.
+- If the dir/secret is absent, `buildRunningPageData` returns null, `loadRunningMap` returns `{}` and the
+  build still succeeds (running page skipped or renders empty).
 
 ## Architecture
 

@@ -10,8 +10,14 @@ const { buildReadingPageData } = require('./lib/reading');
 const POSTS_DIR = path.join(__dirname, 'posts');
 const DIST_DIR = path.join(__dirname, 'dist');
 const THEME_DIR = path.join(__dirname, 'theme');
-const TOKEN_USAGE_DIR = process.env.TOKEN_USAGE_DIR || path.join(__dirname, 'token-usage');
-const RUNNING_DATA_DIR = path.join(__dirname, 'running-data');
+const TOKEN_USAGE_DIR = process.env.TOKEN_USAGE_DIR || 
+    (fs.existsSync(path.join(__dirname, 'token-usage'))
+        ? path.join(__dirname, 'token-usage')
+        : path.join(__dirname, '..', 'token-usage'));
+const RUNNING_DATA_DIR = process.env.RUNNING_DATA_DIR || 
+    (fs.existsSync(path.join(__dirname, 'running-data', 'activities.json'))
+        ? path.join(__dirname, 'running-data')
+        : path.join(__dirname, '..', 'running', 'running-data'));
 const READING_DATA_DIR = path.join(__dirname, 'reading-data');
 
 const ejsOpts = { root: THEME_DIR, views: [THEME_DIR] };
@@ -55,6 +61,7 @@ const runningPageData = buildRunningPageData(RUNNING_DATA_DIR);
 if (runningPageData) {
     const runningHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'running.ejs'), 'utf-8'), runningPageData, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, 'running.html'), runningHtml);
+    console.log('Running page generated.');
 }
 
 // 7. 阅读页面

@@ -12,3 +12,4 @@ dist/
 .zcode
 __pycache__/
 token-usage/
+running-data/
