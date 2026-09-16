@@ -16,10 +16,21 @@ const tokenDir = process.env.TOKEN_USAGE_DIR ||
     (fs.existsSync(path.join(__dirname, '..', 'token-usage')) 
         ? path.join(__dirname, '..', 'token-usage') 
         : path.join(__dirname, '..', '..', 'token-usage'));
-const runningDir = process.env.RUNNING_DATA_DIR || 
-    (fs.existsSync(path.join(__dirname, '..', 'running-data', 'activities.json')) 
-        ? path.join(__dirname, '..', 'running-data') 
-        : path.join(__dirname, '..', '..', 'running', 'running-data'));
+function findRunningDataDir() {
+    if (process.env.RUNNING_DATA_DIR) return process.env.RUNNING_DATA_DIR;
+    const candidates = [
+        path.join(__dirname, '..', 'running-data'),
+        path.join(__dirname, '..', 'running-data', 'running-data'),
+        path.join(__dirname, '..', 'running', 'running-data'),
+        path.join(__dirname, '..', '..', 'running', 'running-data'),
+        path.join(__dirname, '..', '..', 'running-data')
+    ];
+    for (const c of candidates) {
+        if (fs.existsSync(path.join(c, 'activities.json'))) return c;
+    }
+    return path.join(__dirname, '..', 'running-data');
+}
+const runningDir = findRunningDataDir();
 
 const token = aggregateTokenUsage(tokenDir);
 if (token.days.length > 0) {

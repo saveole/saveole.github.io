@@ -13,3 +13,4 @@ dist/
 __pycache__/
 token-usage/
 running-data/
+running/

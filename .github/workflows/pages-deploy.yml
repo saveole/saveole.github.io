@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: saveole/running
-          path: running-data
+          path: running
           token: ${{ secrets.RUNNING_DATA_READ_TOKEN || secrets.TOKEN_USAGE_READ_TOKEN }}
 
       - name: Install dependencies
