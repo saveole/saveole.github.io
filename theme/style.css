@@ -453,6 +453,11 @@ pre code {
   border-color: var(--primary-color);
 }
 
+.year-tabs {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .tracks-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -703,12 +708,12 @@ pre code {
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--text-muted);
-  padding-bottom: 0.75rem;
+  padding: 0 0.5rem 0.75rem 0.5rem;
   border-bottom: 1px solid var(--border-color);
 }
 
 .activity-table td {
-  padding: 0.6rem 0;
+  padding: 0.6rem 0.5rem;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-muted);
   font-weight: 300;
@@ -716,6 +721,77 @@ pre code {
 
 .activity-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Month group styles */
+.month-header-row td {
+  padding: 0.55rem 0.5rem;
+  background: var(--code-bg);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
+}
+
+.month-header-row:hover td {
+  opacity: 0.85;
+}
+
+.month-header-row:focus-visible td {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}
+
+.month-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.month-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.month-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.month-chevron svg {
+  display: block;
+}
+
+.month-group.is-collapsed .month-chevron {
+  transform: rotate(-90deg);
+}
+
+.month-group.is-collapsed .activity-row {
+  display: none;
+}
+
+.month-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.month-stat {
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.running-list-header {
+  justify-content: space-between;
 }
 
 .text-left { text-align: left; }
@@ -1832,9 +1908,10 @@ pre code {
   }
 
   /* Activity table: increase row tap area */
-  .activity-table td {
-    padding-top: 0.9rem;
-    padding-bottom: 0.9rem;
+  .activity-table td,
+  .month-header-row td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
   }
 
   /* Nav links: ensure 44px minimum */

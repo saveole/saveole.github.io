@@ -31,11 +31,12 @@
         </div>
 
         <div class="dashboard-card">
-            <div class="list-header">
+            <div class="list-header running-list-header">
                 <div class="year-tabs" id="yearTabs"></div>
+                <span class="month-stat" id="yearStat"></span>
             </div>
             <div class="table-wrapper">
-                <table class="activity-table">
+                <table class="activity-table" id="activityTable">
                     <thead>
                         <tr>
                             <th class="text-left">活动</th>
@@ -46,7 +47,6 @@
                             <th class="text-right">Date</th>
                         </tr>
                     </thead>
-                    <tbody id="activityListBody"></tbody>
                 </table>
             </div>
         </div>
@@ -337,16 +337,29 @@
         });
 
         // Render activity list
-        var listBody = document.getElementById('activityListBody');
+        var tableEl = document.getElementById('activityTable');
 
-        // Extract years and build tabs
-        var yearSet = {};
+        // Calculate year statistics
+        var yearStats = {};
         activityRecords.forEach(function(a) {
-            yearSet[a.date.slice(0, 4)] = true;
+            var y = a.date.slice(0, 4);
+            if (!yearStats[y]) {
+                yearStats[y] = { count: 0, totalKm: 0 };
+            }
+            yearStats[y].count++;
+            yearStats[y].totalKm += (a.distance_km || 0);
         });
-        var years = Object.keys(yearSet).sort().reverse();
-        var currentYear = String(new Date().getFullYear());
+
+        var years = Object.keys(yearStats).sort().reverse();
+        var now = new Date();
+        var currentYear = String(now.getFullYear());
         var activeYear = years.indexOf(currentYear) !== -1 ? currentYear : years[0];
+
+        function updateYearHeader(year) {
+            var stat = yearStats[year] || { count: 0, totalKm: 0 };
+            var statEl = document.getElementById('yearStat');
+            if (statEl) statEl.textContent = '共 ' + stat.count + ' 次 · ' + stat.totalKm.toFixed(2) + ' km';
+        }
 
         var tabsEl = document.getElementById('yearTabs');
         years.forEach(function(y) {
@@ -358,38 +371,113 @@
                 var tabs = tabsEl.querySelectorAll('.year-tab');
                 for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
                 btn.classList.add('active');
+                updateYearHeader(y);
                 renderList(y);
             };
             tabsEl.appendChild(btn);
         });
 
-        function renderList(year) {
-            var html = '';
-            activityRecords.forEach(function(a) {
-                if (a.date.slice(0, 4) !== year) return;
-                var hour = a.start_time ? parseInt(a.start_time.split(':')[0], 10) : 12;
-                var isTreadmill = a.type === 'treadmill_running';
-                var period;
-                if (hour >= 5 && hour < 9) period = '清晨';
-                else if (hour >= 9 && hour < 12) period = '上午';
-                else if (hour >= 12 && hour < 18) period = '下午';
-                else period = '夜晚';
-                var label = period + (isTreadmill ? '跑步机' : '户外');
-
-                var dateDisplay = a.date + ' ' + (a.start_time || '00:00:00');
-
-                html += '<tr>' +
-                    '<td class="text-left run-title">' + esc(label) + '</td>' +
-                    '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
-                    '<td class="text-right">' + esc(a.pace) + '</td>' +
-                    '<td class="text-right">' + (a.avg_hr != null ? a.avg_hr : '') + '</td>' +
-                    '<td class="text-right">' + esc(a.duration) + '</td>' +
-                    '<td class="text-right">' + esc(dateDisplay) + '</td>' +
-                    '</tr>';
-            });
-            listBody.innerHTML = html;
+        function toggleMonth(headerRow) {
+            var tbody = headerRow.closest('.month-group');
+            if (!tbody) return;
+            var isCollapsed = tbody.classList.toggle('is-collapsed');
+            headerRow.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
         }
 
+        tableEl.addEventListener('click', function(e) {
+            var headerRow = e.target.closest('.month-header-row');
+            if (headerRow) {
+                toggleMonth(headerRow);
+            }
+        });
+
+        tableEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                var headerRow = e.target.closest('.month-header-row');
+                if (headerRow) {
+                    e.preventDefault();
+                    toggleMonth(headerRow);
+                }
+            }
+        });
+
+        function renderList(year) {
+            var oldTbodies = tableEl.querySelectorAll('tbody');
+            for (var i = 0; i < oldTbodies.length; i++) {
+                tableEl.removeChild(oldTbodies[i]);
+            }
+
+            var monthsMap = {};
+            var monthKeys = [];
+            activityRecords.forEach(function(a) {
+                if (a.date.slice(0, 4) !== year) return;
+                var m = a.date.slice(5, 7);
+                if (!monthsMap[m]) {
+                    monthsMap[m] = [];
+                    monthKeys.push(m);
+                }
+                monthsMap[m].push(a);
+            });
+
+            monthKeys.sort(function(a, b) { return b.localeCompare(a); });
+
+            var html = '';
+
+            monthKeys.forEach(function(m) {
+                var records = monthsMap[m];
+                var count = records.length;
+                var totalKm = records.reduce(function(sum, r) { return sum + (r.distance_km || 0); }, 0);
+                var monthName = parseInt(m, 10) + '月';
+                var statText = '共 ' + count + ' 次 · ' + totalKm.toFixed(2) + ' km';
+
+                // 默认全部按月份展开，用户可手动点击折叠
+                var monthHtml = '<tbody class="month-group" data-month="' + esc(year + '-' + m) + '">';
+                monthHtml += '<tr class="month-header-row" role="button" tabindex="0" aria-expanded="true">' +
+                    '<td colspan="6">' +
+                        '<div class="month-header-content">' +
+                            '<div class="month-title-wrap">' +
+                                '<span class="month-chevron" aria-hidden="true">' +
+                                    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                                        '<polyline points="6 9 12 15 18 9"></polyline>' +
+                                    '</svg>' +
+                                '</span>' +
+                                '<span class="month-title">' + esc(monthName) + '</span>' +
+                            '</div>' +
+                            '<span class="month-stat">' + esc(statText) + '</span>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+
+                records.forEach(function(a) {
+                    var hour = a.start_time ? parseInt(a.start_time.split(':')[0], 10) : 12;
+                    var isTreadmill = a.type === 'treadmill_running';
+                    var period;
+                    if (hour >= 5 && hour < 9) period = '清晨';
+                    else if (hour >= 9 && hour < 12) period = '上午';
+                    else if (hour >= 12 && hour < 18) period = '下午';
+                    else period = '夜晚';
+                    var label = period + (isTreadmill ? '跑步机' : '户外');
+
+                    var dateDisplay = a.date.slice(5) + ' ' + (a.start_time || '00:00:00');
+
+                    monthHtml += '<tr class="activity-row">' +
+                        '<td class="text-left run-title">' + esc(label) + '</td>' +
+                        '<td class="text-right km-val">' + a.distance_km.toFixed(2) + '</td>' +
+                        '<td class="text-right">' + esc(a.pace) + '</td>' +
+                        '<td class="text-right">' + (a.avg_hr != null ? a.avg_hr : '') + '</td>' +
+                        '<td class="text-right">' + esc(a.duration) + '</td>' +
+                        '<td class="text-right">' + esc(dateDisplay) + '</td>' +
+                        '</tr>';
+                });
+
+                monthHtml += '</tbody>';
+                html += monthHtml;
+            });
+
+            tableEl.insertAdjacentHTML('beforeend', html);
+        }
+
+        updateYearHeader(activeYear);
         renderList(activeYear);
 
         // Wait for Chart.js to load (async script), then initialize charts
