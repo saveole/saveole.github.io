@@ -4,7 +4,7 @@
   --text-muted: #64748b;
   --primary-color: #2563eb;
   --text-on-primary: #fff;
-  --ease-out: var(--ease-out);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --border-color: #e5e7eb;
   --code-bg: #f3f4f6;
   --code-color: #1a202c;
@@ -143,6 +143,68 @@ footer {
 
 .post {
   margin-top: 4rem;
+}
+
+/* Post header */
+.post-header {
+  margin-bottom: 2.5rem;
+}
+
+.post-header time {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+  margin-bottom: 0.7rem;
+}
+
+.post-header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  color: var(--text-main);
+}
+
+.subtitle {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Post content headings and quotes (global reset zeroes all margins) */
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-main);
+}
+
+.post-content h2 {
+  font-size: 1.5rem;
+  margin: 2.5rem 0 1rem;
+}
+
+.post-content h3 {
+  font-size: 1.17rem;
+  margin: 2rem 0 0.75rem;
+}
+
+.post-content h4 {
+  font-size: 1.02rem;
+  margin: 1.6rem 0 0.6rem;
+}
+
+.post-content blockquote {
+  margin: 1.5rem 0;
+  padding: 0.4rem 0 0.4rem 1rem;
+  border-left: 3px solid var(--primary-color);
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 /* Post header meta (categories + tags) */
@@ -863,6 +925,11 @@ pre code {
   line-height: 1.3;
 }
 
+.post-item h2 a {
+  text-decoration: none;
+  color: var(--text-main);
+}
+
 .post-item time {
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -871,6 +938,11 @@ pre code {
 .post-item p {
   font-size: 0.95rem;
   margin-top: 0.2rem;
+}
+
+.post-item-desc {
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 /* 修复文章内的列表排版 */
@@ -1226,7 +1298,8 @@ pre code {
   font-family: "Inter", sans-serif;
   font-size: 0.6rem;
   color: var(--text-muted);
-  height: calc(10px * 7 + 2px * 6);
+  /* Must match .contrib-grid rows: 7 * 12px + 6 * 2px gap */
+  height: calc(12px * 7 + 2px * 6);
   justify-content: space-between;
   flex-shrink: 0;
   width: 26px;
@@ -1901,10 +1974,12 @@ pre code {
     justify-content: center;
   }
 
-  /* Contribution grid cells: increase hit area via negative margin + padding */
-  .contrib-cell {
-    margin: -4px;
-    padding: 4px;
+  /* Contribution grid cells: widen tap target without overlapping neighbours
+     (cell pitch is 12px + 2px gap, so at most 1px outward on each side) */
+  .contrib-cell::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
   }
 
   /* Activity table: increase row tap area */

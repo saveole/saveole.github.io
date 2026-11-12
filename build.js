@@ -6,6 +6,7 @@ const { processPosts } = require('./lib/posts');
 const { aggregateTokenUsage } = require('./lib/tokenUsage');
 const { loadRunningMap, mergeRunningMap, buildRunningPageData } = require('./lib/running');
 const { buildReadingPageData } = require('./lib/reading');
+const { toScriptJson } = require('./lib/serialize');
 
 const POSTS_DIR = path.join(__dirname, 'posts');
 const DIST_DIR = path.join(__dirname, 'dist');
@@ -52,7 +53,7 @@ const { posts, tagIndex } = processPosts(POSTS_DIR);
 posts.forEach(postData => {
     const postHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'layout.ejs'), 'utf-8'), {
         ...postData,
-        tagIndex: JSON.stringify(tagIndex)
+        tagIndex: toScriptJson(tagIndex)
     }, ejsOpts);
     fs.writeFileSync(path.join(DIST_DIR, postData.url), postHtml);
 });
@@ -65,7 +66,7 @@ tokenView.days = mergeRunningMap(tokenView.days, loadRunningMap(RUNNING_DATA_DIR
 
 const indexHtml = ejs.render(fs.readFileSync(path.join(THEME_DIR, 'index.ejs'), 'utf-8'), {
     posts,
-    dailyData: JSON.stringify(tokenView)
+    dailyData: toScriptJson(tokenView)
 }, ejsOpts);
 fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
 

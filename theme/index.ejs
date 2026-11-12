@@ -64,14 +64,12 @@
         <section class="post-list">
             <% posts.forEach(post => { %>
                 <div class="post-item" >
-                    <time>
-                        <%= post.date %>
-                    </time>
+                    <time datetime="<%= post.date %>"><%= post.date %></time>
                     <h2>
-                        <a href="<%= post.url %>" style="text-decoration: none; color: var(--text-main);"><%= post.title %></a>
+                        <a href="<%= post.url %>" class="post-item-title"><%= post.title %></a>
                     </h2>
-                    <% if (post.subtitle) { %>
-                        <p></p>
+                    <% if (post.description || post.subtitle) { %>
+                        <p class="post-item-desc"><%= post.description || post.subtitle %></p>
                     <% } %>
                 </div>
             <% }) %>

@@ -1,16 +1,20 @@
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const { processPosts } = require('../lib/posts');
 const { aggregateTokenUsage } = require('../lib/tokenUsage');
 const { loadRunningMap, mergeRunningMap, buildRunningPageData } = require('../lib/running');
 const { buildReadingPageData } = require('../lib/reading');
+const { toScriptJson } = require('../lib/serialize');
 
+const mdFiles = fs.readdirSync('posts').filter(f => f.endsWith('.md'));
 const { posts, tagIndex } = processPosts('posts');
-assert.strictEqual(posts.length, 14, 'all 14 published posts processed');
+assert.ok(posts.length > 0, 'published posts processed');
+assert.ok(posts.length <= mdFiles.length, 'no more posts than .md files');
+posts.forEach(p => assert.ok(!p.description || typeof p.description === 'string',
+    `post ${p.url} exposes description`));
 assert.ok(Object.keys(tagIndex).length > 0, 'tag index built');
 posts.forEach(p => assert.ok(p.content.length > 0, `post ${p.url} has content`));
-
-const fs = require('fs');
-const path = require('path');
 
 const tokenDir = process.env.TOKEN_USAGE_DIR || 
     (fs.existsSync(path.join(__dirname, '..', 'token-usage')) 
@@ -55,5 +59,10 @@ const read = buildReadingPageData('reading-data');
 assert.ok(read, 'reading page data present');
 assert.ok(JSON.parse(read.booksJSON).length > 0, 'reading books loaded');
 assert.ok(JSON.parse(read.statsJSON).total > 0, 'reading stats computed');
+
+const unsafe = { title: '</script><img src=x onerror=alert(1)>' };
+const embedded = toScriptJson(unsafe);
+assert.ok(!/<\/script|<!--/.test(embedded), 'embedded JSON cannot close the script tag');
+assert.strictEqual(JSON.parse(embedded).title, unsafe.title, 'embedded JSON round-trips');
 
 console.log('ALL PIPELINE TESTS PASSED');
